@@ -1,0 +1,125 @@
+version: "3"
+services:
+  gui-container:
+    # A template service to be extended from
+    # services that require a GUI
+    # Scratch is an empty dummy docker image.
+    # Override it when you extend the service.
+    image: scratch
+    # Use the host network to enable ROS2 discovery
+    network_mode: "host"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+      # Mounting shm enables shared memory between the
+      # containers, which is required for ROS2 discovery to work.
+      - /dev/shm/:/dev/shm
+    environment:
+      - DISPLAY
+      - WAYLAND_DISPLAY
+      - XDG_RUNTIME_DIR
+      - PULSE_SERVER
+
+  demo-nodes:
+    container_name: demo-nodes
+    build:
+      context: .
+      dockerfile: dockerfiles/demo-nodes/Dockerfile
+    network_mode: "host"
+    volumes:
+      - /dev/shm/:/dev/shm
+    command: ["/bin/bash"]
+
+  ros2:
+    image: osrf/ros:humble-desktop-full
+    container_name: ros2
+    extends:
+      service: gui-container
+    volumes:
+      - .:/workspace/
+      - .:/root/workspace/
+      - .rviz2/:/root/.rviz2/
+      - .rqt/:/root/.rqt/
+    working_dir: /workspace
+    command: ["/bin/bash"]
+
+  rqt:
+    container_name: rqt
+    extends:
+      service: ros2
+    command: ["rqt"]
+
+  rviz2:
+    container_name: rviz2
+    extends:
+      service: ros2
+    command: ["rviz2"]
+
+  talker:
+    container_name: talker
+    extends:
+      service: demo-nodes
+    command: ["ros2", "run", "demo_nodes_cpp", "talker"]
+
+  listener:
+    container_name: listener
+    extends:
+      service: demo-nodes
+    command: ["ros2", "run", "demo_nodes_cpp", "listener"]
+
+  turtlesim:
+    container_name: turtlesim
+    build:
+      context: .
+      dockerfile: dockerfiles/turtlesim/Dockerfile
+    extends:
+      service: gui-container
+    volumes:
+      - .:/workspace/
+    working_dir: /workspace
+    command: ["ros2", "run", "turtlesim", "turtlesim_node"]
+
+  turtlesim-control:
+    container_name: turtlesim-control
+    extends:
+      service: turtlesim
+    command: ["ros2", "run", "turtlesim", "turtle_teleop_key"]
+
+  turtlesim-launchfile:
+    container_name: turtlesim-launchfile
+    build:
+      context: .
+      dockerfile: dockerfiles/turtlesim/Dockerfile
+    extends:
+      service: gui-container
+    volumes:
+      - .:/workspace/
+    working_dir: /workspace
+    command:
+      ["ros2", "launch", "/workspace/launchfiles/turtlesim_mimic_launch.yaml"]
+
+  gazebo-classic:
+    image: gazebo:latest
+    container_name: gazebo-classic
+    extends:
+      service: gui-container
+    volumes:
+      - .:/workspace/
+      - .gazebo/classic:/root/.gz/
+    working_dir: /workspace
+    # Use the command below for debugging
+    command: ["gazebo", "--verbose"]
+    # command: ["gazebo"]
+
+  gazebo:
+    container_name: gazebo
+    build:
+      context: .
+      dockerfile: dockerfiles/gazebo/Dockerfile
+    extends:
+      service: gui-container
+    volumes:
+      - .:/workspace/
+      - .gazebo/gz-fortress:/root/.ignition/
+    working_dir: /workspace
+    command: ["ign", "gazebo"]
