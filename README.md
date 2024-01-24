@@ -25,7 +25,10 @@ A ros2 container for general testing
 
 ```bash
 docker-compose run ros2
+clear
 ```
+
+When you wish to close the terminal, press `Ctrl + D` or type `exit`.
 
 ## Talker
 
