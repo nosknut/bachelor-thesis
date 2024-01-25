@@ -36,12 +36,19 @@ services:
     extends:
       service: gui-container
     volumes:
+      - .ros2/ros2_ws:/root/ros2_ws/
       - .:/workspace/
       - .:/root/workspace/
       - .rviz2/:/root/.rviz2/
       - .rqt/:/root/.rqt/
     working_dir: /workspace
     command: ["/bin/bash"]
+
+  ros2-dev:
+    container_name: ros2-dev
+    extends:
+      service: ros2
+    command: sh setup.sh
 
   rqt:
     container_name: rqt

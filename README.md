@@ -30,6 +30,21 @@ clear
 
 When you wish to close the terminal, press `Ctrl + D` or type `exit`.
 
+## ROS2-dev
+
+A ros2 container for package development
+
+Starting the container:
+```bash
+docker-compose up -d ros2-dev
+```
+Opening a terminal into the container:
+```bash
+docker exec -it ros2-dev bash
+clear
+```
+When you wish to close the terminal, press `Ctrl + D` or type `exit`.
+
 ## Talker
 
 Publishes messages that the listener should receive if shared memory and network is correctly configured.
