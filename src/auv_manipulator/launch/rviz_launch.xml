@@ -1,0 +1,6 @@
+<launch>
+        <arg name="model" default="$(find-pkg-share auv_manipulator)/urdf/manipulator.urdf.xacro"/>
+        <node pkg="robot_state_publisher" exec="robot_state_publisher">
+                <param name='robot_description' value="$(command 'xacro $(var model)')"/>
+        </node>
+</launch>
