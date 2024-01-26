@@ -1,3 +1,5 @@
+[<-- Back](/README.md)
+
 # Config Explanations
 
 ## GUI in Docker Containers
