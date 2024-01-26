@@ -15,13 +15,71 @@
 - [Config Explanations](docs/config-explanations/README.md)
 - [Docker Commands](docs/docker-commands/README.md)
 
+# Development
+
+The following are ROS2 commands that can be run inside the ros2 docker container. Open a ros2 terminal with the following commands:
+
+```bash
+docker-compose run ros2
+clear
+```
+
+## Install Depencencies
+
+```bash
+rosdep install --from-paths src --ignore-src -y --rosdistro=$ROS_DISTRO
+```
+
+## Build Package
+
+```bash
+colcon build
+```
+
+## Source the Workspace
+
+```bash
+source install/setup.bash
+```
+
+## Launch Rviz
+
+```bash
+ros2 launch auv_manipulator rviz_launch.xml
+```
+
+# Quick Commands
+
+## Build Package
+
+```bash
+docker-compose run ros2
+colcon build
+source install/setup.bash
+```
+
+## Open Sourced Terminal
+
+```bash
+docker-compose run ros2
+source install/setup.bash
+clear
+```
+
+## Launch Rviz
+
+```bash
+docker-compose run ros2
+source install/setup.bash
+clear
+ros2 launch auv_manipulator rviz_launch.xml
+```
+
 # Launch Commands
 
 NB! On Windows, all commands below should be run in a WSL terminal.
 
 ## ROS2
-
-A ros2 container for general testing
 
 ```bash
 docker-compose run ros2

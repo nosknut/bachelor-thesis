@@ -31,7 +31,9 @@ services:
     command: ["/bin/bash"]
 
   ros2:
-    image: osrf/ros:humble-desktop-full
+    build:
+      context: .
+      dockerfile: dockerfiles/ros2/Dockerfile
     container_name: ros2
     extends:
       service: gui-container
