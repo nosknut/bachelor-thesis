@@ -2,3 +2,7 @@
 .rviz2/**
 .rqt/**
 .ros2/**
+build/*
+install/*
+log/*
+site/*

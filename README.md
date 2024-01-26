@@ -11,7 +11,7 @@
 - [Gazebo](https://gazebosim.org/docs/fortress/install_ubuntu)
 
 # Docs
-
+- [Workspace Setup Source](https://github.com/athackst/vscode_ros2_workspace)
 - [Config Explanations](docs/config-explanations/README.md)
 - [Docker Commands](docs/docker-commands/README.md)
 
