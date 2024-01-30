@@ -48,6 +48,12 @@ source install/setup.bash
 ros2 launch auv_manipulator rviz_launch.xml
 ```
 
+## Start Moveit2 container
+
+```bash
+docker-compose run moveit2_container
+```
+
 # Quick Commands
 
 ## Build Package
@@ -73,6 +79,14 @@ docker-compose run ros2
 source install/setup.bash
 clear
 ros2 launch auv_manipulator rviz_launch.xml
+```
+
+## Launch Moveit2 Tutorial
+
+Command for launching [this](https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html) moveit2 tutorial.
+
+```bash
+docker-compose run moveit2 ros2 launch moveit2_tutorials demo.launch.py
 ```
 
 # Launch Commands
@@ -102,6 +116,14 @@ docker exec -it ros2-dev bash
 clear
 ```
 When you wish to close the terminal, press `Ctrl + D` or type `exit`.
+
+## Talker
+
+Publishes messages that the listener should receive if shared memory and network is correctly configured.
+
+```bash
+docker-compose up talker
+```
 
 ## Talker
 
@@ -156,6 +178,7 @@ All files related to the gazebo simulation are located in the `.gazebo` folder w
 - [ROS2 Docker Image](https://hub.docker.com/_/ros/)
 - [Setting up a robot simulation (Gazebo)](https://docs.ros.org/en/humble/Tutorials/Advanced/Simulators/Gazebo/Gazebo.html)
 - [Gazebo](https://gazebosim.org/docs)
+- [Movit2](https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html)
 
 # ROS Docker Images
 
