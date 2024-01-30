@@ -135,14 +135,18 @@ services:
 
   # https://moveit.picknik.ai/main/doc/how_to_guides/how_to_setup_docker_containers_in_ubuntu.html
   moveit2:
-    image: ghcr.io/ros-planning/moveit2_tutorials:humble-tutorial
+    build:
+      context: .
+      dockerfile: dockerfiles/moveit2/Dockerfile
+    extends:
+      service: gui-container
     container_name: moveit2_container
     privileged: true
     network_mode: host
     command: /bin/bash
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - $XAUTHORITY:/root/.Xauthority
+      #- $XAUTHORITY:/root/.Xauthority
     environment:
       QT_X11_NO_MITSHM: 1
       DISPLAY: $DISPLAY
