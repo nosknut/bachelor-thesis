@@ -184,6 +184,16 @@ All files related to the gazebo simulation are located in the `.gazebo` folder w
 - [Setting up a robot simulation (Gazebo)](https://docs.ros.org/en/humble/Tutorials/Advanced/Simulators/Gazebo/Gazebo.html)
 - [Gazebo](https://gazebosim.org/docs)
 - [Movit2](https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html)
+  - [ros2_control and state publishers](https://moveit.picknik.ai/main/doc/how_to_guides/moveit_launch_files/moveit_launch_files_tutorial.html)
+  - [servoing](https://moveit.picknik.ai/humble/doc/examples/realtime_servo/realtime_servo_tutorial.html)
+  - [Gamepad](https://moveit.picknik.ai/main/doc/how_to_guides/controller_teleoperation/controller_teleoperation.html)
+  - [Simulations](https://moveit.picknik.ai/main/doc/how_to_guides/isaac_panda/isaac_panda_tutorial.html)
+  - [pose_tracking_with_lowpass_filter](https://github.com/ros-planning/moveit2_tutorials/blob/main/doc/examples/realtime_servo/launch/pose_tracking_tutorial.launch.py)
+  - [preception](https://github.com/ros-planning/moveit2_tutorials/blob/main/doc/examples/perception_pipeline/perception_pipeline_tutorial.rst)
+  - [urdf anbd sdrf](https://github.com/ros-planning/moveit2_tutorials/blob/main/doc/examples/urdf_srdf/urdf_srdf_tutorial.rst)
+- [ros2_controll_demos](https://github.com/ros-controls/ros2_control_demos)
+- [ros2_control](https://control.ros.org/master/index.html)
+  - [6dof robot](https://control.ros.org/master/doc/ros2_control_demos/example_7/doc/userdoc.html)
 
 # ROS Docker Images
 
