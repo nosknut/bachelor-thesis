@@ -11,6 +11,7 @@
 - [Gazebo](https://gazebosim.org/docs/fortress/install_ubuntu)
 
 # Docs
+
 - [Workspace Setup Source](https://github.com/athackst/vscode_ros2_workspace)
 - [Config Explanations](docs/config-explanations/README.md)
 - [Docker Commands](docs/docker-commands/README.md)
@@ -107,14 +108,18 @@ When you wish to close the terminal, press `Ctrl + D` or type `exit`.
 A ros2 container for package development
 
 Starting the container:
+
 ```bash
 docker-compose up -d ros2-dev
 ```
+
 Opening a terminal into the container:
+
 ```bash
 docker exec -it ros2-dev bash
 clear
 ```
+
 When you wish to close the terminal, press `Ctrl + D` or type `exit`.
 
 ## Talker
