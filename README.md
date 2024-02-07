@@ -52,7 +52,7 @@ ros2 launch auv_manipulator rviz_launch.xml
 ## Start Moveit2 container
 
 ```bash
-docker-compose run moveit2_container
+docker-compose run moveit2
 ```
 
 # Quick Commands

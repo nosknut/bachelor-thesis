@@ -14,7 +14,6 @@
   
   <depend>urdf</depend>
   <depend>rviz2</depend>
-  <depend>urdf_launch</depend>
   <depend>robot_state_publisher</depend>
   <depend>joint_state_publisher</depend>
   <depend>joint_state_publisher_gui</depend>
