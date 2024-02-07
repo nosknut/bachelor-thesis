@@ -49,6 +49,14 @@ source install/setup.bash
 ros2 launch auv_manipulator rviz_launch.xml
 ```
 
+## Generate URDF from xacro
+
+Visualize the urdf model [here](https://mymodelrobot.appspot.com/)
+
+```bash
+xacro manipulator.urdf.xacro > manipulator.urdf
+```
+
 ## Start Moveit2 container
 
 ```bash
