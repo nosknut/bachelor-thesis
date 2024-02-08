@@ -145,6 +145,7 @@ services:
     network_mode: host
     command: /bin/bash
     volumes:
+      - .:/workspace/
       - /tmp/.X11-unix:/tmp/.X11-unix
       #- $XAUTHORITY:/root/.Xauthority
     environment:
