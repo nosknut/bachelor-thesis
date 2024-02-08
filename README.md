@@ -98,6 +98,15 @@ Command for launching [this](https://moveit.picknik.ai/main/doc/tutorials/quicks
 docker-compose run moveit2 ros2 launch moveit2_tutorials demo.launch.py
 ```
 
+## Launch Moveit2 Setup Assistant
+
+Command for launching [this](https://moveit.picknik.ai/main/doc/examples/setup_assistant/setup_assistant_tutorial.html) tutorial.
+
+```bash
+docker-compose run moveit2 ros2 launch moveit_setup_assistant setup_assistant.launch.py
+```
+
+
 # Launch Commands
 
 NB! On Windows, all commands below should be run in a WSL terminal.
