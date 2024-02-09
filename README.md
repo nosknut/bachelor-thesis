@@ -20,27 +20,22 @@
 
 The following are ROS2 commands that can be run inside the ros2 docker container. Open a ros2 terminal with the following commands:
 
+**Start the container**
+
+You should only have to do this once, then the container will be running in the background.
+
 ```bash
-docker-compose run --rm ros2
+docker-compose up -d ros2
+docker-compose logs -f ros2
+```
+
+**Create a new terminal and enter the ros2 container**
+
+You should do this every time you wish to create a new terminal into the container
+
+```bash
+docker exec -it ros2 bash
 clear
-```
-
-## Install Depencencies
-
-```bash
-rosdep install --from-paths src --ignore-src -y --rosdistro=$ROS_DISTRO
-```
-
-## Build Package
-
-```bash
-colcon build
-```
-
-## Source the Workspace
-
-```bash
-source install/setup.bash
 ```
 
 ## Launch Rviz
@@ -68,25 +63,14 @@ docker-compose run --rm moveit2
 ## Build Package
 
 ```bash
-docker-compose run --rm ros2
+docker exec -it ros2 bash
 colcon build
-source install/setup.bash
-```
-
-## Open Sourced Terminal
-
-```bash
-docker-compose run --rm ros2
-source install/setup.bash
-clear
 ```
 
 ## Launch Rviz
 
 ```bash
-docker-compose run --rm ros2
-source install/setup.bash
-clear
+docker exec -it ros2 bash
 ros2 launch auv_manipulator rviz_launch.xml
 ```
 
@@ -106,7 +90,6 @@ Command for launching [this](https://moveit.picknik.ai/main/doc/examples/setup_a
 docker-compose run --rm moveit2 ros2 launch moveit_setup_assistant setup_assistant.launch.py
 ```
 
-
 # Launch Commands
 
 NB! On Windows, all commands below should be run in a WSL terminal.
@@ -114,26 +97,7 @@ NB! On Windows, all commands below should be run in a WSL terminal.
 ## ROS2
 
 ```bash
-docker-compose run --rm ros2
-clear
-```
-
-When you wish to close the terminal, press `Ctrl + D` or type `exit`.
-
-## ROS2-dev
-
-A ros2 container for package development
-
-Starting the container:
-
-```bash
-docker-compose up -d ros2-dev
-```
-
-Opening a terminal into the container:
-
-```bash
-docker exec -it ros2-dev bash
+docker exec -it ros2 bash
 clear
 ```
 
@@ -195,6 +159,7 @@ docker-compose up gazebo
 All files related to the gazebo simulation are located in the `.gazebo` folder which is generated the first time the gazebo container is started.
 
 # Tutorials
+
 - [ROS2 Cheat Sheet](https://github.com/ubuntu-robotics/ros2_cheats_sheet/blob/master/cli/cli_cheats_sheet.pdf)
 - [ROS2 Launch Files](https://docs.ros.org/en/humble/Tutorials/Intermediate/Launch/Creating-Launch-Files.html)
 - [ROS2 Docker Image](https://hub.docker.com/_/ros/)

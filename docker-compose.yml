@@ -31,9 +31,7 @@ services:
     command: ["/bin/bash"]
 
   ros2:
-    build:
-      context: .
-      dockerfile: dockerfiles/ros2/Dockerfile
+    image: osrf/ros:humble-desktop-full
     container_name: ros2
     extends:
       service: gui-container
@@ -44,7 +42,7 @@ services:
       - .rviz2/:/root/.rviz2/
       - .rqt/:/root/.rqt/
     working_dir: /workspace
-    command: ["/bin/bash"]
+    command: "bash scripts/containers/ros2-entrypoint.bash"
 
   ros2-dev:
     container_name: ros2-dev
