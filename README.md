@@ -21,7 +21,7 @@
 The following are ROS2 commands that can be run inside the ros2 docker container. Open a ros2 terminal with the following commands:
 
 ```bash
-docker-compose run ros2
+docker-compose run --rm ros2
 clear
 ```
 
@@ -60,7 +60,7 @@ xacro manipulator.urdf.xacro > manipulator.urdf
 ## Start Moveit2 container
 
 ```bash
-docker-compose run moveit2
+docker-compose run --rm moveit2
 ```
 
 # Quick Commands
@@ -68,7 +68,7 @@ docker-compose run moveit2
 ## Build Package
 
 ```bash
-docker-compose run ros2
+docker-compose run --rm ros2
 colcon build
 source install/setup.bash
 ```
@@ -76,7 +76,7 @@ source install/setup.bash
 ## Open Sourced Terminal
 
 ```bash
-docker-compose run ros2
+docker-compose run --rm ros2
 source install/setup.bash
 clear
 ```
@@ -84,7 +84,7 @@ clear
 ## Launch Rviz
 
 ```bash
-docker-compose run ros2
+docker-compose run --rm ros2
 source install/setup.bash
 clear
 ros2 launch auv_manipulator rviz_launch.xml
@@ -95,7 +95,7 @@ ros2 launch auv_manipulator rviz_launch.xml
 Command for launching [this](https://moveit.picknik.ai/main/doc/tutorials/quickstart_in_rviz/quickstart_in_rviz_tutorial.html) moveit2 tutorial.
 
 ```bash
-docker-compose run moveit2 ros2 launch moveit2_tutorials demo.launch.py
+docker-compose run --rm moveit2 ros2 launch moveit2_tutorials demo.launch.py
 ```
 
 ## Launch Moveit2 Setup Assistant
@@ -103,7 +103,7 @@ docker-compose run moveit2 ros2 launch moveit2_tutorials demo.launch.py
 Command for launching [this](https://moveit.picknik.ai/main/doc/examples/setup_assistant/setup_assistant_tutorial.html) tutorial.
 
 ```bash
-docker-compose run moveit2 ros2 launch moveit_setup_assistant setup_assistant.launch.py
+docker-compose run --rm moveit2 ros2 launch moveit_setup_assistant setup_assistant.launch.py
 ```
 
 
@@ -114,7 +114,7 @@ NB! On Windows, all commands below should be run in a WSL terminal.
 ## ROS2
 
 ```bash
-docker-compose run ros2
+docker-compose run --rm ros2
 clear
 ```
 
@@ -176,14 +176,14 @@ docker-compose up turtlesim
 Open a different terminal, enter the turtlesim container and run the control package. The turtle in the other window should move when you press the arrow keys. Make sure to have the terminal with the controls focused when using your arrow keys, not the turtle window.
 
 ```bash
-docker-compose run turtlesim-control
+docker-compose run --rm turtlesim-control
 ```
 
 Open another terminal to see your command messages
 
 ```bash
-docker-compose run ros2 ros2 topic list
-docker-compose run ros2 ros2 topic echo turtle1/cmd_vel
+docker-compose run --rm ros2 ros2 topic list
+docker-compose run --rm ros2 ros2 topic echo turtle1/cmd_vel
 ```
 
 ## Gazebo
