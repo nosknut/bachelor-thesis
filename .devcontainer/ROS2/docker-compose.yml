@@ -1,7 +1,9 @@
 version: "3"
 services:
   ros2:
-    image: osrf/ros:humble-desktop-full
+    build:
+      context: ../../
+      dockerfile: .devcontainer/ROS2/Dockerfile
     container_name: ros2
     network_mode: "host"
     volumes:
@@ -17,4 +19,4 @@ services:
       - XDG_RUNTIME_DIR
       - PULSE_SERVER
     working_dir: /root/ros2_ws
-    command: "bash /root/ros2_ws/scripts/containers/ros2-entrypoint.bash"
+    command: "sleep infinity"
