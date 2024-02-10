@@ -1,6 +1,4 @@
 FROM osrf/ros:humble-desktop-full
 
-COPY . /build
-RUN /build/scripts/install/configure-workspace.bash
-RUN /build/scripts/install/update-registries.bash
-RUN rm -rf /build
+RUN echo source "/opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc
+RUN echo source "install/local_setup.bash" >> ~/.bashrc
