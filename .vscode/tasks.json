@@ -8,7 +8,7 @@
             "label": "build",
             "detail": "Build workspace (default)",
             "type": "shell",
-            "command": "./build.sh",
+            "command": "colcon build",
             "group": {
                 "kind": "build",
                 "isDefault": true
