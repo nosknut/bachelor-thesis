@@ -160,6 +160,7 @@ All files related to the gazebo simulation are located in the `.gazebo` folder w
 
 # Tutorials
 
+- [WSL USB Passthrough](https://learn.microsoft.com/en-us/windows/wsl/connect-usb)
 - [ROS2 Cheat Sheet](https://github.com/ubuntu-robotics/ros2_cheats_sheet/blob/master/cli/cli_cheats_sheet.pdf)
 - [ROS2 Launch Files](https://docs.ros.org/en/humble/Tutorials/Intermediate/Launch/Creating-Launch-Files.html)
 - [ROS2 Docker Image](https://hub.docker.com/_/ros/)
