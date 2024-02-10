@@ -1,6 +1,6 @@
-scripts/update-registries.bash
-scripts/install-packages.bash
-scripts/configure-workspace.bash
+scripts/install/update-registries.bash
+scripts/install/install-packages.bash
+scripts/install/configure-workspace.bash
 
 echo "
 ################################
