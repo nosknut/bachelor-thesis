@@ -1,0 +1,34 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+  "name": "ROS2",
+  // The order of the files is important since later files override previous ones
+  "dockerComposeFile": [
+    "docker-compose.yml"
+  ],
+  "service": "ros2",
+  "workspaceFolder": "/root/ros2_ws",
+  "remoteUser": "root",
+  "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "eamodio.gitlens",
+        "donjayamanne.githistory",
+        "ms-azuretools.vscode-docker",
+        "althack.ament-task-provider",
+        "betwo.b2-catkin-tools",
+        "DotJoshJohnson.xml",
+        "ms-azuretools.vscode-docker",
+        "ms-iot.vscode-ros",
+        "ms-python.python",
+        "ms-vscode.cpptools",
+        "redhat.vscode-yaml",
+        "smilerobotics.urdf",
+        "streetsidesoftware.code-spell-checker",
+        "twxs.cmake",
+        "yzhang.markdown-all-in-one",
+        "zachflower.uncrustify"
+      ]
+    }
+  }
+}

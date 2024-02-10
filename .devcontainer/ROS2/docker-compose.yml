@@ -1,0 +1,20 @@
+version: "3"
+services:
+  ros2:
+    image: osrf/ros:humble-desktop-full
+    container_name: ros2
+    network_mode: "host"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+      - /dev/shm/:/dev/shm
+      - ../../:/root/ros2_ws/
+      - ../../.data/.rviz2:/root/.rviz2/
+      - ../../.data/.rqt:/root/.rqt/
+    environment:
+      - DISPLAY=:0
+      - WAYLAND_DISPLAY
+      - XDG_RUNTIME_DIR
+      - PULSE_SERVER
+    working_dir: /root/ros2_ws
+    command: "bash /root/ros2_ws/scripts/containers/ros2-entrypoint.bash"
