@@ -38,6 +38,19 @@
         "**/install": true,
         "**/log": true
     },
+    "VsCodeTaskButtons.showCounter": false,
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "ROS2 Build",
+            "task": "build",
+            "tooltip": "Build all packages in the workspace"
+        },
+        {
+            "label": "ROS2 Install Dependencies",
+            "task": "install dependencies",
+            "tooltip": "Install the ROS2 dependencies of all packages in the workspace"
+        }
+    ],
     "cSpell.words": [
         "RTPS",
         "athackst",
