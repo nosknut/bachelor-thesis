@@ -8,7 +8,7 @@
             "label": "build",
             "detail": "Build workspace (default)",
             "type": "shell",
-            "command": "colcon build",
+            "command": "colcon build --symlink-install",
             "group": {
                 "kind": "build",
                 "isDefault": true
