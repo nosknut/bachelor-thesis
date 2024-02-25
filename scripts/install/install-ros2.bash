@@ -12,7 +12,6 @@ export LANG=en_US.UTF-8
 
 locale  # verify settings
 
-
 sudo apt install software-properties-common -y
 sudo add-apt-repository universe -y
 
@@ -25,5 +24,9 @@ sudo apt update -y
 
 sudo apt install ros-humble-desktop -y
 
-ehco "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+sudo apt install ros-dev-tools -y
+sudo apt install python3-colcon-common-extensions -y
+sudo rosdep init
+
+echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 source /opt/ros/humble/setup.bash
