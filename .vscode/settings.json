@@ -41,14 +41,19 @@
     "VsCodeTaskButtons.showCounter": false,
     "VsCodeTaskButtons.tasks": [
         {
+            "label": "ROS2 Install Dependencies",
+            "task": "install dependencies",
+            "tooltip": "Install the ROS2 dependencies of all packages in the workspace"
+        },
+        {
             "label": "ROS2 Build",
             "task": "build",
             "tooltip": "Build all packages in the workspace"
         },
         {
-            "label": "ROS2 Install Dependencies",
-            "task": "install dependencies",
-            "tooltip": "Install the ROS2 dependencies of all packages in the workspace"
+            "label": "ROS2 Purge",
+            "task": "purge",
+            "tooltip": "Remove all generated files from the workspace"
         }
     ],
     "cSpell.words": [
