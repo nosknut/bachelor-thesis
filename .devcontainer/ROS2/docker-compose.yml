@@ -13,7 +13,7 @@ services:
       - ../../:/root/ros2_ws/
       - ../../.data/.rviz2:/root/.rviz2/
       - ../../.data/.rqt:/root/.rqt/
-      - /dev/bus/usb/:/dev/bus/usb/
+      - /dev/input/:/dev/input/
     environment:
       - DISPLAY=:0
       - WAYLAND_DISPLAY

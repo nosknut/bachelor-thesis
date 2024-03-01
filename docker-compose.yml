@@ -14,6 +14,7 @@ services:
       # Mounting shm enables shared memory between the
       # containers, which is required for ROS2 discovery to work.
       - /dev/shm/:/dev/shm
+      - /dev/input/:/dev/input/
     environment:
       - DISPLAY
       - WAYLAND_DISPLAY
