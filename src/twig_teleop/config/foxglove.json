@@ -1,0 +1,24 @@
+{
+  "configById": {
+    "RawMessages!os6rgs": {
+      "diffEnabled": false,
+      "diffMethod": "previous message",
+      "diffTopicPath": "/initialpose",
+      "showFullMessageForDiff": false,
+      "topicPath": "/joy"
+    },
+    "Joystick Panel.Joystick!cgxs04": {}
+  },
+  "globalVariables": {
+    "globalVariable": 0
+  },
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": {
+    "direction": "row",
+    "first": "Joystick Panel.Joystick!cgxs04",
+    "second": "RawMessages!os6rgs"
+  }
+}
