@@ -1,37 +1,45 @@
 import os
-from launch_ros.substitutions import FindPackageShare
 from launch import LaunchDescription
-from launch.substitutions import PathJoinSubstitution, TextSubstitution, LaunchConfiguration
+from launch.substitutions import TextSubstitution, LaunchConfiguration
 from ament_index_python.packages import get_package_share_directory
-from launch_ros.actions import Node
-from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
-from launch.launch_description_sources import AnyLaunchDescriptionSource
-from launch.conditions import IfCondition, LaunchConfigurationEquals
+from launch.actions import DeclareLaunchArgument
+from launch_ros.actions import ComposableNodeContainer
+from launch_ros.descriptions import ComposableNode
 
 def generate_launch_description():
-    # republish as stamped
-    # ros2 run topic_tools relay_field /turtle1/cmd_vel /servo_node/delta_twist_cmds geometry_msgs/TwistStamped "{header: {stamp: {sec: 0, nanosec: 0}, frame_id: 'panda_link0'}, twist: m}"
-    # ros2 run topic_tools relay_field /turtle1/cmd_vel /servo_node/delta_twist_cmds geometry_msgs/TwistStamped "{header: {frame_id: 'panda_link0'}, twist: m}"
-    # ros2 run topic_tools relay_field /turtle1/cmd_vel /servo_node/delta_twist_cmds geometry_msgs/TwistStamped "{twist: m}"
     return LaunchDescription([
-        DeclareLaunchArgument('joy_topic', default_value='joy'),
-        DeclareLaunchArgument('out_topic', default_value='/cmd_vel'),
+        # Arguments
+        DeclareLaunchArgument('joy_topic', default_value='/joy'),
+        DeclareLaunchArgument('out_jog_topic', default_value='/servo_node/delta_joint_cmds'),
+        DeclareLaunchArgument('out_twist_topic', default_value='/servo_node/delta_twist_cmds'),
+        DeclareLaunchArgument('start_servo_service', default_value='/servo_node/start_servo'),
         DeclareLaunchArgument('config_filepath', default_value=[
             TextSubstitution(text=os.path.join(
                     get_package_share_directory('twig_teleop'),
                     'config',
-                    'teleop.config.yaml'
+                    'joystick_teleop.config.yaml'
             )),
         ]),
-        Node(
-            package='teleop_twist_joy',
-            executable='teleop_node',
-            parameters=[LaunchConfiguration('config_filepath')],
-            remappings={('/cmd_vel', LaunchConfiguration('out_topic'))},
-        ),
-        # Node(
-        #     package='turtlesim',
-        #     executable='turtlesim_node',
-        #     remappings={('/turtle1/cmd_vel', LaunchConfiguration('out_topic'))},
-        # ),
+        
+        # Nodes
+        ComposableNodeContainer(
+            name='twig_teleop_container',
+            namespace='',
+            package='rclcpp_components',
+            executable='component_container',
+            composable_node_descriptions=[
+                ComposableNode(
+                    name='twig_teleop',
+                    package='twig_teleop',
+                    plugin='twig_teleop::JoystickTeleop',
+                    parameters=[LaunchConfiguration('config_filepath')],
+                    remappings={
+                        ('/joy', LaunchConfiguration('joy_topic')),
+                        ('/cmd_jog', LaunchConfiguration('out_jog_topic')),
+                        ('/cmd_vel', LaunchConfiguration('out_twist_topic')),
+                        ('/start_servo', LaunchConfiguration('start_servo_service')),
+                    },
+                ),
+            ]
+        )
     ])

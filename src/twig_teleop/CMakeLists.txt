@@ -1,29 +1,61 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.22)
 project(twig_teleop)
 
-if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-  add_compile_options(-Wall -Wextra -Wpedantic)
-endif()
+# Component Nodes (Shared libraries) ############################
+set(JOYSTICK_TELEOP_NODE_NAME twig_teleop)
 
-# find dependencies
+set(THIS_PACKAGE_INCLUDE_DEPENDS
+  control_msgs
+  control_toolbox
+  geometry_msgs
+  pluginlib
+  rclcpp
+  rclcpp_components
+  sensor_msgs
+  std_msgs
+  std_srvs
+)
+
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  # the following line skips the linter which checks for copyrights
-  # comment the line when a copyright and license is added to all source files
-  set(ament_cmake_copyright_FOUND TRUE)
-  # the following line skips cpplint (only works in a git repo)
-  # comment the line when this package is in a git repo and when
-  # a copyright and license is added to all source files
-  set(ament_cmake_cpplint_FOUND TRUE)
-  ament_lint_auto_find_test_dependencies()
-endif()
+foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
+  find_package(${Dependency} REQUIRED)
+endforeach()
+
+include_directories(
+  include
+)
+
+#####################
+## Component Nodes ##
+#####################
+
+# Add executable for using a controller
+add_library(${JOYSTICK_TELEOP_NODE_NAME} SHARED src/joystick_teleop.cpp)
+ament_target_dependencies(${JOYSTICK_TELEOP_NODE_NAME} ${THIS_PACKAGE_INCLUDE_DEPENDS})
+rclcpp_components_register_nodes(${JOYSTICK_TELEOP_NODE_NAME} "twig_teleop::JoystickTeleop")
+
+#############
+## Install ##
+#############
+
+# Install Libraries
+install(
+  TARGETS
+    ${JOYSTICK_TELEOP_NODE_NAME}
+  EXPORT export_${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+# Install include, launch, config directories
+install(DIRECTORY include/ DESTINATION include)
+install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
+install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
+
+ament_export_targets(export_${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_dependencies(${THIS_PACKAGE_INCLUDE_DEPENDS})
 
 ament_package()
-
-install(DIRECTORY config DESTINATION share/${PROJECT_NAME})
-install(DIRECTORY launch DESTINATION share/${PROJECT_NAME})
