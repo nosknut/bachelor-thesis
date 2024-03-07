@@ -112,8 +112,7 @@ public:
         return joyCallback(msg);
       }
     );
-ws://localhost:8765 f
-oxglove_bridge
+    
     twist_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>(
       TWIST_TOPIC,
       rclcpp::SystemDefaultsQoS());
