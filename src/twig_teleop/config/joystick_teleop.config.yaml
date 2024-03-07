@@ -1,9 +1,13 @@
 /twig_teleop:
   ros__parameters:
-    base_frame_id: panda_link0
-    end_effector_frame_id: panda_hand
-    jog_frame_id: panda_link3
+    base_frame_id: base_link
+    end_effector_frame_id: twig_gripper
+    jog_frame_id: base_link
+    shoulder_max_speed: 1.0
+    wrist_max_speed: 1.0
+    gripper_max_speed: 1.0
     joy:
+      deadband: 0.2
       axis:
         left_stick_x: 0
         left_stick_y: 1

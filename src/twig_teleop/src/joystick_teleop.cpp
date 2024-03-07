@@ -17,12 +17,15 @@
 const std::string NODE_NAME = "joystick_teleop";
 const std::string SERVO_START_SERVICE_NAME = "/start_servo";
 const std::string JOY_TOPIC = "/joy";
-const std::string TWIST_TOPIC = "/cmd_vel";
 const std::string JOINT_TOPIC = "/cmd_jog";
 
-const std::string PARAM_BASE_FRAME_ID = "base_frame_id";
-const std::string PARAM_END_EFFECTOR_FRAME_ID = "end_effector_frame_id";
 const std::string PARAM_JOG_FRAME_ID = "jog_frame_id";
+
+const std::string PARAM_SHOULDER_MAX_SPEED = "shoulder_max_speed";
+const std::string PARAM_WRIST_MAX_SPEED = "wrist_max_speed";
+const std::string PARAM_GRIPPER_MAX_SPEED = "gripper_max_speed";
+
+const std::string PARAM_DEADBAND = "joy.deadband";
 
 const std::string PARAM_LEFT_STICK_X = "joy.axis.left_stick_x";
 const std::string PARAM_LEFT_STICK_Y = "joy.axis.left_stick_y";
@@ -57,15 +60,23 @@ enum CommandType
 namespace twig_teleop
 {
 
+float ignoreDeadband(float deadband, float value)
+{
+  if (abs(value) < deadband) {
+    return 0.0;
+  }
+  
+  // Map the range [deadband, 1.0] to [0.0, 1.0]
+  return value / (1.0 - deadband) + (value > 0 ? -deadband : deadband);
+}
+
 class JoystickTeleop : public rclcpp::Node
 {
 private:
-  bool wasJog_ = false;
-  std::string twist_frame_ = "";
+  bool trigger_servo_was_pressed = false;
   std::thread collision_pub_thread_;
 
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
-  rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr twist_pub_;
   rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr joint_pub_;
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr servo_start_client_;
 
@@ -73,9 +84,13 @@ public:
   JoystickTeleop(const rclcpp::NodeOptions & options)
   : Node(NODE_NAME, options)
   {
-    this->declare_parameter(PARAM_BASE_FRAME_ID, "panda_link0");
-    this->declare_parameter(PARAM_END_EFFECTOR_FRAME_ID, "panda_hand");
-    this->declare_parameter(PARAM_JOG_FRAME_ID, "panda_link3");
+    this->declare_parameter(PARAM_JOG_FRAME_ID, "base_link");
+
+    this->declare_parameter(PARAM_SHOULDER_MAX_SPEED, 1.0);
+    this->declare_parameter(PARAM_WRIST_MAX_SPEED, 1.0);
+    this->declare_parameter(PARAM_GRIPPER_MAX_SPEED, 1.0);
+
+    this->declare_parameter(PARAM_DEADBAND, 0.05);
 
     // Joy Axis
     this->declare_parameter(PARAM_LEFT_STICK_X, 0);
@@ -103,8 +118,6 @@ public:
     this->declare_parameter(PARAM_PS_BUTTON, 16);
     this->declare_parameter(PARAM_TOUCHPAD, 17);
 
-    twist_frame_ = getParam(PARAM_BASE_FRAME_ID);
-
     joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
       JOY_TOPIC,
       rclcpp::SystemDefaultsQoS(),
@@ -112,15 +125,15 @@ public:
         return joyCallback(msg);
       }
     );
-    
-    twist_pub_ = this->create_publisher<geometry_msgs::msg::TwistStamped>(
-      TWIST_TOPIC,
-      rclcpp::SystemDefaultsQoS());
 
     joint_pub_ = this->create_publisher<control_msgs::msg::JointJog>(
       JOINT_TOPIC,
       rclcpp::SystemDefaultsQoS());
 
+    triggerServo();
+  }
+
+  void triggerServo() {
     // Create a service client to start the ServoNode
     servo_start_client_ = this->create_client<std_srvs::srv::Trigger>(SERVO_START_SERVICE_NAME);
     servo_start_client_->wait_for_service(std::chrono::seconds(1));
@@ -137,152 +150,55 @@ public:
     return this->get_parameter(param_name).as_int();
   }
 
-  /** \brief // This converts a joystick axes and buttons array to a bool indicating whether to publish a Twist or JointJog message
-   * @param axes The vector of continuous controller joystick axes
-   * @param buttons The vector of discrete controller button values
-   * @return return TWIST og JOG depending on the axes and buttons
-   */
-  CommandType joyToCommandType(
-    const std::vector<float> & axes,
-    const std::vector<int> & buttons,
-    bool & wasJog)
+  double getDoubleParam(const std::string & param_name)
   {
-    // Give joint jogging priority because it is only buttons
-    // If any joint jog command is requested, we are only publishing joint commands
-    if (
-      buttons[getIntParam(PARAM_SQUARE)] ||
-      buttons[getIntParam(PARAM_CIRCLE)] ||
-      buttons[getIntParam(PARAM_CROSS)] ||
-      buttons[getIntParam(PARAM_TRIANGLE)] ||
-      buttons[getIntParam(PARAM_DPAD_LEFT)] ||
-      buttons[getIntParam(PARAM_DPAD_RIGHT)] ||
-      buttons[getIntParam(PARAM_DPAD_UP)] ||
-      buttons[getIntParam(PARAM_DPAD_DOWN)])
-    {
-      wasJog = true;
-      return JOG;
-    }
-
-    // Ensures that when jog buttons are released a zero command is sent exactly once
-    if (wasJog) {
-      wasJog = false;
-      return JOG;
-    }
-
-    return TWIST;
+    return this->get_parameter(param_name).as_double();
   }
 
-  /** \brief // This converts a joystick axes and buttons array to a TwistStamped message
-   * @param axes The vector of continuous controller joystick axes
-   * @param buttons The vector of discrete controller button values
-   * @param twist A TwistStamped message to update in prep for publishing
-   */
-  void convertJoyToTwist(
-    const std::vector<float> & axes,
-    const std::vector<int> & buttons,
-    std::unique_ptr<geometry_msgs::msg::TwistStamped> & twist)
-  {
-    twist->twist.linear.z = axes[getIntParam(PARAM_RIGHT_STICK_Y)];
-    twist->twist.linear.y = axes[getIntParam(PARAM_RIGHT_STICK_X)];
-
-    double lin_x_right = -0.5 * buttons[getIntParam(PARAM_RIGHT_TRIGGER)];
-    double lin_x_left = 0.5 * buttons[getIntParam(PARAM_LEFT_TRIGGER)];
-    twist->twist.linear.x = lin_x_right + lin_x_left;
-
-    twist->twist.angular.y = axes[getIntParam(PARAM_LEFT_STICK_Y)];
-    twist->twist.angular.x = -axes[getIntParam(PARAM_LEFT_STICK_X)];
-
-    double roll_positive = buttons[getIntParam(PARAM_RIGHT_BUMPER)];
-    double roll_negative = -1 * (buttons[getIntParam(PARAM_LEFT_BUMPER)]);
-    twist->twist.angular.z = roll_positive + roll_negative;
-  }
-
-  float buttonToAxis(bool positiveButton, bool negativeButton)
-  {
-    if (positiveButton) {
-      return 1;
-    }
-
-    if (negativeButton) {
-      return -1;
-    }
-
-    return 0;
-  }
-
-  /** \brief // This converts a joystick axes and buttons array to a JointJog message
-   * @param axes The vector of continuous controller joystick axes
-   * @param buttons The vector of discrete controller button values
-   * @param jog A JointJog message to update in prep for publishing
-   */
   void convertJoyToJog(
     const std::vector<float> & axes,
     const std::vector<int> & buttons,
-    std::unique_ptr<geometry_msgs::msg::TwistStamped> & twist,
     std::unique_ptr<control_msgs::msg::JointJog> & jog)
   {
-    jog->joint_names.push_back("panda_joint1");
+    jog->joint_names.push_back("twig_shoulder_joint");
     jog->velocities.push_back(
-      buttonToAxis(
-        buttons[getIntParam(PARAM_DPAD_LEFT)],
-        buttons[getIntParam(PARAM_DPAD_RIGHT)]));
+      getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
+      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), axes[getIntParam(PARAM_LEFT_STICK_Y)]));
 
-    jog->joint_names.push_back("panda_joint2");
+    jog->joint_names.push_back("twig_wrist_joint");
     jog->velocities.push_back(
-      buttonToAxis(
-        buttons[getIntParam(PARAM_DPAD_UP)],
-        buttons[getIntParam(PARAM_DPAD_DOWN)]));
+      getDoubleParam(PARAM_WRIST_MAX_SPEED) *
+      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), axes[getIntParam(PARAM_LEFT_STICK_X)]));
 
-    jog->joint_names.push_back("panda_joint7");
+    jog->joint_names.push_back("twig_left_finger_joint");
     jog->velocities.push_back(
-      buttonToAxis(
-        buttons[getIntParam(PARAM_TRIANGLE)],
-        buttons[getIntParam(PARAM_CROSS)]));
-
-    jog->joint_names.push_back("panda_joint6");
-    jog->velocities.push_back(
-      buttonToAxis(
-        buttons[getIntParam(PARAM_SQUARE)],
-        buttons[getIntParam(PARAM_CIRCLE)]));
-  }
-
-
-  /** \brief // This should update the frame_to_publish_ as needed for changing command frame via controller
-   * @param frame_name Set the command frame to this
-   * @param buttons The vector of discrete controller button values
-   */
-  void updateTwistFrame(
-    std::string & frame_name,
-    const std::vector<int> & buttons)
-  {
-    if (buttons[getIntParam(PARAM_SHARE)] && frame_name == getParam(PARAM_END_EFFECTOR_FRAME_ID)) {
-      frame_name = getParam(PARAM_BASE_FRAME_ID);
-    } else if (buttons[getIntParam(PARAM_OPTIONS)] && frame_name == getParam(PARAM_BASE_FRAME_ID)) {
-      frame_name = getParam(PARAM_END_EFFECTOR_FRAME_ID);
-    }
+      getDoubleParam(PARAM_GRIPPER_MAX_SPEED) *
+      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), axes[getIntParam(PARAM_RIGHT_STICK_Y)]));
   }
 
   void joyCallback(const sensor_msgs::msg::Joy::ConstSharedPtr & msg)
   {
-    auto twist_msg = std::make_unique<geometry_msgs::msg::TwistStamped>();
     auto joint_msg = std::make_unique<control_msgs::msg::JointJog>();
 
-    updateTwistFrame(twist_frame_, msg->buttons);
-
-    switch (joyToCommandType(msg->axes, msg->buttons, wasJog_)) {
-      case TWIST:
-        convertJoyToTwist(msg->axes, msg->buttons, twist_msg);
-        twist_msg->header.frame_id = twist_frame_;
-        twist_msg->header.stamp = this->now();
-        twist_pub_->publish(std::move(twist_msg));
-        break;
-      case JOG:
-        convertJoyToJog(msg->axes, msg->buttons, twist_msg, joint_msg);
-        joint_msg->header.stamp = this->now();
-        joint_msg->header.frame_id = getParam(PARAM_JOG_FRAME_ID);
-        joint_pub_->publish(std::move(joint_msg));
-        break;
+    // Trigger the servo start service when the options button is pressed
+    if (msg->buttons[getIntParam(PARAM_OPTIONS)]) {
+      if (!trigger_servo_was_pressed) {
+        triggerServo();
+        trigger_servo_was_pressed = true;
+      }
+    } else {
+      trigger_servo_was_pressed = false;
     }
+
+    // Right bumper must be held down while moving
+    if (!msg->buttons[getIntParam(PARAM_RIGHT_BUMPER)]) {
+      return;
+    }
+
+    convertJoyToJog(msg->axes, msg->buttons, joint_msg);
+    joint_msg->header.stamp = this->now();
+    joint_msg->header.frame_id = getParam(PARAM_JOG_FRAME_ID);
+    joint_pub_->publish(std::move(joint_msg));
   }
 };
 }
