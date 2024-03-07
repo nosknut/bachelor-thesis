@@ -1,24 +1,34 @@
 <?xml version="1.0"?>
 
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="twig">
-  
+
   <xacro:property name="name" value="twig" />
 
   <xacro:property name="base_length" value="0.08" />
   <xacro:property name="base_radius" value="0.12" />
   <xacro:property name="base_width" value="0.1" />
-  
+
   <xacro:property name="shoulder_length" value="0.2" />
   <xacro:property name="shoulder_radius" value="0.05" />
+  
   <xacro:property name="wrist_length" value="0.01" />
   <xacro:property name="wrist_radius" value="0.05" />
+
   <xacro:property name="gripper_length" value="0.05" />
   <xacro:property name="gripper_width" value="0.05" />
   <xacro:property name="gripper_height" value="0.1" />
-  
+
   <xacro:property name="shoulder_limit" value="${(pi/180)*100}" />
   <xacro:property name="wrist_limit" value="${(pi/180)*360}" />
-  <xacro:property name="gripper_limit" value="0.04" />
+  <xacro:property name="gripper_limit" value="${(pi/180)*20}" />
+
+  <xacro:property name="shoulder_velocity_limit" value="5.0" />
+  <xacro:property name="wrist_velocity_limit" value="5.0" />
+  <xacro:property name="gripper_velocity_limit" value="0.1" />
+
+  <xacro:property name="shoulder_effort_limit" value="5.0" />
+  <xacro:property name="wrist_effort_limit" value="5.0" />
+  <xacro:property name="gripper_effort_limit" value="0.1" />
 
 
   <material name="blue">
@@ -123,7 +133,7 @@
       <origin xyz="${-gripper_length/2} 0 ${gripper_height/2}" />
     </collision>
   </link>
-  
+
   <link name="${name}_right_gripper">
     <visual>
       <geometry>
@@ -145,13 +155,13 @@
     <child link="${name}_base" />
     <origin xyz="0.5 0 0" rpy="0 ${pi/2} 0" />
   </joint>
-  
+
   <joint name="${name}_shoulder_joint" type="revolute">
     <parent link="${name}_base" />
     <child link="${name}_shoulder" />
     <axis rpy="0 0 0" xyz="0 1 0" />
     <origin xyz="0 0 ${base_length}" />
-    <limit effort="1000" lower="${-shoulder_limit}" upper="${shoulder_limit}" velocity="1"/>
+    <limit effort="${shoulder_effort_limit}" lower="${-shoulder_limit}" upper="${shoulder_limit}" velocity="${shoulder_velocity_limit}"/>
   </joint>
 
   <joint name="${name}_wrist_joint" type="revolute">
@@ -159,7 +169,7 @@
     <child link="${name}_wrist" />
     <axis rpy="0 0 0" xyz="0 0 1" />
     <origin xyz="0 0 ${shoulder_length}" />
-    <limit effort="1000" lower="${-wrist_limit}" upper="${wrist_limit}" velocity="1"/>
+    <limit effort="${wrist_effort_limit}" lower="${-wrist_limit}" upper="${wrist_limit}" velocity="${wrist_velocity_limit}"/>
   </joint>
 
   <joint name="${name}_gripper_joint" type="fixed">
@@ -168,17 +178,18 @@
     <origin xyz="0 0 ${gripper_height}" />
   </joint>
 
-  <joint name="${name}_left_gripper_joint" type="prismatic">
+  <joint name="${name}_left_finger_joint" type="revolute">
     <parent link="${name}_wrist" />
     <child link="${name}_left_gripper" />
-    <axis rpy="0 0 0" xyz="-1 0 0" />
-    <limit effort="1000" lower="0" upper="${gripper_limit}" velocity="1"/>
+    <axis rpy="0 0 0" xyz="0 -1 0" />
+    <limit effort="${gripper_effort_limit}" lower="0" upper="${gripper_limit}" velocity="${gripper_velocity_limit}"/>
   </joint>
 
-  <joint name="${name}_right_gripper_joint" type="prismatic">
+  <joint name="${name}_right_finger_joint" type="revolute">
     <parent link="${name}_wrist" />
     <child link="${name}_right_gripper" />
-    <axis rpy="0 0 0" xyz="1 0 0" />
-    <limit effort="1000" lower="0" upper="${gripper_limit}" velocity="1"/>
+    <axis rpy="0 0 0" xyz="0 1 0" />
+    <limit effort="${gripper_effort_limit}" lower="0" upper="${gripper_limit}" velocity="${gripper_velocity_limit}"/>
+    <mimic joint="twig_left_finger_joint" />
   </joint>
 </robot>
