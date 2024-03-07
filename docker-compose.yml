@@ -45,6 +45,25 @@ services:
     working_dir: /workspace
     command: "bash scripts/containers/ros2-entrypoint.bash"
 
+  twig:
+    build:
+      context: .
+      dockerfile: dockerfiles/twig/Dockerfile
+    container_name: twig
+    # network_mode: "host"
+    ports:
+      - "8765:8765"
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+      - /dev/shm/:/dev/shm
+      - /dev/input/:/dev/input/
+    environment:
+      - DISPLAY
+      - WAYLAND_DISPLAY
+      - XDG_RUNTIME_DIR
+      - PULSE_SERVER
+
   ros2-dev:
     container_name: ros2-dev
     extends:
