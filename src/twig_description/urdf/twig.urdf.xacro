@@ -159,7 +159,7 @@
   <joint name="${name}_shoulder_joint" type="revolute">
     <parent link="${name}_base" />
     <child link="${name}_shoulder" />
-    <axis rpy="0 0 0" xyz="0 1 0" />
+    <axis rpy="0 0 0" xyz="0 -1 0" />
     <origin xyz="0 0 ${base_length}" />
     <limit effort="${shoulder_effort_limit}" lower="${-shoulder_limit}" upper="${shoulder_limit}" velocity="${shoulder_velocity_limit}"/>
   </joint>
@@ -167,7 +167,7 @@
   <joint name="${name}_wrist_joint" type="revolute">
     <parent link="${name}_shoulder" />
     <child link="${name}_wrist" />
-    <axis rpy="0 0 0" xyz="0 0 1" />
+    <axis rpy="0 0 0" xyz="0 0 -1" />
     <origin xyz="0 0 ${shoulder_length}" />
     <limit effort="${wrist_effort_limit}" lower="${-wrist_limit}" upper="${wrist_limit}" velocity="${wrist_velocity_limit}"/>
   </joint>
