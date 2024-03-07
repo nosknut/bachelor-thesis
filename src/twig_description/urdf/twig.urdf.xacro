@@ -24,7 +24,7 @@
 
   <xacro:property name="shoulder_velocity_limit" value="5.0" />
   <xacro:property name="wrist_velocity_limit" value="5.0" />
-  <xacro:property name="gripper_velocity_limit" value="0.1" />
+  <xacro:property name="gripper_velocity_limit" value="1.0" />
 
   <xacro:property name="shoulder_effort_limit" value="5.0" />
   <xacro:property name="wrist_effort_limit" value="5.0" />
