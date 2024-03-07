@@ -1,0 +1,25 @@
+moveit_setup_assistant_config:
+  urdf:
+    package: twig_description
+    relative_path: urdf/twig.urdf.xacro
+  srdf:
+    relative_path: config/twig.srdf
+  package_settings:
+    author_name: Knut Ola Nøsen
+    author_email: nosknut@gmail.com
+    generated_timestamp: 1709820774
+  control_xacro:
+    command:
+      - velocity
+    state:
+      - position
+      - velocity
+  modified_urdf:
+    xacros:
+      - control_xacro
+  control_xacro:
+    command:
+      - velocity
+    state:
+      - position
+      - velocity

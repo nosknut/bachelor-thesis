@@ -1,0 +1,6 @@
+# Default initial positions for twig's ros2_control fake system
+
+initial_positions:
+  twig_left_finger_joint: 0
+  twig_shoulder_joint: 0
+  twig_wrist_joint: 0
