@@ -7,10 +7,6 @@ controller_manager:
       type: joint_trajectory_controller/JointTrajectoryController
 
 
-    hand_controller:
-      type: position_controllers/GripperActionController
-
-
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
@@ -19,11 +15,9 @@ twig_arm_controller:
     joints:
       - twig_shoulder_joint
       - twig_wrist_joint
+      - twig_left_finger_joint
     command_interfaces:
       - position
     state_interfaces:
       - position
       - velocity
-hand_controller:
-  ros__parameters:
-    joint: twig_left_finger_joint
