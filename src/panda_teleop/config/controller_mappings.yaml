@@ -1,0 +1,55 @@
+controller_mappings:
+  ps4:
+    axes:
+      left_stick_x: 0
+      left_stick_y: 1
+      right_stick_x: 2
+      left_bumper: 3
+      right_bumper: 4
+      right_stick_y: 5
+      dpad_x: 6
+      dpad_y: 7
+    buttons:
+      square: 0
+      cross: 1
+      circle: 2
+      triangle: 3
+      left_trigger: 4
+      right_trigger: 5
+      left_bumper: 6
+      right_bumper: 7
+      share: 8
+      options: 9
+      left_joystick_button: 10
+      right_joystick_button: 11
+      ps_button: 12
+      touchpad: 13
+  xbox-foxglove:
+    axes:
+      left_stick_x: 0
+      left_stick_y: 1
+      right_stick_x: 2
+      right_stick_y: 3
+    buttons:
+      square: 2
+      cross: 0
+      circle: 1
+      triangle: 3
+      left_trigger: 4
+      right_trigger: 5
+      left_bumper: 6
+      right_bumper: 7
+      share: 8
+      options: 9 
+      left_joystick_button: 10
+      right_joystick_button: 11
+      dpad_up: 12
+      dpad_down: 13
+      dpad_left: 14
+      dpad_right: 15
+      xbox_button: 16
+  ps5-foxglove:
+    # extends xbox-foxglove
+    buttons:
+      ps_button: 16
+      touchpad: 17
