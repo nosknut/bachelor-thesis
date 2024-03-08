@@ -5,7 +5,6 @@ services:
       context: .
       dockerfile: dockerfiles/twig/Dockerfile
     container_name: twig
-    # network_mode: "host"
     ports:
       - "8765:8765"
     volumes:
