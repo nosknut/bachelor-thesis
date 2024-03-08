@@ -1,11 +1,11 @@
 FROM osrf/ros:humble-desktop-full
 
-COPY . /app
-WORKDIR /app
+COPY . /root/ros2_ws
+WORKDIR /root/ros2_ws
 
-RUN scripts/install/configure-workspace.bash
-RUN scripts/install/update-registries.bash
-RUN scripts/install/install-packages.bash
-RUN bash scripts/install/build-packages.bash
+RUN bash scripts/setup/configure-workspace.bash
+RUN bash scripts/ros2/update-registries.bash
+RUN bash scripts/ros2/install-packages.bash
+RUN bash scripts/ros2/build-packages.bash
     
-CMD [ "bash", "scripts/containers/twig-entrypoint.bash" ]
+CMD [ "bash", "~/ros2_ws/dockerfiles/twig/twig-entrypoint.bash" ]

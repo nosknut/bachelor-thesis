@@ -10,14 +10,14 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /mnt/wslg:/mnt/wslg
       - /dev/shm/:/dev/shm
-      - ../../:/root/ros2_ws/
-      - ../../.data/.rviz2:/root/.rviz2/
-      - ../../.data/.rqt:/root/.rqt/
+      - ../../:~/ros2_ws/
+      - ../../.data/.rviz2:~/.rviz2/
+      - ../../.data/.rqt:~/.rqt/
       - /dev/input/:/dev/input/
     environment:
       - DISPLAY=:0
       - WAYLAND_DISPLAY
       - XDG_RUNTIME_DIR
       - PULSE_SERVER
-    working_dir: /root/ros2_ws
+    working_dir: ~/ros2_ws
     command: "sleep infinity"
