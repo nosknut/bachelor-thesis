@@ -11,8 +11,6 @@ services:
       - /mnt/wslg:/mnt/wslg
       - /dev/shm/:/dev/shm
       - ../../:~/ros2_ws/
-      - ../../.data/.rviz2:~/.rviz2/
-      - ../../.data/.rqt:~/.rqt/
       - /dev/input/:/dev/input/
     environment:
       - DISPLAY=:0
