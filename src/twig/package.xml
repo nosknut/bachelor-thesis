@@ -15,6 +15,9 @@
   <exec_depend>twig_servo</exec_depend>
   <exec_depend>twig_teleop</exec_depend>
   <exec_depend>twig_moveit_config</exec_depend>
+  <exec_depend>ros2_control</exec_depend>
+  <exec_depend>controller_manager</exec_depend>
+  <exec_depend>moveit_configs_utils</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
