@@ -8,7 +8,7 @@
             "label": "build",
             "detail": "Build workspace (default)",
             "type": "shell",
-            "command": "colcon build --symlink-install",
+            "command": "bash scripts/ros2/build-packages.bash",
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -19,14 +19,14 @@
             "label": "purge",
             "detail": "Purge workspace by deleting all generated files.",
             "type": "shell",
-            "command": "sudo rm -fr build install log; sudo py3clean .",
+            "command": "bash scripts/ros2/purge.bash",
             "problemMatcher": []
         },
         {
             "label": "install dependencies",
             "detail": "Install all dependencies specified in the workspaces package.xml files.",
             "type": "shell",
-            "command": "sudo apt-get update && rosdep update && rosdep install --from-paths src --ignore-src -y",
+            "command": "bash scripts/ros2/install-packages.bash",
             "problemMatcher": []
         },
     ]
