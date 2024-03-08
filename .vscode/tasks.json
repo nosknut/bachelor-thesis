@@ -26,7 +26,7 @@
             "label": "install dependencies",
             "detail": "Install all dependencies specified in the workspaces package.xml files.",
             "type": "shell",
-            "command": "bash scripts/ros2/install-packages.bash",
+            "command": "bash scripts/ros2/install-dependencies.bash",
             "problemMatcher": []
         },
     ]
