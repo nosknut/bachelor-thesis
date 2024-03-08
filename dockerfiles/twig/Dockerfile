@@ -7,4 +7,4 @@ RUN bash scripts/setup/configure-workspace.bash
 RUN bash scripts/ros2/install-dependencies.bash
 RUN bash scripts/ros2/build-packages.bash
     
-CMD [ "bash", "~/ros2_ws/dockerfiles/twig/entrypoint.bash" ]
+CMD [ "bash", "/root/ros2_ws/dockerfiles/twig/entrypoint.bash" ]
