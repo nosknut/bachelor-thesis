@@ -1,7 +1,5 @@
 /twig_teleop:
   ros__parameters:
-    base_frame_id: base_link
-    end_effector_frame_id: twig_gripper
     jog_frame_id: base_link
     shoulder_max_speed: 1.0
     wrist_max_speed: 1.0
