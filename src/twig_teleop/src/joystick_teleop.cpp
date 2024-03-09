@@ -27,6 +27,9 @@ const std::string PARAM_GRIPPER_MAX_SPEED = "gripper_max_speed";
 
 const std::string PARAM_DEADBAND = "joy.deadband";
 
+const std::string PARAM_NUM_AXIS = "num_axis";
+const std::string PARAM_NUM_BUTTONS = "num_buttons";
+
 const std::string PARAM_LEFT_STICK_X = "joy.axis.left_stick_x";
 const std::string PARAM_LEFT_STICK_Y = "joy.axis.left_stick_y";
 const std::string PARAM_RIGHT_STICK_X = "joy.axis.right_stick_x";
@@ -91,6 +94,9 @@ public:
     this->declare_parameter(PARAM_GRIPPER_MAX_SPEED, 1.0);
 
     this->declare_parameter(PARAM_DEADBAND, 0.05);
+
+    this->declare_parameter(PARAM_NUM_AXIS, 4);
+    this->declare_parameter(PARAM_NUM_BUTTONS, 18);
 
     // Joy Axis
     this->declare_parameter(PARAM_LEFT_STICK_X, 0);
@@ -179,6 +185,24 @@ public:
   void joyCallback(const sensor_msgs::msg::Joy::ConstSharedPtr & msg)
   {
     auto joint_msg = std::make_unique<control_msgs::msg::JointJog>();
+
+    if (msg->axes.size() < getIntParam(PARAM_NUM_AXIS)) {
+      RCLCPP_WARN(
+        this->get_logger(),
+        "Expected at least %d axes, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
+        getIntParam(PARAM_NUM_AXIS),
+        int(msg->axes.size()));
+      return;
+    }
+
+    if (msg->buttons.size() < getIntParam(PARAM_NUM_BUTTONS)) {
+      RCLCPP_WARN(
+        this->get_logger(),
+        "Expected at least %d buttons, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
+        getIntParam(PARAM_NUM_BUTTONS),
+        int(msg->buttons.size()));
+      return;
+    }
 
     // Trigger the servo start service when the options button is pressed
     if (msg->buttons[getIntParam(PARAM_OPTIONS)]) {

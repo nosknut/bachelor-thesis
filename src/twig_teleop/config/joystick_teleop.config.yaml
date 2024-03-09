@@ -7,6 +7,8 @@
     wrist_max_speed: 1.0
     gripper_max_speed: 1.0
     joy:
+      num_axis: 4
+      num_buttons: 18
       deadband: 0.2
       axis:
         left_stick_x: 0
