@@ -1,0 +1,48 @@
+// https://github.com/Seeed-Studio/Seeed_Arduino_AS5600/blob/master/examples/readAngle/readAngle.ino
+#include <Wire.h>
+#include <SoftI2C.h>
+#include "AS5600.h"
+
+SoftI2C softWire =SoftI2C(4, 5); //sda, scl
+AS5600 ams5600(&softWire);
+
+int ang, lang = 0;
+
+void setup()
+{
+  Serial.begin(115200);
+  softWire.begin();
+  Serial.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> ");
+  if(ams5600.detectMagnet() == 0 ){
+    while(1){
+        if(ams5600.detectMagnet() == 1 ){
+            Serial.print("Current Magnitude: ");
+            Serial.println(ams5600.readMagnitude());
+            break;
+        }
+        else{
+            Serial.println("Can not detect magnet");
+        }
+        delay(1000);
+    }
+  }
+}
+/*******************************************************
+/* Function: convertRawAngleToDegrees
+/* In: angle data from AMS_5600::getRawAngle
+/* Out: human readable degrees as float
+/* Description: takes the raw angle and calculates
+/* float value in degrees.
+/*******************************************************/
+float convertRawAngleToDegrees(word newAngle)
+{
+  /* Raw data reports 0 - 4095 segments, which is 0.087890625 of a degree */
+  float retVal = newAngle * 0.087890625;
+  return retVal;
+}
+void loop()
+{
+    Serial.print(String(convertRawAngleToDegrees(ams5600.readAngle()),DEC));
+    Serial.print("                   ");
+    Serial.println(ams5600.readMagnitude());
+}
