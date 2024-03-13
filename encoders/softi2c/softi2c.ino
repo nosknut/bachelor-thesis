@@ -3,46 +3,63 @@
 #include <SoftI2C.h>
 #include "AS5600.h"
 
-SoftI2C softWire =SoftI2C(4, 5); //sda, scl
-AS5600 ams5600(&softWire);
+SoftI2C softWire1 = SoftI2C(4, 5); // sda, scl
+SoftI2C softWire2 = SoftI2C(6, 5); // sda, scl
 
-int ang, lang = 0;
+AS5600 encoder1(&softWire1);
+AS5600 encoder2(&softWire2);
 
 void setup()
 {
   Serial.begin(115200);
-  softWire.begin();
-  Serial.println(">>>>>>>>>>>>>>>>>>>>>>>>>>> ");
-  if(ams5600.detectMagnet() == 0 ){
-    while(1){
-        if(ams5600.detectMagnet() == 1 ){
-            Serial.print("Current Magnitude: ");
-            Serial.println(ams5600.readMagnitude());
-            break;
-        }
-        else{
-            Serial.println("Can not detect magnet");
-        }
-        delay(1000);
-    }
-  }
+  softWire1.begin();
+  softWire2.begin();
 }
-/*******************************************************
-/* Function: convertRawAngleToDegrees
-/* In: angle data from AMS_5600::getRawAngle
-/* Out: human readable degrees as float
-/* Description: takes the raw angle and calculates
-/* float value in degrees.
-/*******************************************************/
-float convertRawAngleToDegrees(word newAngle)
+
+float rawToDeg(float rawAngle)
 {
-  /* Raw data reports 0 - 4095 segments, which is 0.087890625 of a degree */
-  float retVal = newAngle * 0.087890625;
-  return retVal;
+  return rawAngle * (360.0 / 4095.0);
 }
+
+float getAngle(AS5600 &encoder)
+{
+  return rawToDeg(encoder.readAngle());
+}
+
+void leadingZeros(String num, int length)
+{
+  int numLen = num.length();
+  for (int i = 0; i < length - numLen; i++)
+  {
+    Serial.print(" ");
+  }
+  Serial.print(num);
+}
+
+void printEncoder(AS5600 &encoder, int encoderNum)
+{
+  Serial.print("A");
+  Serial.print(encoderNum);
+  Serial.print(": ");
+  leadingZeros(String(getAngle(encoder)), 6);
+  Serial.print(", ");
+  Serial.print("M");
+  Serial.print(encoderNum);
+  Serial.print(": ");
+  leadingZeros(String(encoder.readMagnitude()), 4);
+}
+
 void loop()
 {
-    Serial.print(String(convertRawAngleToDegrees(ams5600.readAngle()),DEC));
-    Serial.print("                   ");
-    Serial.println(ams5600.readMagnitude());
+  printEncoder(encoder1, 1);
+  Serial.print(", ");
+  printEncoder(encoder2, 2);
+  Serial.print(", ");
+
+  auto timer = micros();
+  encoder1.readAngle();
+  encoder2.readAngle();
+  Serial.print(micros() - timer);
+
+  Serial.println();
 }
