@@ -26,11 +26,18 @@ const int8_t SHOULDER_SERVO_PIN = 3;
 const int8_t WRIST_SERVO_PIN = 5;
 const int8_t GRIPPER_SERVO_PIN = 6;
 
+const int8_t SHOULDER_SERVO_RELAY_PIN = 9;
+const int8_t WRIST_SERVO_RELAY_PIN = 10;
+const int8_t GRIPPER_SERVO_RELAY_PIN = 11;
+
 struct TwigCommand
 {
     int16_t wrist = 0;
     int16_t gripper = 0;
     int16_t shoulder = 0;
+    bool shoulderServoPowered = false;
+    bool wristServoPowered = false;
+    bool gripperServoPowered = false;
 };
 
 struct TwigState
@@ -43,6 +50,9 @@ struct TwigState
     int8_t shoulderCurrent = 0;
     int8_t wristVoltage = 0;
     int8_t shoulderVoltage = 0;
+    bool shoulderServoPowered = false;
+    bool wristServoPowered = false;
+    bool gripperServoPowered = false;
 };
 
 SoftI2C shoulderEncoderI2cBus = SoftI2C(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN);
@@ -67,6 +77,10 @@ void onCommand(int length)
     shoulderServo.writeMicroseconds(twigCommand.shoulder);
     wristServo.writeMicroseconds(twigCommand.wrist);
     gripperServo.writeMicroseconds(twigCommand.gripper);
+
+    digitalWrite(SHOULDER_SERVO_RELAY_PIN, twigCommand.shoulderServoPowered ? HIGH : LOW);
+    digitalWrite(WRIST_SERVO_RELAY_PIN, twigCommand.wristServoPowered ? HIGH : LOW);
+    digitalWrite(GRIPPER_SERVO_RELAY_PIN, twigCommand.gripperServoPowered ? HIGH : LOW);
 }
 
 void onStateRequest()
@@ -82,6 +96,10 @@ void onStateRequest()
     twigState.gripperPosition = gripperEncoder.readAngle();
     twigState.shoulderPosition = shoulderEncoder.readAngle();
 
+    twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == HIGH;
+    twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == HIGH;
+    twigState.gripperServoPowered = digitalRead(GRIPPER_SERVO_RELAY_PIN) == HIGH;
+
     Wire.write((uint8_t *)&twigState, sizeof(TwigState));
 }
 
@@ -96,6 +114,14 @@ void setup()
     shoulderEncoderI2cBus.begin();
     wristEncoderI2cBus.begin();
     gripperEncoderI2cBus.begin();
+
+    pinMode(SHOULDER_SERVO_RELAY_PIN, OUTPUT);
+    pinMode(WRIST_SERVO_RELAY_PIN, OUTPUT);
+    pinMode(GRIPPER_SERVO_RELAY_PIN, OUTPUT);
+
+    digitalWrite(SHOULDER_SERVO_RELAY_PIN, LOW);
+    digitalWrite(WRIST_SERVO_RELAY_PIN, LOW);
+    digitalWrite(GRIPPER_SERVO_RELAY_PIN, LOW);
 
     shoulderServo.attach(SHOULDER_SERVO_PIN);
     wristServo.attach(WRIST_SERVO_PIN);
