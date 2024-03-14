@@ -1,0 +1,1 @@
+https://github.com/vortexntnu/vortex-asv/tree/master/motion/thruster_interface
