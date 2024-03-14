@@ -3,7 +3,7 @@
 #include <SoftI2C.h>
 #include "AS5600.h"
 
-const int8_t I2C_ADDRESS = 0x42;
+const int8_t I2C_ADDRESS = 30;
 const int8_t SERIAL_BAUD_RATE = 115200;
 
 const int8_t SHOULDER_ENCODER_SDA_PIN = 4;
