@@ -45,11 +45,11 @@ struct TwigState
     int16_t wristPosition = 0;
     int16_t gripperPosition = 0;
     int16_t shoulderPosition = 0;
-    int8_t wristCurrent = 0;
-    int8_t gripperCurrent = 0;
-    int8_t shoulderCurrent = 0;
-    int8_t wristVoltage = 0;
-    int8_t shoulderVoltage = 0;
+    int16_t wristCurrent = 0;
+    int16_t gripperCurrent = 0;
+    int16_t shoulderCurrent = 0;
+    int16_t wristVoltage = 0;
+    int16_t shoulderVoltage = 0;
     bool shoulderServoPowered = false;
     bool wristServoPowered = false;
     bool gripperServoPowered = false;
