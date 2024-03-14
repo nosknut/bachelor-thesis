@@ -17,12 +17,10 @@ bool twig_hardware::TwigLib::i2c_open_connection()
   int connection = open(i2c_device.c_str(), O_RDWR);
 
   if (connection < 0) {
-    std::cerr << "Error opening device\n";
     return false;
   }
 
   if (ioctl(connection, I2C_SLAVE, i2c_address) < 0) {
-    std::cerr << "Error setting I2C address\n";
     return false;
   }
 
@@ -47,7 +45,6 @@ bool twig_hardware::TwigLib::i2c_send(std::byte * data, int data_size)
 
   // Send the I2C message
   if (write(i2c_connection, data, data_size) != data_size) {
-    std::cerr << "Error sending data, ignoring message...\n";
     i2c_close_connection();
     return false;
   }
@@ -63,7 +60,6 @@ bool twig_hardware::TwigLib::i2c_read(std::byte * buffer, int data_size)
 
   // Request the state from the i2c device
   if (read(i2c_connection, buffer, data_size) != data_size) {
-    std::cerr << "Error reading data, ignoring message...\n";
     i2c_close_connection();
     return false;
   }
