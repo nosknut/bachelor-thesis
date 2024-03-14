@@ -1,0 +1,9 @@
+<library path="twig_hardware">
+  <class name="twig_hardware/TwigHardware"
+         type="twig_hardware::TwigHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      The ros2_control drivers for the Twig robot.
+    </description>
+  </class>
+</library>
