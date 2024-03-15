@@ -9,6 +9,14 @@
 
 - [ROS2 Setup](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
 
+## Common
+
+After cloning the repository, run the following command to ignore changes to the workspace configs:
+
+```bash
+bash scripts/git/ignore_local_config_file_changes.bash
+```
+
 # Docs
 
 - [Config Explanations](docs/config-explanations/README.md)
