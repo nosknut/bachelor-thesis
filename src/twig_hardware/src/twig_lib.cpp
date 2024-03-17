@@ -71,14 +71,32 @@ bool twig_hardware::TwigLib::i2c_read(std::byte * buffer, int data_size)
 
 // Sync
 
-bool twig_hardware::TwigLib::write_command()
+bool twig_hardware::TwigLib::write_command(int max_retries)
 {
-  return i2c_send(reinterpret_cast<std::byte *>(&command), sizeof(command));
+  int fails = 0;
+  while (true) {
+    if (i2c_send(reinterpret_cast<std::byte *>(&command), sizeof(command))) {
+      return true;
+    }
+    fails++;
+    if (fails > max_retries) {
+      return false;
+    }
+  }
 }
 
-bool twig_hardware::TwigLib::read_state()
+bool twig_hardware::TwigLib::read_state(int max_retries)
 {
-  return i2c_read(reinterpret_cast<std::byte *>(&state), sizeof(state));
+  int fails = 0;
+  while (true) {
+    if (i2c_read(reinterpret_cast<std::byte *>(&state), sizeof(state))) {
+      return true;
+    }
+    fails++;
+    if (fails > max_retries) {
+      return false;
+    }
+  }
 }
 
 bool twig_hardware::TwigLib::update_velocities(double delta_time)

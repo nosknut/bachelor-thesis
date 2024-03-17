@@ -189,11 +189,11 @@ protected:
   void publish_timer_callback()
   {
     if (get_total_subscriber_count() > 0) {
-      if (twig.read_state()) {
+      if (twig.read_state(3)) {
         twig.update_velocities(publish_period_);
         publish_state();
       } else {
-        RCLCPP_ERROR_ONCE(this->get_logger(), "Failed to read state from hardware");
+        RCLCPP_ERROR(this->get_logger(), "Failed to read state from hardware");
       }
     }
   }
@@ -201,9 +201,10 @@ protected:
   void push_timer_callback()
   {
     if (has_new_command_) {
-      if (twig.write_command()) {
-        RCLCPP_ERROR_ONCE(this->get_logger(), "Failed to write command to hardware");
+      if (!twig.write_command(3)) {
+        RCLCPP_ERROR(this->get_logger(), "Failed to write command to hardware");
       }
+      has_new_command_ = false;
     }
   }
 
