@@ -17,6 +17,10 @@ def generate_launch_description():
                         name="twig_hardware_node",
                         package="twig_hardware",
                         plugin="twig_hardware::TwigHardwareNode",
+                        parameters=[{
+                            "push_rate": 50,
+                            "publish_rate": 50,
+                        }]
                     ),
                 ],
             )
