@@ -11,7 +11,7 @@ from launch.conditions import IfCondition, LaunchConfigurationEquals
 def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('joy_dev', default_value='/dev/input/js0'),
-        DeclareLaunchArgument('deadzone', default_value=0.3),
+        DeclareLaunchArgument('deadzone', default_value="0.3"),
         Node(
             package='joy',
             executable='joy_node',
