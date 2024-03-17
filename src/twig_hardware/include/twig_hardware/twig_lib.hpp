@@ -89,8 +89,8 @@ protected:
 
 public:
 // Sync
-  bool write_command();
-  bool read_state();
+  bool write_command(int max_retries = 1);
+  bool read_state(int max_retries = 1);
 
   bool update_velocities(double delta_time);
 
