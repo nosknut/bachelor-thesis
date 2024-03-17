@@ -71,11 +71,16 @@ bool twig_hardware::TwigLib::i2c_read(std::byte * buffer, int data_size)
 
 // Sync
 
-bool twig_hardware::TwigLib::write_command(int max_retries)
+bool twig_hardware::TwigLib::write_command(int max_retries, bool force)
 {
+  if (!has_unpushed_commands_ && !force) {
+    return true;
+  }
+
   int fails = 0;
   while (true) {
     if (i2c_send(reinterpret_cast<std::byte *>(&command), sizeof(command))) {
+      has_unpushed_commands_ = false;
       return true;
     }
     fails++;
@@ -149,18 +154,21 @@ void twig_hardware::TwigLib::activate_shoulder_servo()
 {
   stop_shoulder_servo();
   command.shoulderServoPowered = true;
+  has_unpushed_commands_ = true;
 }
 
 void twig_hardware::TwigLib::activate_wrist_servo()
 {
   stop_wrist_servo();
   command.wristServoPowered = true;
+  has_unpushed_commands_ = true;
 }
 
 void twig_hardware::TwigLib::activate_gripper_servo()
 {
   stop_gripper_servo();
   command.gripperServoPowered = true;
+  has_unpushed_commands_ = true;
 }
 
 void twig_hardware::TwigLib::activate_all_servos()
@@ -176,18 +184,21 @@ void twig_hardware::TwigLib::deactivate_shoulder_servo()
 {
   stop_shoulder_servo();
   command.shoulderServoPowered = false;
+  has_unpushed_commands_ = true;
 }
 
 void twig_hardware::TwigLib::deactivate_wrist_servo()
 {
   stop_wrist_servo();
   command.wristServoPowered = false;
+  has_unpushed_commands_ = true;
 }
 
 void twig_hardware::TwigLib::deactivate_gripper_servo()
 {
   stop_gripper_servo();
   command.gripperServoPowered = false;
+  has_unpushed_commands_ = true;
 }
 
 void twig_hardware::TwigLib::deactivate_all_servos()
@@ -203,34 +214,46 @@ void twig_hardware::TwigLib::deactivate_all_servos()
 
 void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
 {
-  command.shoulder = velocity * 600;
+  auto new_value = velocity * 600;
+  if (command.shoulder != new_value) {
+    has_unpushed_commands_ = true;
+    command.shoulder = new_value;
+  }
 }
 
 void twig_hardware::TwigLib::set_wrist_servo_velocity(double velocity)
 {
-  command.wrist = velocity * 600;
+  auto new_value = velocity * 600;
+  if (command.wrist != new_value) {
+    has_unpushed_commands_ = true;
+    command.wrist = new_value;
+  }
 }
 
 void twig_hardware::TwigLib::set_gripper_servo_velocity(double velocity)
 {
-  command.gripper = velocity * 600;
+  auto new_value = velocity * 600;
+  if (command.gripper != new_value) {
+    has_unpushed_commands_ = true;
+    command.gripper = new_value;
+  }
 }
 
 // Stop
 
 void twig_hardware::TwigLib::stop_shoulder_servo()
 {
-  command.shoulder = 0;
+  set_shoulder_servo_velocity(0);
 }
 
 void twig_hardware::TwigLib::stop_wrist_servo()
 {
-  command.wrist = 0;
+  set_wrist_servo_velocity(0);
 }
 
 void twig_hardware::TwigLib::stop_gripper_servo()
 {
-  command.gripper = 0;
+  set_gripper_servo_velocity(0);
 }
 
 void twig_hardware::TwigLib::stop_all_servos()
