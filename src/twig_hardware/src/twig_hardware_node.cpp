@@ -19,6 +19,7 @@ const std::string NODE_NAME = "twig_hardware_node";
 
 const std::string PARAM_PUBLISH_RATE = "publish_rate";
 const std::string PARAM_PUSH_RATE = "push_rate";
+const std::string PARAM_COMMAND_TIMEOUT = "command_timeout";
 
 namespace twig_hardware
 {
@@ -29,11 +30,14 @@ protected:
   TwigLib twig;
   rclcpp::TimerBase::SharedPtr publish_timer_;
   rclcpp::TimerBase::SharedPtr push_timer_;
+  rclcpp::TimerBase::SharedPtr command_reset_timer;
 
   long int publish_period_ = 1e6;
   long int push_period_ = 1e6;
 
-  bool has_new_command_ = false;
+  bool has_new_shoulder_command_ = false;
+  bool has_new_wrist_command_ = false;
+  bool has_new_gripper_command_ = false;
 
   // Activate Services
 
@@ -200,11 +204,26 @@ protected:
 
   void push_timer_callback()
   {
-    if (has_new_command_) {
       if (!twig.write_command(3)) {
         RCLCPP_ERROR(this->get_logger(), "Failed to write command to hardware");
       }
-      has_new_command_ = false;
+      has_new_shoulder_command_ = false;
+      has_new_wrist_command_ = false;
+      has_new_gripper_command_ = false;
+  }
+
+  void command_timeout_callback()
+  {
+    if (!has_new_shoulder_command_) {
+      twig.set_shoulder_servo_velocity(0);
+    }
+
+    if (!has_new_wrist_command_) {
+      twig.set_wrist_servo_velocity(0);
+    }
+
+    if (!has_new_gripper_command_) {
+      twig.set_gripper_servo_velocity(0);
     }
   }
 
@@ -215,6 +234,7 @@ public:
 
     this->declare_parameter(PARAM_PUBLISH_RATE, 50);
     this->declare_parameter(PARAM_PUSH_RATE, 50);
+    this->declare_parameter(PARAM_COMMAND_TIMEOUT, 500);
 
     // Activate Services
     // Black magic that allows running services with class instance methods is based on:
@@ -340,7 +360,7 @@ public:
       rclcpp::SystemDefaultsQoS(),
       [this](const std_msgs::msg::Float32::SharedPtr msg) {
         twig.set_shoulder_servo_velocity(msg->data);
-        has_new_command_ = true;
+        has_new_shoulder_command_ = true;
       }
     );
 
@@ -349,7 +369,7 @@ public:
       rclcpp::SystemDefaultsQoS(),
       [this](const std_msgs::msg::Float32::SharedPtr msg) {
         twig.set_wrist_servo_velocity(msg->data);
-        has_new_command_ = true;
+        has_new_wrist_command_ = true;
       }
     );
 
@@ -358,7 +378,7 @@ public:
       rclcpp::SystemDefaultsQoS(),
       [this](const std_msgs::msg::Float32::SharedPtr msg) {
         twig.set_gripper_servo_velocity(msg->data);
-        has_new_command_ = true;
+        has_new_gripper_command_ = true;
       }
     );
 
@@ -403,6 +423,11 @@ public:
     push_timer_ = this->create_wall_timer(
       std::chrono::microseconds(push_period_),
       std::bind(&TwigHardwareNode::push_timer_callback, this)
+    );
+
+    command_reset_timer = this->create_wall_timer(
+      std::chrono::milliseconds(this->get_parameter(PARAM_COMMAND_TIMEOUT).as_int()),
+      std::bind(&TwigHardwareNode::command_timeout_callback, this)
     );
   }
 };

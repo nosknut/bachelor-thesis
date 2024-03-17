@@ -65,6 +65,8 @@ protected:
   double previous_wrist_position = 0;
   double previous_gripper_position = 0;
 
+  bool has_unpushed_commands_ = false;
+
 public:
   TwigCommand command;
   TwigState state;
@@ -89,7 +91,7 @@ protected:
 
 public:
 // Sync
-  bool write_command(int max_retries = 1);
+  bool write_command(int max_retries = 1, bool force = false);
   bool read_state(int max_retries = 1);
 
   bool update_velocities(double delta_time);
