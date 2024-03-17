@@ -4,7 +4,7 @@
 #include "AS5600.h"
 
 const int8_t I2C_ADDRESS = 30;
-const int8_t SERIAL_BAUD_RATE = 115200;
+const unsigned long SERIAL_BAUD_RATE = 115200;
 
 const int8_t SHOULDER_ENCODER_SDA_PIN = 4;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
