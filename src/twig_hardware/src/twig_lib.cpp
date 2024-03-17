@@ -120,19 +120,19 @@ bool twig_hardware::TwigLib::update_velocities(double delta_time)
 
 // Utility
 
-double raw_to_radians(int16_t raw)
+double twig_hardware::TwigLib::raw_to_radians(int16_t raw)
 {
   return (((double) raw) / 4096.0) * 2 * M_PI;
 }
 
 // TODO: Implement voltage estimation
-double raw_to_voltage(int16_t raw)
+double twig_hardware::TwigLib::raw_to_voltage(int16_t raw)
 {
   return ((double) raw) / 1024.0;
 }
 
 // TODO: Implement current estimation
-double raw_to_current(int16_t raw)
+double twig_hardware::TwigLib::raw_to_current(int16_t raw)
 {
   return ((double) raw) / 1024.0;
 }
