@@ -203,17 +203,17 @@ void twig_hardware::TwigLib::deactivate_all_servos()
 
 void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
 {
-  command.shoulder = velocity;
+  command.shoulder = velocity * 600 + 1500;
 }
 
 void twig_hardware::TwigLib::set_wrist_servo_velocity(double velocity)
 {
-  command.wrist = velocity;
+  command.wrist = velocity * 600 + 1500;
 }
 
 void twig_hardware::TwigLib::set_gripper_servo_velocity(double velocity)
 {
-  command.gripper = velocity;
+  command.gripper = velocity * 600 + 1500;
 }
 
 // Stop
