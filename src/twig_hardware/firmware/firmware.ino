@@ -6,6 +6,8 @@
 const int8_t I2C_ADDRESS = 30;
 const unsigned long SERIAL_BAUD_RATE = 115200;
 
+const int SERVO_STATIONARY_SIGNAL = 1500;
+
 // To protect the system in the event of a connection loss,
 // the system will stop moving if it does not detect activity
 // within the specified number of milliseconds.
@@ -93,9 +95,9 @@ void resetCommand()
 
 void writeCommand()
 {
-    shoulderServo.writeMicroseconds(twigCommand.shoulder);
-    wristServo.writeMicroseconds(twigCommand.wrist);
-    gripperServo.writeMicroseconds(twigCommand.gripper);
+    shoulderServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.shoulder);
+    wristServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.wrist);
+    gripperServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.gripper);
 
     digitalWrite(SHOULDER_SERVO_RELAY_PIN, twigCommand.shoulderServoPowered ? HIGH : LOW);
     digitalWrite(WRIST_SERVO_RELAY_PIN, twigCommand.wristServoPowered ? HIGH : LOW);
