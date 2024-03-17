@@ -1,0 +1,41 @@
+/twig_teleop_direct:
+  ros__parameters:
+    joy:
+      axis:
+        left_stick_x: 0
+        left_stick_y: 1
+        right_stick_x: 2
+        right_stick_y: 3
+      button:
+        circle: 1
+        cross: 0
+        dpad_down: 13
+        dpad_left: 14
+        dpad_right: 15
+        dpad_up: 12
+        left_bumper: 6
+        left_joystick_button: 10
+        left_trigger: 4
+        options: 9
+        ps_button: 16
+        right_bumper: 7
+        right_joystick_button: 11
+        right_trigger: 5
+        share: 8
+        square: 2
+        touchpad: 17
+        triangle: 3
+      deadband: 0.2
+    num_axis: 4
+    num_buttons: 18
+    qos_overrides:
+      /parameter_events:
+        publisher:
+          depth: 1000
+          durability: volatile
+          history: keep_last
+          reliability: reliable
+    shoulder_max_speed: 1.0
+    wrist_max_speed: 1.0
+    gripper_max_speed: 1.0
+    use_sim_time: false

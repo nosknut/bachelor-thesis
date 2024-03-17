@@ -22,14 +22,18 @@ foreach(Dependency IN ITEMS ${THIS_PACKAGE_INCLUDE_DEPENDS})
   find_package(${Dependency} REQUIRED)
 endforeach()
 
+ament_target_dependencies(${JOYSTICK_TELEOP_NODE_NAME} ${THIS_PACKAGE_INCLUDE_DEPENDS})
+
 #####################
 ## Component Nodes ##
 #####################
 
 # Add executable for using a controller
 add_library(${JOYSTICK_TELEOP_NODE_NAME} SHARED src/joystick_teleop.cpp)
-ament_target_dependencies(${JOYSTICK_TELEOP_NODE_NAME} ${THIS_PACKAGE_INCLUDE_DEPENDS})
 rclcpp_components_register_nodes(${JOYSTICK_TELEOP_NODE_NAME} "twig_teleop::JoystickTeleop")
+
+add_library(${JOYSTICK_TELEOP_NODE_NAME} SHARED src/joystick_direct_teleop.cpp)
+rclcpp_components_register_nodes(${JOYSTICK_TELEOP_NODE_NAME} "twig_teleop::JoystickDirectTeleop")
 
 #############
 ## Install ##
