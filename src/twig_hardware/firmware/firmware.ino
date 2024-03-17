@@ -6,6 +6,11 @@
 const int8_t I2C_ADDRESS = 30;
 const unsigned long SERIAL_BAUD_RATE = 115200;
 
+// To protect the system in the event of a connection loss,
+// the system will stop moving if it does not detect activity
+// within the specified number of milliseconds.
+const unsigned long CONNECTION_TIMEOUT = 200;
+
 const int8_t SHOULDER_ENCODER_SDA_PIN = 4;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
 
@@ -70,10 +75,24 @@ Servo gripperServo;
 TwigCommand twigCommand;
 TwigState twigState;
 
-void onCommand(int length)
-{
-    Wire.readBytes((uint8_t *)&twigCommand, length);
+unsigned long connectionTimer = 0;
+unsigned long logTimer = 0;
 
+unsigned long sent = 0;
+unsigned long received = 0;
+
+void resetCommand()
+{
+    twigCommand.shoulder = 0;
+    twigCommand.wrist = 0;
+    twigCommand.gripper = 0;
+    twigCommand.shoulderServoPowered = false;
+    twigCommand.wristServoPowered = false;
+    twigCommand.gripperServoPowered = false;
+}
+
+void writeCommand()
+{
     shoulderServo.writeMicroseconds(twigCommand.shoulder);
     wristServo.writeMicroseconds(twigCommand.wrist);
     gripperServo.writeMicroseconds(twigCommand.gripper);
@@ -83,7 +102,14 @@ void onCommand(int length)
     digitalWrite(GRIPPER_SERVO_RELAY_PIN, twigCommand.gripperServoPowered ? HIGH : LOW);
 }
 
-void onStateRequest()
+void onCommand(int length)
+{
+    Wire.readBytes((uint8_t *)&twigCommand, length);
+    connectionTimer = millis();
+    received++;
+}
+
+void readState()
 {
     twigState.wristCurrent = analogRead(WRIST_CURRENT_PIN);
     twigState.gripperCurrent = analogRead(GRIPPER_CURRENT_PIN);
@@ -99,8 +125,14 @@ void onStateRequest()
     twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == HIGH;
     twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == HIGH;
     twigState.gripperServoPowered = digitalRead(GRIPPER_SERVO_RELAY_PIN) == HIGH;
+}
+
+void onStateRequest()
+{
 
     Wire.write((uint8_t *)&twigState, sizeof(TwigState));
+    connectionTimer = millis();
+    sent++;
 }
 
 void setup()
@@ -128,7 +160,50 @@ void setup()
     gripperServo.attach(GRIPPER_SERVO_PIN);
 }
 
+void printLog()
+{
+    Serial.print("Sending at: ");
+    Serial.print(sent * 10);
+    Serial.print("Hz, Receiving at: ");
+    Serial.print(received * 10);
+    Serial.print("Hz, ");
+    Serial.print(twigCommand.shoulder);
+    Serial.print(", ");
+    Serial.print(twigCommand.wrist);
+    Serial.print(", ");
+    Serial.print(twigCommand.gripper);
+    Serial.print(", ");
+    Serial.print(twigCommand.shoulderServoPowered);
+    Serial.print(", ");
+    Serial.print(twigCommand.wristServoPowered);
+    Serial.print(", ");
+    Serial.println(twigCommand.gripperServoPowered);
+}
+
+void updateLog()
+{
+    if ((millis() - logTimer) >= 100)
+    {
+        printLog();
+        sent = 0;
+        received = 0;
+        logTimer = millis();
+    }
+}
+
+void updateConnectionTimer()
+{
+    if ((millis() - connectionTimer) > CONNECTION_TIMEOUT)
+    {
+        resetCommand();
+    }
+}
+
 void loop()
 {
-    delay(100);
+    readState();
+    updateLog();
+    updateConnectionTimer();
+    writeCommand();
+    delay(1);
 }
