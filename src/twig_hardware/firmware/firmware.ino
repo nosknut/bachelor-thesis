@@ -52,6 +52,9 @@ struct TwigState
     int16_t wristPosition = 0;
     int16_t gripperPosition = 0;
     int16_t shoulderPosition = 0;
+    float wristVelocity = 0;
+    float gripperVelocity = 0;
+    float shoulderVelocity = 0;
     int16_t wristCurrent = 0;
     int16_t gripperCurrent = 0;
     int16_t shoulderCurrent = 0;
@@ -123,6 +126,10 @@ void readState()
     twigState.wristPosition = wristEncoder.readAngle();
     twigState.gripperPosition = gripperEncoder.readAngle();
     twigState.shoulderPosition = shoulderEncoder.readAngle();
+
+    twigState.wristVelocity = wristEncoder.getAngularSpeed();
+    twigState.gripperVelocity = gripperEncoder.getAngularSpeed();
+    twigState.shoulderVelocity = shoulderEncoder.getAngularSpeed();
 
     twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == HIGH;
     twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == HIGH;

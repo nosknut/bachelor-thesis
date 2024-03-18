@@ -104,30 +104,16 @@ bool twig_hardware::TwigLib::read_state(int max_retries)
   }
 }
 
-bool twig_hardware::TwigLib::update_velocities(double delta_time)
-{
-  bool updated = false;
-
-  if (delta_time < velocity_timeout) {
-    shoulder_velocity = (get_shoulder_servo_position() - previous_shoulder_position) / delta_time;
-    wrist_velocity = (get_wrist_servo_position() - previous_wrist_position) / delta_time;
-    gripper_velocity = (get_gripper_servo_position() - previous_gripper_position) / delta_time;
-
-    updated = true;
-  }
-
-  previous_shoulder_position = get_shoulder_servo_position();
-  previous_wrist_position = get_wrist_servo_position();
-  previous_gripper_position = get_gripper_servo_position();
-
-  return updated;
-}
-
 // Utility
 
 double twig_hardware::TwigLib::raw_to_radians(int16_t raw)
 {
   return (((double) raw) / 4096.0) * 2 * M_PI;
+}
+
+double twig_hardware::TwigLib::degrees_to_radians(double degrees)
+{
+  return degrees * M_PI / 180.0;
 }
 
 // TODO: Implement voltage estimation
@@ -313,17 +299,17 @@ double twig_hardware::TwigLib::get_wrist_servo_voltage()
 
 double twig_hardware::TwigLib::get_shoulder_servo_velocity()
 {
-  return shoulder_velocity;
+  return degrees_to_radians(state.shoulderVelocity);
 }
 
 double twig_hardware::TwigLib::get_wrist_servo_velocity()
 {
-  return wrist_velocity;
+  return degrees_to_radians(state.wristVelocity);
 }
 
 double twig_hardware::TwigLib::get_gripper_servo_velocity()
 {
-  return gripper_velocity;
+  return degrees_to_radians(state.gripperVelocity);
 }
 
 // Get position
