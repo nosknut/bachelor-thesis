@@ -94,7 +94,7 @@ bool twig_hardware::TwigLib::read_state(int max_retries)
 {
   int fails = 0;
   while (true) {
-    if (i2c_read(reinterpret_cast<std::byte *>(&state), sizeof(state))) {
+    if (i2c_read(reinterpret_cast<std::byte *>(&state), sizeof(twig_hardware::TwigState))) {
       return true;
     }
     fails++;
