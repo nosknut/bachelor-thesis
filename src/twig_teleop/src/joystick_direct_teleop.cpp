@@ -166,13 +166,11 @@ public:
       ACTIVATE_GRIPPER_SERVO_TOPIC);
 
     shoulder_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(
-      ACTIVATE_SHOULDER_SERVO_TOPIC);
+      DEACTIVATE_SHOULDER_SERVO_TOPIC);
     wrist_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(
-      ACTIVATE_WRIST_SERVO_TOPIC);
+      DEACTIVATE_WRIST_SERVO_TOPIC);
     gripper_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(
-      ACTIVATE_GRIPPER_SERVO_TOPIC);
-
-    activateServos();
+      DEACTIVATE_GRIPPER_SERVO_TOPIC);
   }
 
   void activateServos()
@@ -275,14 +273,14 @@ public:
         getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
         ignoreDeadbandDirect(
           getDoubleParam(PARAM_DEADBAND),
-          msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])));
+          msg->axes[getIntParam(PARAM_LEFT_STICK_X)])));
 
     gripper_pub_->publish(
       std_msgs::msg::Float32().set__data(
         getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
         ignoreDeadbandDirect(
           getDoubleParam(PARAM_DEADBAND),
-          msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])));
+          msg->axes[getIntParam(PARAM_RIGHT_STICK_Y)])));
   }
 };
 }
