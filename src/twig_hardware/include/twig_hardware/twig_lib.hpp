@@ -33,6 +33,9 @@ struct TwigState
   int16_t wristPosition = 0;
   int16_t gripperPosition = 0;
   int16_t shoulderPosition = 0;
+  float wristVelocity = 0;
+  float gripperVelocity = 0;
+  float shoulderVelocity = 0;
   int16_t wristCurrent = 0;
   int16_t gripperCurrent = 0;
   int16_t shoulderCurrent = 0;
@@ -51,19 +54,9 @@ protected:
   int i2c_connection = -1;
   std::string i2c_device;
 
-  double velocity_timeout = 0.5;
-
   double shoulder_position_offset = 0;
   double wrist_position_offset = 0;
   double gripper_position_offset = 0;
-
-  double shoulder_velocity = 0;
-  double wrist_velocity = 0;
-  double gripper_velocity = 0;
-
-  double previous_shoulder_position = 0;
-  double previous_wrist_position = 0;
-  double previous_gripper_position = 0;
 
   bool has_unpushed_commands_ = false;
 
@@ -82,6 +75,8 @@ protected:
   bool i2c_read(std::byte * buffer, int data_size);
 
 // Utility
+
+  double degrees_to_radians(double degrees);
   double raw_to_radians(int16_t raw);
 
   double raw_to_voltage(int16_t raw);
@@ -93,8 +88,6 @@ public:
 // Sync
   bool write_command(int max_retries = 1, bool force = false);
   bool read_state(int max_retries = 1);
-
-  bool update_velocities(double delta_time);
 
 // Activate
 
@@ -110,7 +103,7 @@ public:
   void deactivate_gripper_servo();
   void deactivate_all_servos();
 
-// Set speed
+// Set velocity
 
   void set_shoulder_servo_velocity(double velocity);
   void set_wrist_servo_velocity(double velocity);
@@ -140,7 +133,7 @@ public:
   double get_shoulder_servo_voltage();
   double get_wrist_servo_voltage();
 
-// Get speed
+// Get velocity
 
   double get_shoulder_servo_velocity();
   double get_wrist_servo_velocity();
