@@ -3,5 +3,6 @@
     "programmer": "avrisp",
     "output": ".arduino/output",
     "sketch": "src/twig_hardware/firmware/firmware.ino",
-    "configuration": "cpu=atmega328old"
+    "configuration": "cpu=atmega328old",
+    "port": "/dev/ttyUSB0"
 }
