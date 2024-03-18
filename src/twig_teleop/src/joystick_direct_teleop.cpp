@@ -1,9 +1,8 @@
 // Based on https://github.com/ros-planning/moveit2/blob/humble/moveit_ros/moveit_servo/src/teleop_demo/joystick_servo_example.cpp
 
 #include <sensor_msgs/msg/joy.hpp>
-#include <geometry_msgs/msg/twist_stamped.hpp>
-#include <control_msgs/msg/joint_jog.hpp>
 #include <std_srvs/srv/trigger.hpp>
+#include <std_msgs/msg/float32.hpp>
 #include <rclcpp/client.hpp>
 #include <rclcpp/experimental/buffers/intra_process_buffer.hpp>
 #include <rclcpp/node.hpp>
@@ -71,12 +70,12 @@ enum CommandType
 namespace twig_teleop
 {
 
-float ignoreDeadband(float deadband, float value)
+float ignoreDeadbandDirect(float deadband, float value)
 {
   if (abs(value) < deadband) {
     return 0.0;
   }
-  
+
   // Map the range [deadband, 1.0] to [0.0, 1.0]
   return value / (1.0 - deadband) + (value > 0 ? -deadband : deadband);
 }
@@ -89,9 +88,9 @@ private:
 
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
 
-  rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr shoulder_pub_;
-  rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr wrist_pub_;
-  rclcpp::Publisher<control_msgs::msg::JointJog>::SharedPtr gripper_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr shoulder_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr wrist_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr gripper_pub_;
 
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr shoulder_servo_activate_client_;
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr wrist_servo_activate_client_;
@@ -161,37 +160,51 @@ public:
       GRIPPER_TOPIC,
       rclcpp::SystemDefaultsQoS());
 
-    shoulder_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(ACTIVATE_SHOULDER_SERVO_TOPIC);
-    wrist_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(ACTIVATE_WRIST_SERVO_TOPIC);
-    gripper_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(ACTIVATE_GRIPPER_SERVO_TOPIC);
+    shoulder_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACTIVATE_SHOULDER_SERVO_TOPIC);
+    wrist_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACTIVATE_WRIST_SERVO_TOPIC);
+    gripper_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACTIVATE_GRIPPER_SERVO_TOPIC);
 
-    shoulder_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(ACTIVATE_SHOULDER_SERVO_TOPIC);
-    wrist_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(ACTIVATE_WRIST_SERVO_TOPIC);
-    gripper_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(ACTIVATE_GRIPPER_SERVO_TOPIC);
+    shoulder_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACTIVATE_SHOULDER_SERVO_TOPIC);
+    wrist_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACTIVATE_WRIST_SERVO_TOPIC);
+    gripper_servo_deactivate_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACTIVATE_GRIPPER_SERVO_TOPIC);
 
     activateServos();
   }
 
-  void activateServos() {
+  void activateServos()
+  {
     shoulder_servo_activate_client_->wait_for_service(std::chrono::seconds(1));
-    shoulder_servo_activate_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    shoulder_servo_activate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
 
     wrist_servo_activate_client_->wait_for_service(std::chrono::seconds(1));
-    wrist_servo_activate_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    wrist_servo_activate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
 
     gripper_servo_activate_client_->wait_for_service(std::chrono::seconds(1));
-    gripper_servo_activate_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    gripper_servo_activate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
   }
 
-  void deactivateServos() {
+  void deactivateServos()
+  {
     shoulder_servo_deactivate_client_->wait_for_service(std::chrono::seconds(1));
-    shoulder_servo_deactivate_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
-    
+    shoulder_servo_deactivate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
+
     wrist_servo_deactivate_client_->wait_for_service(std::chrono::seconds(1));
-    wrist_servo_deactivate_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
-    
+    wrist_servo_deactivate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
+
     gripper_servo_deactivate_client_->wait_for_service(std::chrono::seconds(1));
-    gripper_servo_deactivate_client_->async_send_request(std::make_shared<std_srvs::srv::Trigger::Request>());
+    gripper_servo_deactivate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
   }
 
   std::string getParam(const std::string & param_name)
@@ -211,8 +224,6 @@ public:
 
   void joyCallback(const sensor_msgs::msg::Joy::ConstSharedPtr & msg)
   {
-    auto joint_msg = std::make_unique<control_msgs::msg::JointJog>();
-
     if (msg->axes.size() < getIntParam(PARAM_NUM_AXIS)) {
       RCLCPP_WARN(
         this->get_logger(),
@@ -254,17 +265,26 @@ public:
       return;
     }
 
-    shoulder_pub_->publish(std::move(std_msgs::msg::Float32{
-      getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
-      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])}));
+    shoulder_pub_->publish(
+      std_msgs::msg::Float32().set__data(
+        getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
+        ignoreDeadbandDirect(
+          getDoubleParam(PARAM_DEADBAND),
+          msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])));
 
-    wrist_pub_->publish(std::move(std_msgs::msg::Float32{
-      getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
-      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])}));
+    wrist_pub_->publish(
+      std_msgs::msg::Float32().set__data(
+        getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
+        ignoreDeadbandDirect(
+          getDoubleParam(PARAM_DEADBAND),
+          msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])));
 
-    gripper_pub_->publish(std::move(std_msgs::msg::Float32{
-      getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
-      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])}));
+    gripper_pub_->publish(
+      std_msgs::msg::Float32().set__data(
+        getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
+        ignoreDeadbandDirect(
+          getDoubleParam(PARAM_DEADBAND),
+          msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])));
   }
 };
 }
