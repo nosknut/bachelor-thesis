@@ -198,7 +198,6 @@ protected:
     bool has_subscribers = get_total_subscriber_count() > 0;
     if (has_subscribers || read_without_subscribers_) {
       if (twig.read_state(3)) {
-        twig.update_velocities(publish_period_);
         if (has_subscribers || publish_without_subscribers_) {
           publish_state();
         }

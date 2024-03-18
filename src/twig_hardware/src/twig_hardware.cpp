@@ -180,8 +180,6 @@ hardware_interface::return_type TwigHardware::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
 {
   if (twig.read_state()) {
-    twig.update_velocities(period.seconds());
-
     hw_states_[0] = twig.get_shoulder_servo_position();
     hw_states_[1] = twig.get_shoulder_servo_velocity();
     hw_states_[2] = twig.get_shoulder_servo_effort();
