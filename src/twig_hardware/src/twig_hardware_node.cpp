@@ -39,6 +39,9 @@ protected:
   bool has_new_wrist_command_ = false;
   bool has_new_gripper_command_ = false;
 
+  bool read_without_subscribers_ = true;
+  bool publish_without_subscribers_ = false;
+
   // Activate Services
 
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr shoulder_servo_activate_srv_;
@@ -192,10 +195,13 @@ protected:
 
   void publish_timer_callback()
   {
-    if (get_total_subscriber_count() > 0) {
+    bool has_subscribers = get_total_subscriber_count() > 0;
+    if (has_subscribers || read_without_subscribers_) {
       if (twig.read_state(3)) {
         twig.update_velocities(publish_period_);
-        publish_state();
+        if (has_subscribers || publish_without_subscribers_) {
+          publish_state();
+        }
       } else {
         RCLCPP_ERROR(this->get_logger(), "Failed to read state from hardware");
       }
