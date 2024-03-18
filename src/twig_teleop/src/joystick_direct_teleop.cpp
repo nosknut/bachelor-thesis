@@ -85,6 +85,8 @@ private:
   bool activate_servos_was_pressed = false;
   bool deactivate_servos_was_pressed = false;
 
+  bool arm_button_was_pressed = false;
+
   rclcpp::Subscription<sensor_msgs::msg::Joy>::SharedPtr joy_sub_;
 
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr shoulder_pub_;
@@ -258,8 +260,15 @@ public:
 
     // Right bumper must be held down while moving
     if (!msg->buttons[getIntParam(PARAM_RIGHT_BUMPER)]) {
+      if (arm_button_was_pressed) {
+        shoulder_pub_->publish(std_msgs::msg::Float32().set__data(0));
+        wrist_pub_->publish(std_msgs::msg::Float32().set__data(0));
+        gripper_pub_->publish(std_msgs::msg::Float32().set__data(0));
+        arm_button_was_pressed = false;
+      }
       return;
     }
+    arm_button_was_pressed = true;
 
     shoulder_pub_->publish(
       std_msgs::msg::Float32().set__data(
