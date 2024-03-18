@@ -41,6 +41,10 @@ const std::string PARAM_LEFT_STICK_X = "joy.axis.left_stick_x";
 const std::string PARAM_LEFT_STICK_Y = "joy.axis.left_stick_y";
 const std::string PARAM_RIGHT_STICK_X = "joy.axis.right_stick_x";
 const std::string PARAM_RIGHT_STICK_Y = "joy.axis.right_stick_y";
+const std::string PARAM_LEFT_BUMPER_AXIS = "joy.axis.left_bumper";
+const std::string PARAM_RIGHT_BUMPER_AXIS = "joy.axis.right_bumper";
+const std::string PARAM_DPAD_X = "joy.axis.dpad_x";
+const std::string PARAM_DPAD_Y = "joy.axis.dpad_y";
 
 const std::string PARAM_SQUARE = "joy.button.square";
 const std::string PARAM_CROSS = "joy.button.cross";
@@ -54,12 +58,7 @@ const std::string PARAM_SHARE = "joy.button.share";
 const std::string PARAM_OPTIONS = "joy.button.options";
 const std::string PARAM_LEFT_JOYSTICK_BUTTON = "joy.button.left_joystick_button";
 const std::string PARAM_RIGHT_JOYSTICK_BUTTON = "joy.button.right_joystick_button";
-const std::string PARAM_DPAD_UP = "joy.button.dpad_up";
-const std::string PARAM_DPAD_DOWN = "joy.button.dpad_down";
-const std::string PARAM_DPAD_LEFT = "joy.button.dpad_left";
-const std::string PARAM_DPAD_RIGHT = "joy.button.dpad_right";
 const std::string PARAM_PS_BUTTON = "joy.button.ps_button";
-const std::string PARAM_TOUCHPAD = "joy.button.touchpad";
 
 enum CommandType
 {
@@ -117,28 +116,27 @@ public:
     // Joy Axis
     this->declare_parameter(PARAM_LEFT_STICK_X, 0);
     this->declare_parameter(PARAM_LEFT_STICK_Y, 1);
-    this->declare_parameter(PARAM_RIGHT_STICK_X, 2);
-    this->declare_parameter(PARAM_RIGHT_STICK_Y, 3);
+    this->declare_parameter(PARAM_LEFT_BUMPER_AXIS, 2);
+    this->declare_parameter(PARAM_RIGHT_STICK_X, 3);
+    this->declare_parameter(PARAM_RIGHT_STICK_Y, 4);
+    this->declare_parameter(PARAM_RIGHT_BUMPER_AXIS, 5);
+    this->declare_parameter(PARAM_DPAD_X, 6);
+    this->declare_parameter(PARAM_DPAD_Y, 7);
 
     // Joy Buttons
-    this->declare_parameter(PARAM_SQUARE, 2);
     this->declare_parameter(PARAM_CROSS, 0);
     this->declare_parameter(PARAM_CIRCLE, 1);
-    this->declare_parameter(PARAM_TRIANGLE, 3);
+    this->declare_parameter(PARAM_TRIANGLE, 2);
+    this->declare_parameter(PARAM_SQUARE, 3);
     this->declare_parameter(PARAM_LEFT_TRIGGER, 4);
     this->declare_parameter(PARAM_RIGHT_TRIGGER, 5);
     this->declare_parameter(PARAM_LEFT_BUMPER, 6);
     this->declare_parameter(PARAM_RIGHT_BUMPER, 7);
     this->declare_parameter(PARAM_SHARE, 8);
     this->declare_parameter(PARAM_OPTIONS, 9);
-    this->declare_parameter(PARAM_LEFT_JOYSTICK_BUTTON, 10);
-    this->declare_parameter(PARAM_RIGHT_JOYSTICK_BUTTON, 11);
-    this->declare_parameter(PARAM_DPAD_UP, 12);
-    this->declare_parameter(PARAM_DPAD_DOWN, 13);
-    this->declare_parameter(PARAM_DPAD_LEFT, 14);
-    this->declare_parameter(PARAM_DPAD_RIGHT, 15);
-    this->declare_parameter(PARAM_PS_BUTTON, 16);
-    this->declare_parameter(PARAM_TOUCHPAD, 17);
+    this->declare_parameter(PARAM_PS_BUTTON, 10);
+    this->declare_parameter(PARAM_LEFT_JOYSTICK_BUTTON, 11);
+    this->declare_parameter(PARAM_RIGHT_JOYSTICK_BUTTON, 12);
 
     joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
       JOY_TOPIC,
