@@ -1,5 +1,6 @@
 #include <Wire.h>
 #include <Servo.h>
+#include<avr/wdt.h> 
 #include <SoftI2C.h>
 #include "AS5600.h"
 #include "RunningMedian.h"
@@ -222,6 +223,11 @@ void setup()
 {
   Serial.begin(SERIAL_BAUD_RATE);
 
+  Serial.println("Starting ...");
+
+  // https://www.electronicwings.com/arduino/watchdog-in-arduino
+  wdt_enable(WDTO_1S);
+  
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);
@@ -299,4 +305,5 @@ void loop()
   updateConnectionTimer();
   writeCommand();
   delay(1);
+  wdt_reset();
 }
