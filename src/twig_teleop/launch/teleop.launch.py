@@ -9,7 +9,7 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
     return LaunchDescription([
         # Arguments
-        DeclareLaunchArgument('joy_topic', default_value='/joy'),
+        DeclareLaunchArgument('joy_topic', default_value='/twig_joy'),
         DeclareLaunchArgument('out_jog_topic', default_value='/servo_node/delta_joint_cmds'),
         DeclareLaunchArgument('out_twist_topic', default_value='/servo_node/delta_twist_cmds'),
         DeclareLaunchArgument('start_servo_service', default_value='/servo_node/start_servo'),
@@ -34,7 +34,7 @@ def generate_launch_description():
                     plugin='twig_teleop::JoystickTeleop',
                     parameters=[LaunchConfiguration('config_filepath')],
                     remappings={
-                        ('/joy', LaunchConfiguration('joy_topic')),
+                        ('/twig_joy', LaunchConfiguration('joy_topic')),
                         ('/cmd_jog', LaunchConfiguration('out_jog_topic')),
                         ('/cmd_vel', LaunchConfiguration('out_twist_topic')),
                         ('/start_servo', LaunchConfiguration('start_servo_service')),

@@ -9,7 +9,7 @@ from launch_ros.descriptions import ComposableNode
 def generate_launch_description():
     return LaunchDescription([
         # Arguments
-        DeclareLaunchArgument('joy_topic', default_value='/joy'),
+        DeclareLaunchArgument('joy_topic', default_value='/twig_joy'),
         
         DeclareLaunchArgument('shoulder_topic', default_value='/shoulder/servo/velocity/cmd'),
         DeclareLaunchArgument('wrist_topic', default_value='/wrist/servo/velocity/cmd'),
@@ -44,7 +44,7 @@ def generate_launch_description():
                     plugin='twig_teleop::JoystickDirectTeleop',
                     parameters=[LaunchConfiguration('config_filepath')],
                     remappings={
-                        ('/joy', LaunchConfiguration('joy_topic')),
+                        ('/twig_joy', LaunchConfiguration('joy_topic')),
                         
                         ('/shoulder/servo/velocity/cmd', LaunchConfiguration('shoulder_topic')),
                         ('/wrist/servo/velocity/cmd', LaunchConfiguration('wrist_topic')),

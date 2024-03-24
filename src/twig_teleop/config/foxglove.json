@@ -5,7 +5,7 @@
       "diffMethod": "previous message",
       "diffTopicPath": "/initialpose",
       "showFullMessageForDiff": false,
-      "topicPath": "/joy"
+      "topicPath": "/twig_joy"
     },
     "Joystick Panel.Joystick!cgxs04": {}
   },

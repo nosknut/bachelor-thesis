@@ -1,4 +1,4 @@
-// Based on https://github.com/ros-planning/moveit2/blob/humble/moveit_ros/moveit_servo/src/teleop_demo/joystick_servo_example.cpp
+// Based on https://github.com/ros-planning/moveit2/blob/humble/moveit_ros/moveit_servo/src/teleop_demo/twig_joystick_servo_example.cpp
 
 #include <sensor_msgs/msg/joy.hpp>
 #include <std_srvs/srv/trigger.hpp>
@@ -14,7 +14,7 @@
 #include <rclcpp/utilities.hpp>
 
 const std::string NODE_NAME = "joystick_teleop";
-const std::string JOY_TOPIC = "/joy";
+const std::string JOY_TOPIC = "/twig_joy";
 
 const std::string SHOULDER_TOPIC = "/shoulder/servo/velocity/cmd";
 const std::string WRIST_TOPIC = "/wrist/servo/velocity/cmd";
