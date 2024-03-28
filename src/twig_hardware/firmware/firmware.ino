@@ -84,15 +84,6 @@ struct AngularSpeedTracker
 
   unsigned long prevTime = micros();
   double prevAngle = 0;
-  unsigned long period = 20e3;
-
-  double updatePeriodically(double angle)
-  {
-    if ((micros() - prevTime) >= period) {
-      return update(angle);
-    }
-    return speedFilter.getAverage();
-  }
 
   // Based on code in AS5600 lib
   double update(double angle)
@@ -178,13 +169,6 @@ void onCommand(int length)
   received++;
 }
 
-void updateVelocity()
-{
-  twigState.wristVelocity = wristSpeedTracker.updatePeriodically(twigState.wristPosition);
-  twigState.gripperVelocity = gripperSpeedTracker.updatePeriodically(twigState.gripperPosition);
-  twigState.shoulderVelocity = shoulderSpeedTracker.updatePeriodically(twigState.shoulderPosition);
-}
-
 void readAngle(AS5600 encoder, int16_t & currentAngle, String name)
 {
   if (encoder.readMagnitude() > MIN_MAGNITUDE) {
@@ -206,6 +190,10 @@ void readState()
   readAngle(wristEncoder, twigState.wristPosition, "wrist");
   readAngle(gripperEncoder, twigState.gripperPosition, "gripper");
   readAngle(shoulderEncoder, twigState.shoulderPosition, "shoulder");
+
+  twigState.wristVelocity = wristSpeedTracker.update(twigState.wristPosition);
+  twigState.gripperVelocity = gripperSpeedTracker.update(twigState.gripperPosition);
+  twigState.shoulderVelocity = shoulderSpeedTracker.update(twigState.shoulderPosition);
 
   twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == HIGH;
   twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == HIGH;
@@ -307,7 +295,6 @@ void updateConnectionTimer()
 void loop()
 {
   readState();
-  updateVelocity();
   updateLog();
   updateConnectionTimer();
   writeCommand();
