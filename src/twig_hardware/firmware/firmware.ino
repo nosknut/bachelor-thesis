@@ -311,6 +311,5 @@ void loop()
   updateLog();
   updateConnectionTimer();
   writeCommand();
-  delay(1);
   wdt_reset();
 }
