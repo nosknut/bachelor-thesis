@@ -219,8 +219,27 @@ void onStateRequest()
   sent++;
 }
 
+void setupOutputs() {
+  pinMode(SHOULDER_SERVO_RELAY_PIN, OUTPUT);
+  pinMode(WRIST_SERVO_RELAY_PIN, OUTPUT);
+  pinMode(GRIPPER_SERVO_RELAY_PIN, OUTPUT);
+
+  digitalWrite(SHOULDER_SERVO_RELAY_PIN, LOW);
+  digitalWrite(WRIST_SERVO_RELAY_PIN, LOW);
+  digitalWrite(GRIPPER_SERVO_RELAY_PIN, LOW);
+
+  shoulderServo.attach(SHOULDER_SERVO_PIN);
+  wristServo.attach(WRIST_SERVO_PIN);
+  gripperServo.attach(GRIPPER_SERVO_PIN);  
+}
+
 void setup()
 {
+  // Initialize and kill the outputs first in case the watchdog timer resets the system.
+  setupOutputs();
+  resetCommand();
+  writeCommand();
+
   Serial.begin(SERIAL_BAUD_RATE);
 
   Serial.println("Starting ...");
@@ -235,18 +254,6 @@ void setup()
   shoulderEncoderI2cBus.begin();
   wristEncoderI2cBus.begin();
   gripperEncoderI2cBus.begin();
-
-  pinMode(SHOULDER_SERVO_RELAY_PIN, OUTPUT);
-  pinMode(WRIST_SERVO_RELAY_PIN, OUTPUT);
-  pinMode(GRIPPER_SERVO_RELAY_PIN, OUTPUT);
-
-  digitalWrite(SHOULDER_SERVO_RELAY_PIN, LOW);
-  digitalWrite(WRIST_SERVO_RELAY_PIN, LOW);
-  digitalWrite(GRIPPER_SERVO_RELAY_PIN, LOW);
-
-  shoulderServo.attach(SHOULDER_SERVO_PIN);
-  wristServo.attach(WRIST_SERVO_PIN);
-  gripperServo.attach(GRIPPER_SERVO_PIN);
 }
 
 String leadingSpaces(String val, int length)
