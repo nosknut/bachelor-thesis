@@ -1,132 +1,17 @@
+#include "FirmwareConfig.h"
+
 #include <Wire.h>
 #include <Servo.h>
-#include<avr/wdt.h> 
-#include <SoftI2C.h>
-#include "AS5600.h"
-#include "RunningMedian.h"
+#include <avr/wdt.h>
+#include "TwigState.h"
+#include "TwigCommand.h"
 
-const bool DEBUG_MAGNETS = false;
+// #define DEBUG_ENCODERS
+#include "Encoder.h"
 
-const int8_t I2C_ADDRESS = 30;
-const unsigned long SERIAL_BAUD_RATE = 115200;
-
-const int SERVO_STATIONARY_SIGNAL = 1500;
-
-const int MIN_MAGNITUDE = 10;
-
-// To protect the system in the event of a connection loss,
-// the system will stop moving if it does not detect activity
-// within the specified number of milliseconds.
-const unsigned long CONNECTION_TIMEOUT = 200;
-
-const int8_t SHOULDER_ENCODER_SDA_PIN = 4;
-const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
-
-const int8_t WRIST_ENCODER_SDA_PIN = 7;
-const int8_t WRIST_ENCODER_SCL_PIN = 2;
-
-const int8_t GRIPPER_ENCODER_SDA_PIN = 8;
-const int8_t GRIPPER_ENCODER_SCL_PIN = 2;
-
-const int8_t SHOULDER_CURRENT_PIN = A0;
-const int8_t WRIST_CURRENT_PIN = A1;
-const int8_t GRIPPER_CURRENT_PIN = A2;
-
-const int8_t SHOULDER_VOLTAGE_PIN = A3;
-const int8_t WRIST_VOLTAGE_PIN = A6;
-
-const int8_t SHOULDER_SERVO_PIN = 3;
-const int8_t WRIST_SERVO_PIN = 5;
-const int8_t GRIPPER_SERVO_PIN = 6;
-
-const int8_t SHOULDER_SERVO_RELAY_PIN = 9;
-const int8_t WRIST_SERVO_RELAY_PIN = 10;
-const int8_t GRIPPER_SERVO_RELAY_PIN = 11;
-
-struct TwigCommand
-{
-  int16_t wrist = 0;
-  int16_t gripper = 0;
-  int16_t shoulder = 0;
-  bool shoulderServoPowered = false;
-  bool wristServoPowered = false;
-  bool gripperServoPowered = false;
-};
-
-// Attribute packed is used to ensure the struct has the same
-// shape across different architectures.
-// This allows it to be sent through the i2c bus.
-// https://stackoverflow.com/questions/21092415/force-c-structure-to-pack-tightly
-// https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
-struct __attribute__((packed)) TwigState
-{
-  int16_t wristPosition = 0;
-  int16_t gripperPosition = 0;
-  int16_t shoulderPosition = 0;
-  float wristVelocity = 0;
-  float gripperVelocity = 0;
-  float shoulderVelocity = 0;
-  int16_t wristCurrent = 0;
-  int16_t gripperCurrent = 0;
-  int16_t shoulderCurrent = 0;
-  int16_t wristVoltage = 0;
-  int16_t shoulderVoltage = 0;
-  bool shoulderServoPowered = false;
-  bool wristServoPowered = false;
-  bool gripperServoPowered = false;
-};
-
-struct AngularSpeedTracker
-{
-  RunningMedian angleFilter = RunningMedian(2);
-  RunningMedian speedMedianFilter = RunningMedian(3);
-  RunningMedian speedFilter = RunningMedian(3);
-
-  unsigned long prevTime = micros();
-  double prevAngle = 0;
-
-  // Based on code in AS5600 lib
-  double update(double angle)
-  {
-    unsigned long now = micros();
-    unsigned long deltaT = now - prevTime;
-
-    angleFilter.add(angle);
-    double deltaA = angleFilter.getMedian() - prevAngle;
-
-
-    //  assumption is that there is no more than 180° rotation
-    //  between two consecutive measurements.
-    //  => at least two measurements per rotation (preferred 4).
-    if (deltaA > 2048) {
-      deltaA -= 4096;
-    }
-
-    if (deltaA < -2048) {
-      deltaA += 4096;
-    }
-
-    speedMedianFilter.add(((deltaA * 1e6) / deltaT) * AS5600_RAW_TO_DEGREES);
-    speedFilter.add(speedMedianFilter.getMedian());
-
-    prevAngle = angleFilter.getMedian();
-    prevTime = now;
-
-    return speedFilter.getAverage();
-  }
-};
-
-SoftI2C shoulderEncoderI2cBus = SoftI2C(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN);
-SoftI2C wristEncoderI2cBus = SoftI2C(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN);
-SoftI2C gripperEncoderI2cBus = SoftI2C(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN);
-
-AS5600 shoulderEncoder(&shoulderEncoderI2cBus);
-AS5600 wristEncoder(&wristEncoderI2cBus);
-AS5600 gripperEncoder(&gripperEncoderI2cBus);
-
-AngularSpeedTracker shoulderSpeedTracker;
-AngularSpeedTracker wristSpeedTracker;
-AngularSpeedTracker gripperSpeedTracker;
+Encoder shoulderEncoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, MIN_ENCODER_MAGNITUDE, "Shoulder");
+Encoder wristEncoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, MIN_ENCODER_MAGNITUDE, "Wrist");
+Encoder gripperEncoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, MIN_ENCODER_MAGNITUDE, "Gripper");
 
 Servo shoulderServo;
 Servo wristServo;
@@ -169,15 +54,6 @@ void onCommand(int length)
   received++;
 }
 
-void readAngle(AS5600 encoder, int16_t & currentAngle, String name)
-{
-  if (encoder.readMagnitude() > MIN_MAGNITUDE) {
-    currentAngle = encoder.readAngle();
-  } else if (DEBUG_MAGNETS) {
-    Serial.println("ERROR: " + name + " encoder magnet is too weak");
-  }
-}
-
 void readState()
 {
   twigState.wristCurrent = analogRead(WRIST_CURRENT_PIN);
@@ -187,13 +63,23 @@ void readState()
   twigState.wristVoltage = analogRead(WRIST_VOLTAGE_PIN);
   twigState.shoulderVoltage = analogRead(SHOULDER_VOLTAGE_PIN);
 
-  readAngle(wristEncoder, twigState.wristPosition, "wrist");
-  readAngle(gripperEncoder, twigState.gripperPosition, "gripper");
-  readAngle(shoulderEncoder, twigState.shoulderPosition, "shoulder");
+  if (wristEncoder.update())
+  {
+    twigState.wristPosition = wristEncoder.values.angle;
+    twigState.wristVelocity = wristEncoder.values.velocity;
+  }
 
-  twigState.wristVelocity = wristSpeedTracker.update(twigState.wristPosition);
-  twigState.gripperVelocity = gripperSpeedTracker.update(twigState.gripperPosition);
-  twigState.shoulderVelocity = shoulderSpeedTracker.update(twigState.shoulderPosition);
+  if (shoulderEncoder.update())
+  {
+    twigState.shoulderPosition = shoulderEncoder.values.angle;
+    twigState.shoulderVelocity = shoulderEncoder.values.velocity;
+  }
+
+  if (gripperEncoder.update())
+  {
+    twigState.gripperPosition = gripperEncoder.values.angle;
+    twigState.gripperVelocity = gripperEncoder.values.velocity;
+  }
 
   twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == HIGH;
   twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == HIGH;
@@ -207,7 +93,8 @@ void onStateRequest()
   sent++;
 }
 
-void setupOutputs() {
+void setupOutputs()
+{
   pinMode(SHOULDER_SERVO_RELAY_PIN, OUTPUT);
   pinMode(WRIST_SERVO_RELAY_PIN, OUTPUT);
   pinMode(GRIPPER_SERVO_RELAY_PIN, OUTPUT);
@@ -218,7 +105,7 @@ void setupOutputs() {
 
   shoulderServo.attach(SHOULDER_SERVO_PIN);
   wristServo.attach(WRIST_SERVO_PIN);
-  gripperServo.attach(GRIPPER_SERVO_PIN);  
+  gripperServo.attach(GRIPPER_SERVO_PIN);
 }
 
 void setup()
@@ -234,21 +121,22 @@ void setup()
 
   // https://www.electronicwings.com/arduino/watchdog-in-arduino
   wdt_enable(WDTO_1S);
-  
+
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);
 
-  shoulderEncoderI2cBus.begin();
-  wristEncoderI2cBus.begin();
-  gripperEncoderI2cBus.begin();
+  shoulderEncoder.begin();
+  wristEncoder.begin();
+  gripperEncoder.begin();
 }
 
 String leadingSpaces(String val, int length)
 {
   int valLen = val.length();
   String out = "";
-  for (int i = 0; i < length - valLen; i++) {
+  for (int i = 0; i < length - valLen; i++)
+  {
     out += " ";
   }
   out += val;
@@ -277,7 +165,8 @@ void printLog()
 
 void updateLog()
 {
-  if ((millis() - logTimer) >= 100) {
+  if ((millis() - logTimer) >= 100)
+  {
     printLog();
     sent = 0;
     received = 0;
@@ -287,7 +176,8 @@ void updateLog()
 
 void updateConnectionTimer()
 {
-  if ((millis() - connectionTimer) > CONNECTION_TIMEOUT) {
+  if ((millis() - connectionTimer) > CONNECTION_TIMEOUT)
+  {
     resetCommand();
   }
 }

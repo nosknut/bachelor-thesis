@@ -8,9 +8,18 @@
 //     URL: https://github.com/RobTillaart/AS5600
 
 
-#include "Arduino.h"
+#include <Arduino.h>
 #include "Wire.h"
+
+#ifndef I2C_CLASS
+#ifdef USE_HWI2C
+#include <Wire.h>
+#define I2C_CLASS TwoWire
+#else
 #include <SoftI2C.h>
+#define I2C_CLASS SoftI2C
+#endif
+#endif
 
 
 #define AS5600_LIB_VERSION              (F("0.6.0"))
@@ -99,7 +108,7 @@ const uint8_t AS5600_WATCHDOG_ON        = 1;
 class AS5600
 {
 public:
-  AS5600(SoftI2C *wire);
+  AS5600(I2C_CLASS *wire);
 
   bool     begin(uint8_t directionPin = AS5600_SW_DIRECTION_PIN);
   bool     isConnected();
@@ -246,7 +255,7 @@ protected:
   uint8_t  _direction       = AS5600_CLOCK_WISE;
   int      _error           = AS5600_OK;
 
-  SoftI2C*  _wire;
+  I2C_CLASS*  _wire;
 
   //  for getAngularSpeed()
   uint32_t _lastMeasurement = 0;

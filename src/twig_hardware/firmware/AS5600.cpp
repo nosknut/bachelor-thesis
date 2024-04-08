@@ -45,7 +45,7 @@ const uint8_t AS5600_MAGNET_LOW    = 0x10;
 const uint8_t AS5600_MAGNET_DETECT = 0x20;
 
 
-AS5600::AS5600(SoftI2C *wire)
+AS5600::AS5600(I2C_CLASS *wire)
 {
   _wire = wire;
 }
