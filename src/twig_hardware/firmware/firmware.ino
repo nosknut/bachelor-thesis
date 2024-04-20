@@ -42,9 +42,9 @@ void writeCommand()
   wristServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.wrist);
   gripperServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.gripper);
 
-  digitalWrite(SHOULDER_SERVO_RELAY_PIN, twigCommand.shoulderServoPowered ? HIGH : LOW);
-  digitalWrite(WRIST_SERVO_RELAY_PIN, twigCommand.wristServoPowered ? HIGH : LOW);
-  digitalWrite(GRIPPER_SERVO_RELAY_PIN, twigCommand.gripperServoPowered ? HIGH : LOW);
+  digitalWrite(SHOULDER_SERVO_RELAY_PIN, twigCommand.shoulderServoPowered ? LOW : HIGH);
+  digitalWrite(WRIST_SERVO_RELAY_PIN, twigCommand.wristServoPowered ? LOW : HIGH);
+  digitalWrite(GRIPPER_SERVO_RELAY_PIN, twigCommand.gripperServoPowered ? LOW : HIGH);
 }
 
 void onCommand(int length)
@@ -81,9 +81,9 @@ void readState()
     twigState.gripperVelocity = gripperEncoder.values.velocity;
   }
 
-  twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == HIGH;
-  twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == HIGH;
-  twigState.gripperServoPowered = digitalRead(GRIPPER_SERVO_RELAY_PIN) == HIGH;
+  twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == LOW;
+  twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == LOW;
+  twigState.gripperServoPowered = digitalRead(GRIPPER_SERVO_RELAY_PIN) == LOW;
 }
 
 void onStateRequest()
@@ -99,9 +99,9 @@ void setupOutputs()
   pinMode(WRIST_SERVO_RELAY_PIN, OUTPUT);
   pinMode(GRIPPER_SERVO_RELAY_PIN, OUTPUT);
 
-  digitalWrite(SHOULDER_SERVO_RELAY_PIN, LOW);
-  digitalWrite(WRIST_SERVO_RELAY_PIN, LOW);
-  digitalWrite(GRIPPER_SERVO_RELAY_PIN, LOW);
+  digitalWrite(SHOULDER_SERVO_RELAY_PIN, HIGH);
+  digitalWrite(WRIST_SERVO_RELAY_PIN, HIGH);
+  digitalWrite(GRIPPER_SERVO_RELAY_PIN, HIGH);
 
   shoulderServo.attach(SHOULDER_SERVO_PIN);
   wristServo.attach(WRIST_SERVO_PIN);
