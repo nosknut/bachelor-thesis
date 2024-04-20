@@ -2,39 +2,14 @@
   ros__parameters:
     joy:
       axis:
-        left_stick_x: 0
-        left_stick_y: 1
-        left_bumper: 2
-        right_stick_x: 3
-        right_stick_y: 4
-        right_bumper: 5
-        dpad_x: 6
-        dpad_y: 7
+        gripper: 3
+        shoulder: 1
+        wrist: 0
       button:
-        cross: 0
-        circle: 1
-        triangle: 2
-        square: 3
-        left_trigger: 4
-        right_trigger: 5
-        left_bumper: 6
-        right_bumper: 7
-        share: 8
-        options: 9
-        ps_button: 10
-        left_joystick_button: 11
-        right_joystick_button: 12
+        activate_servos: 8
+        deactivate_servos: 9
+        deadmanswitch: 7
       deadband: 0.2
-    num_axis: 8
-    num_buttons: 13
-    qos_overrides:
-      /parameter_events:
-        publisher:
-          depth: 1000
-          durability: volatile
-          history: keep_last
-          reliability: reliable
     shoulder_max_speed: 1.0
     wrist_max_speed: 1.0
     gripper_max_speed: 1.0
-    use_sim_time: false

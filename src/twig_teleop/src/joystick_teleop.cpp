@@ -27,32 +27,11 @@ const std::string PARAM_GRIPPER_MAX_SPEED = "gripper_max_speed";
 
 const std::string PARAM_DEADBAND = "joy.deadband";
 
-const std::string PARAM_NUM_AXIS = "num_axis";
-const std::string PARAM_NUM_BUTTONS = "num_buttons";
-
-const std::string PARAM_LEFT_STICK_X = "joy.axis.left_stick_x";
-const std::string PARAM_LEFT_STICK_Y = "joy.axis.left_stick_y";
-const std::string PARAM_RIGHT_STICK_X = "joy.axis.right_stick_x";
-const std::string PARAM_RIGHT_STICK_Y = "joy.axis.right_stick_y";
-
-const std::string PARAM_SQUARE = "joy.button.square";
-const std::string PARAM_CROSS = "joy.button.cross";
-const std::string PARAM_CIRCLE = "joy.button.circle";
-const std::string PARAM_TRIANGLE = "joy.button.triangle";
-const std::string PARAM_LEFT_TRIGGER = "joy.button.left_trigger";
-const std::string PARAM_RIGHT_TRIGGER = "joy.button.right_trigger";
-const std::string PARAM_LEFT_BUMPER = "joy.button.left_bumper";
-const std::string PARAM_RIGHT_BUMPER = "joy.button.right_bumper";
-const std::string PARAM_SHARE = "joy.button.share";
-const std::string PARAM_OPTIONS = "joy.button.options";
-const std::string PARAM_LEFT_JOYSTICK_BUTTON = "joy.button.left_joystick_button";
-const std::string PARAM_RIGHT_JOYSTICK_BUTTON = "joy.button.right_joystick_button";
-const std::string PARAM_DPAD_UP = "joy.button.dpad_up";
-const std::string PARAM_DPAD_DOWN = "joy.button.dpad_down";
-const std::string PARAM_DPAD_LEFT = "joy.button.dpad_left";
-const std::string PARAM_DPAD_RIGHT = "joy.button.dpad_right";
-const std::string PARAM_PS_BUTTON = "joy.button.ps_button";
-const std::string PARAM_TOUCHPAD = "joy.button.touchpad";
+const std::string PARAM_DEADMANSWITCH_BUTTON = "joy.button.deadmanswitch";
+const std::string PARAM_TRIGGER_SERVO_BUTTON = "joy.button.activate_servos";
+const std::string PARAM_SHOULDER_AXIS = "joy.axis.shoulder";
+const std::string PARAM_WRIST_AXIS = "joy.axis.wrist";
+const std::string PARAM_GRIPPER_AXIS = "joy.axis.gripper";
 
 enum CommandType
 {
@@ -68,7 +47,7 @@ float ignoreDeadband(float deadband, float value)
   if (abs(value) < deadband) {
     return 0.0;
   }
-  
+
   // Map the range [deadband, 1.0] to [0.0, 1.0]
   return value / (1.0 - deadband) + (value > 0 ? -deadband : deadband);
 }
@@ -95,34 +74,14 @@ public:
 
     this->declare_parameter(PARAM_DEADBAND, 0.05);
 
-    this->declare_parameter(PARAM_NUM_AXIS, 4);
-    this->declare_parameter(PARAM_NUM_BUTTONS, 18);
-
     // Joy Axis
-    this->declare_parameter(PARAM_LEFT_STICK_X, 0);
-    this->declare_parameter(PARAM_LEFT_STICK_Y, 1);
-    this->declare_parameter(PARAM_RIGHT_STICK_X, 2);
-    this->declare_parameter(PARAM_RIGHT_STICK_Y, 3);
+    this->declare_parameter(PARAM_SHOULDER_AXIS, 1);
+    this->declare_parameter(PARAM_WRIST_AXIS, 0);
+    this->declare_parameter(PARAM_GRIPPER_AXIS, 3);
 
     // Joy Buttons
-    this->declare_parameter(PARAM_SQUARE, 2);
-    this->declare_parameter(PARAM_CROSS, 0);
-    this->declare_parameter(PARAM_CIRCLE, 1);
-    this->declare_parameter(PARAM_TRIANGLE, 3);
-    this->declare_parameter(PARAM_LEFT_TRIGGER, 4);
-    this->declare_parameter(PARAM_RIGHT_TRIGGER, 5);
-    this->declare_parameter(PARAM_LEFT_BUMPER, 6);
-    this->declare_parameter(PARAM_RIGHT_BUMPER, 7);
-    this->declare_parameter(PARAM_SHARE, 8);
-    this->declare_parameter(PARAM_OPTIONS, 9);
-    this->declare_parameter(PARAM_LEFT_JOYSTICK_BUTTON, 10);
-    this->declare_parameter(PARAM_RIGHT_JOYSTICK_BUTTON, 11);
-    this->declare_parameter(PARAM_DPAD_UP, 12);
-    this->declare_parameter(PARAM_DPAD_DOWN, 13);
-    this->declare_parameter(PARAM_DPAD_LEFT, 14);
-    this->declare_parameter(PARAM_DPAD_RIGHT, 15);
-    this->declare_parameter(PARAM_PS_BUTTON, 16);
-    this->declare_parameter(PARAM_TOUCHPAD, 17);
+    this->declare_parameter(PARAM_DEADMANSWITCH_BUTTON, 7);
+    this->declare_parameter(PARAM_TRIGGER_SERVO_BUTTON, 8);
 
     joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
       JOY_TOPIC,
@@ -139,7 +98,8 @@ public:
     triggerServo();
   }
 
-  void triggerServo() {
+  void triggerServo()
+  {
     // Create a service client to start the ServoNode
     servo_start_client_ = this->create_client<std_srvs::srv::Trigger>(SERVO_START_SERVICE_NAME);
     servo_start_client_->wait_for_service(std::chrono::seconds(1));
@@ -160,52 +120,64 @@ public:
   {
     return this->get_parameter(param_name).as_double();
   }
+  std::optional<bool> getButton(
+    const sensor_msgs::msg::Joy::ConstSharedPtr & msg,
+    std::string button)
+  {
+    auto button_id = getIntParam(button);
+    if (msg->axes.size() < button_id) {
+      RCLCPP_WARN(
+        this->get_logger(),
+        "Expected at least %d buttons, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
+        button_id,
+        int(msg->axes.size()));
+      return {};
+    }
+    return msg->buttons[button_id];
+  }
+
+  std::optional<float> getAxis(const sensor_msgs::msg::Joy::ConstSharedPtr & msg, std::string axis)
+  {
+    auto axis_id = getIntParam(axis);
+    if (msg->axes.size() < axis_id) {
+      RCLCPP_WARN(
+        this->get_logger(),
+        "Expected at least %d axes, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
+        axis_id,
+        int(msg->axes.size()));
+      return {};
+    }
+    return msg->axes[axis_id];
+  }
 
   void convertJoyToJog(
-    const std::vector<float> & axes,
-    const std::vector<int> & buttons,
+    const sensor_msgs::msg::Joy::ConstSharedPtr & msg,
     std::unique_ptr<control_msgs::msg::JointJog> & jog)
   {
     jog->joint_names.push_back("twig_shoulder_joint");
     jog->velocities.push_back(
       getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
-      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), axes[getIntParam(PARAM_LEFT_STICK_Y)]));
+      ignoreDeadband(
+        getDoubleParam(PARAM_DEADBAND),
+        getAxis(msg, PARAM_SHOULDER_AXIS).value_or(0)));
 
     jog->joint_names.push_back("twig_wrist_joint");
     jog->velocities.push_back(
       getDoubleParam(PARAM_WRIST_MAX_SPEED) *
-      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), axes[getIntParam(PARAM_LEFT_STICK_X)]));
+      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), getAxis(msg, PARAM_WRIST_AXIS).value_or(0)));
 
     jog->joint_names.push_back("twig_left_finger_joint");
     jog->velocities.push_back(
       getDoubleParam(PARAM_GRIPPER_MAX_SPEED) *
-      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), axes[getIntParam(PARAM_RIGHT_STICK_Y)]));
+      ignoreDeadband(getDoubleParam(PARAM_DEADBAND), getAxis(msg, PARAM_GRIPPER_AXIS).value_or(0)));
   }
 
   void joyCallback(const sensor_msgs::msg::Joy::ConstSharedPtr & msg)
   {
     auto joint_msg = std::make_unique<control_msgs::msg::JointJog>();
 
-    if (msg->axes.size() < getIntParam(PARAM_NUM_AXIS)) {
-      RCLCPP_WARN(
-        this->get_logger(),
-        "Expected at least %d axes, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
-        getIntParam(PARAM_NUM_AXIS),
-        int(msg->axes.size()));
-      return;
-    }
-
-    if (msg->buttons.size() < getIntParam(PARAM_NUM_BUTTONS)) {
-      RCLCPP_WARN(
-        this->get_logger(),
-        "Expected at least %d buttons, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
-        getIntParam(PARAM_NUM_BUTTONS),
-        int(msg->buttons.size()));
-      return;
-    }
-
     // Trigger the servo start service when the options button is pressed
-    if (msg->buttons[getIntParam(PARAM_OPTIONS)]) {
+    if (getButton(msg, PARAM_TRIGGER_SERVO_BUTTON).value_or(false)) {
       if (!trigger_servo_was_pressed) {
         triggerServo();
         trigger_servo_was_pressed = true;
@@ -215,11 +187,11 @@ public:
     }
 
     // Right bumper must be held down while moving
-    if (!msg->buttons[getIntParam(PARAM_RIGHT_BUMPER)]) {
+    if (!getButton(msg, PARAM_DEADMANSWITCH_BUTTON).value_or(false)) {
       return;
     }
 
-    convertJoyToJog(msg->axes, msg->buttons, joint_msg);
+    convertJoyToJog(msg, joint_msg);
     joint_msg->header.stamp = this->now();
     joint_msg->header.frame_id = getParam(PARAM_JOG_FRAME_ID);
     joint_pub_->publish(std::move(joint_msg));

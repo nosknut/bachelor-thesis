@@ -34,31 +34,12 @@ const std::string PARAM_GRIPPER_MAX_SPEED = "gripper_max_speed";
 
 const std::string PARAM_DEADBAND = "joy.deadband";
 
-const std::string PARAM_NUM_AXIS = "num_axis";
-const std::string PARAM_NUM_BUTTONS = "num_buttons";
-
-const std::string PARAM_LEFT_STICK_X = "joy.axis.left_stick_x";
-const std::string PARAM_LEFT_STICK_Y = "joy.axis.left_stick_y";
-const std::string PARAM_RIGHT_STICK_X = "joy.axis.right_stick_x";
-const std::string PARAM_RIGHT_STICK_Y = "joy.axis.right_stick_y";
-const std::string PARAM_LEFT_BUMPER_AXIS = "joy.axis.left_bumper";
-const std::string PARAM_RIGHT_BUMPER_AXIS = "joy.axis.right_bumper";
-const std::string PARAM_DPAD_X = "joy.axis.dpad_x";
-const std::string PARAM_DPAD_Y = "joy.axis.dpad_y";
-
-const std::string PARAM_SQUARE = "joy.button.square";
-const std::string PARAM_CROSS = "joy.button.cross";
-const std::string PARAM_CIRCLE = "joy.button.circle";
-const std::string PARAM_TRIANGLE = "joy.button.triangle";
-const std::string PARAM_LEFT_TRIGGER = "joy.button.left_trigger";
-const std::string PARAM_RIGHT_TRIGGER = "joy.button.right_trigger";
-const std::string PARAM_LEFT_BUMPER = "joy.button.left_bumper";
-const std::string PARAM_RIGHT_BUMPER = "joy.button.right_bumper";
-const std::string PARAM_SHARE = "joy.button.share";
-const std::string PARAM_OPTIONS = "joy.button.options";
-const std::string PARAM_LEFT_JOYSTICK_BUTTON = "joy.button.left_joystick_button";
-const std::string PARAM_RIGHT_JOYSTICK_BUTTON = "joy.button.right_joystick_button";
-const std::string PARAM_PS_BUTTON = "joy.button.ps_button";
+const std::string PARAM_DEADMANSWITCH_BUTTON = "joy.button.deadmanswitch";
+const std::string PARAM_ACTIVATE_SERVOS_BUTTON = "joy.button.activate_servos";
+const std::string PARAM_DEACTIVATE_SERVOS_BUTTON = "joy.button.deactivate_servos";
+const std::string PARAM_SHOULDER_AXIS = "joy.axis.shoulder";
+const std::string PARAM_WRIST_AXIS = "joy.axis.wrist";
+const std::string PARAM_GRIPPER_AXIS = "joy.axis.gripper";
 
 enum CommandType
 {
@@ -112,33 +93,15 @@ public:
 
     this->declare_parameter(PARAM_DEADBAND, 0.05);
 
-    this->declare_parameter(PARAM_NUM_AXIS, 4);
-    this->declare_parameter(PARAM_NUM_BUTTONS, 18);
-
     // Joy Axis
-    this->declare_parameter(PARAM_LEFT_STICK_X, 0);
-    this->declare_parameter(PARAM_LEFT_STICK_Y, 1);
-    this->declare_parameter(PARAM_LEFT_BUMPER_AXIS, 2);
-    this->declare_parameter(PARAM_RIGHT_STICK_X, 3);
-    this->declare_parameter(PARAM_RIGHT_STICK_Y, 4);
-    this->declare_parameter(PARAM_RIGHT_BUMPER_AXIS, 5);
-    this->declare_parameter(PARAM_DPAD_X, 6);
-    this->declare_parameter(PARAM_DPAD_Y, 7);
+    this->declare_parameter(PARAM_SHOULDER_AXIS, 1);
+    this->declare_parameter(PARAM_WRIST_AXIS, 0);
+    this->declare_parameter(PARAM_GRIPPER_AXIS, 3);
 
     // Joy Buttons
-    this->declare_parameter(PARAM_CROSS, 0);
-    this->declare_parameter(PARAM_CIRCLE, 1);
-    this->declare_parameter(PARAM_TRIANGLE, 2);
-    this->declare_parameter(PARAM_SQUARE, 3);
-    this->declare_parameter(PARAM_LEFT_TRIGGER, 4);
-    this->declare_parameter(PARAM_RIGHT_TRIGGER, 5);
-    this->declare_parameter(PARAM_LEFT_BUMPER, 6);
-    this->declare_parameter(PARAM_RIGHT_BUMPER, 7);
-    this->declare_parameter(PARAM_SHARE, 8);
-    this->declare_parameter(PARAM_OPTIONS, 9);
-    this->declare_parameter(PARAM_PS_BUTTON, 10);
-    this->declare_parameter(PARAM_LEFT_JOYSTICK_BUTTON, 11);
-    this->declare_parameter(PARAM_RIGHT_JOYSTICK_BUTTON, 12);
+    this->declare_parameter(PARAM_DEADMANSWITCH_BUTTON, 7);
+    this->declare_parameter(PARAM_ACTIVATE_SERVOS_BUTTON, 8);
+    this->declare_parameter(PARAM_DEACTIVATE_SERVOS_BUTTON, 9);
 
     joy_sub_ = this->create_subscription<sensor_msgs::msg::Joy>(
       JOY_TOPIC,
@@ -220,27 +183,39 @@ public:
     return this->get_parameter(param_name).as_double();
   }
 
-  void joyCallback(const sensor_msgs::msg::Joy::ConstSharedPtr & msg)
+  std::optional<bool> getButton(
+    const sensor_msgs::msg::Joy::ConstSharedPtr & msg,
+    std::string button)
   {
-    if (msg->axes.size() < getIntParam(PARAM_NUM_AXIS)) {
-      RCLCPP_WARN(
-        this->get_logger(),
-        "Expected at least %d axes, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
-        getIntParam(PARAM_NUM_AXIS),
-        int(msg->axes.size()));
-      return;
-    }
-
-    if (msg->buttons.size() < getIntParam(PARAM_NUM_BUTTONS)) {
+    auto button_id = getIntParam(button);
+    if (msg->buttons.size() < button_id) {
       RCLCPP_WARN(
         this->get_logger(),
         "Expected at least %d buttons, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
-        getIntParam(PARAM_NUM_BUTTONS),
+        button_id,
         int(msg->buttons.size()));
-      return;
+      return {};
     }
+    return msg->buttons[button_id];
+  }
 
-    if (msg->buttons[getIntParam(PARAM_OPTIONS)]) {
+  std::optional<float> getAxis(const sensor_msgs::msg::Joy::ConstSharedPtr & msg, std::string axis)
+  {
+    auto axis_id = getIntParam(axis);
+    if (msg->axes.size() < axis_id) {
+      RCLCPP_WARN(
+        this->get_logger(),
+        "Expected at least %d axes, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
+        axis_id,
+        int(msg->axes.size()));
+      return {};
+    }
+    return msg->axes[axis_id];
+  }
+
+  void joyCallback(const sensor_msgs::msg::Joy::ConstSharedPtr & msg)
+  {
+    if (getButton(msg, PARAM_ACTIVATE_SERVOS_BUTTON).value_or(false)) {
       if (!activate_servos_was_pressed) {
         activateServos();
         activate_servos_was_pressed = true;
@@ -249,7 +224,7 @@ public:
       activate_servos_was_pressed = false;
     }
 
-    if (msg->buttons[getIntParam(PARAM_SHARE)]) {
+    if (getButton(msg, PARAM_DEACTIVATE_SERVOS_BUTTON).value_or(false)) {
       if (!deactivate_servos_was_pressed) {
         deactivateServos();
         deactivate_servos_was_pressed = true;
@@ -259,7 +234,7 @@ public:
     }
 
     // Right bumper must be held down while moving
-    if (!msg->buttons[getIntParam(PARAM_RIGHT_BUMPER)]) {
+    if (!getButton(msg, PARAM_DEADMANSWITCH_BUTTON).value_or(false)) {
       if (arm_button_was_pressed) {
         shoulder_pub_->publish(std_msgs::msg::Float32().set__data(0));
         wrist_pub_->publish(std_msgs::msg::Float32().set__data(0));
@@ -275,21 +250,21 @@ public:
         getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
         ignoreDeadbandDirect(
           getDoubleParam(PARAM_DEADBAND),
-          msg->axes[getIntParam(PARAM_LEFT_STICK_Y)])));
+          getAxis(msg, PARAM_SHOULDER_AXIS).value_or(0))));
 
     wrist_pub_->publish(
       std_msgs::msg::Float32().set__data(
-        getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
+        getDoubleParam(PARAM_WRIST_MAX_SPEED) *
         ignoreDeadbandDirect(
           getDoubleParam(PARAM_DEADBAND),
-          msg->axes[getIntParam(PARAM_LEFT_STICK_X)])));
+          getAxis(msg, PARAM_WRIST_AXIS).value_or(0))));
 
     gripper_pub_->publish(
       std_msgs::msg::Float32().set__data(
-        getDoubleParam(PARAM_SHOULDER_MAX_SPEED) *
+        getDoubleParam(PARAM_GRIPPER_MAX_SPEED) *
         ignoreDeadbandDirect(
           getDoubleParam(PARAM_DEADBAND),
-          msg->axes[getIntParam(PARAM_RIGHT_STICK_Y)])));
+          getAxis(msg, PARAM_GRIPPER_AXIS).value_or(0))));
   }
 };
 }
