@@ -5,6 +5,7 @@ struct EncoderValues
 {
     uint16_t angle;
     double velocity;
+    uint16_t magnitude;
 };
 
 #endif

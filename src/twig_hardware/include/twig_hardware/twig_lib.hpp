@@ -41,6 +41,9 @@ struct __attribute__((packed)) TwigState
   float wristVelocity = 0;
   float gripperVelocity = 0;
   float shoulderVelocity = 0;
+  int16_t wristEncoderMagnitude = 0;
+  int16_t gripperEncoderMagnitude = 0;
+  int16_t shoulderEncoderMagnitude = 0;
   int16_t wristCurrent = 0;
   int16_t gripperCurrent = 0;
   int16_t shoulderCurrent = 0;
@@ -149,6 +152,12 @@ public:
   double get_shoulder_servo_position();
   double get_wrist_servo_position();
   double get_gripper_servo_position();
+
+// Get encoder magnitude
+
+  double get_shoulder_encoder_magnitude();
+  double get_wrist_encoder_magnitude();
+  double get_gripper_encoder_magnitude();
 
 // Get effort
 

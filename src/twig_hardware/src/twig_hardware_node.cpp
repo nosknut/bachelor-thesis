@@ -89,6 +89,12 @@ protected:
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr wrist_servo_position_pub_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr gripper_servo_position_pub_;
 
+  // Encoder Magnitude Publishers
+
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr shoulder_encoder_magnitude_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr wrist_encoder_magnitude_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr gripper_encoder_magnitude_pub_;
+
   // Effort Publishers
 
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr shoulder_servo_effort_pub_;
@@ -151,6 +157,11 @@ protected:
     publish_float(wrist_servo_position_pub_, twig.get_wrist_servo_position());
     publish_float(gripper_servo_position_pub_, twig.get_gripper_servo_position());
 
+    // Encoder Magnitude Publishers
+    publish_float(shoulder_encoder_magnitude_pub_, twig.get_shoulder_encoder_magnitude());
+    publish_float(wrist_encoder_magnitude_pub_, twig.get_wrist_encoder_magnitude());
+    publish_float(gripper_encoder_magnitude_pub_, twig.get_gripper_encoder_magnitude());
+
     // Effort Publishers
     publish_float(shoulder_servo_effort_pub_, twig.get_shoulder_servo_effort());
     publish_float(wrist_servo_effort_pub_, twig.get_wrist_servo_effort());
@@ -184,6 +195,12 @@ protected:
     count += shoulder_servo_position_pub_->get_subscription_count();
     count += wrist_servo_position_pub_->get_subscription_count();
     count += gripper_servo_position_pub_->get_subscription_count();
+    count += gripper_servo_velocity_pub_->get_subscription_count();
+
+    // Encoder Magnitude Publishers
+    count += shoulder_encoder_magnitude_pub_->get_subscription_count();
+    count += wrist_encoder_magnitude_pub_->get_subscription_count();
+    count += gripper_encoder_magnitude_pub_->get_subscription_count();
 
     // Effort Publishers
     count += shoulder_servo_effort_pub_->get_subscription_count();
@@ -411,6 +428,11 @@ public:
     shoulder_servo_position_pub_ = create_float_publisher("shoulder/servo/position");
     wrist_servo_position_pub_ = create_float_publisher("wrist/servo/position");
     gripper_servo_position_pub_ = create_float_publisher("gripper/servo/position");
+
+    // Encoder Magnitude Publishers
+    shoulder_encoder_magnitude_pub_ = create_float_publisher("shoulder/encoder/magnitude");
+    wrist_encoder_magnitude_pub_ = create_float_publisher("wrist/encoder/magnitude");
+    gripper_encoder_magnitude_pub_ = create_float_publisher("gripper/encoder/magnitude");
 
     // Effort Publishers
     shoulder_servo_effort_pub_ = create_float_publisher("shoulder/servo/effort");

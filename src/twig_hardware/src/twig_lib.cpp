@@ -329,6 +329,23 @@ double twig_hardware::TwigLib::get_gripper_servo_position()
   return raw_to_radians(state.gripperPosition);
 }
 
+// Get encoder magnitude
+
+double twig_hardware::TwigLib::get_shoulder_encoder_magnitude()
+{
+  return state.shoulderEncoderMagnitude;
+}
+
+double twig_hardware::TwigLib::get_wrist_encoder_magnitude()
+{
+  return state.wristEncoderMagnitude;
+}
+
+double twig_hardware::TwigLib::get_gripper_encoder_magnitude()
+{
+  return state.gripperEncoderMagnitude;
+}
+
 // Get effort
 
 double twig_hardware::TwigLib::get_shoulder_servo_effort()

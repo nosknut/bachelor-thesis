@@ -35,7 +35,8 @@ public:
 private:
   bool updateAngle()
   {
-    if (encoder.readMagnitude() > minMagnitude)
+    values.magnitude = encoder.readMagnitude();
+    if (values.magnitude > minMagnitude)
     {
       values.angle = encoder.readAngle();
     }
