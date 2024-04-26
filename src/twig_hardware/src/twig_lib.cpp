@@ -116,6 +116,40 @@ double twig_hardware::TwigLib::degrees_to_radians(double degrees)
   return degrees * M_PI / 180.0;
 }
 
+bool twig_hardware::TwigLib::respects_position_limits(double position, double velocity, Range limits)
+{
+  if (velocity > 0 && position >= limits.max) {
+    return false;
+  }
+
+  if (velocity < 0 && position <= limits.min) {
+    return false;
+  }
+
+  return true;
+}
+
+// Converts the range [0, 2 * M_PI] to [-M_PI, M_PI]
+double twig_hardware::TwigLib::full_angle_to_center_angle(double angle)
+{
+  return angle - M_PI;
+}
+
+// Applies an angular offset to an angle in the range [-M_PI, M_PI]
+double twig_hardware::TwigLib::apply_angular_offset(double angle, double offset)
+{
+  double new_angle = angle + offset;
+  if (new_angle > M_PI) {
+    return new_angle - 2 * M_PI;
+  }
+
+  if (new_angle < -M_PI) {
+    return new_angle + 2 * M_PI;
+  }
+
+  return new_angle;
+}
+
 // TODO: Implement voltage estimation
 double twig_hardware::TwigLib::raw_to_voltage(int16_t raw)
 {
@@ -201,6 +235,13 @@ void twig_hardware::TwigLib::deactivate_all_servos()
 void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
 {
   auto new_value = velocity * 600;
+  if (respects_position_limits(
+      get_shoulder_servo_position(),
+      new_value,
+      jointConfig.shoulderLimits,
+    )) {
+    new_value = 0;
+  }
   if (command.shoulder != new_value) {
     has_unpushed_commands_ = true;
     command.shoulder = new_value;
@@ -219,6 +260,13 @@ void twig_hardware::TwigLib::set_wrist_servo_velocity(double velocity)
 void twig_hardware::TwigLib::set_gripper_servo_velocity(double velocity)
 {
   auto new_value = velocity * 600;
+  if (respects_position_limits(
+      get_gripper_servo_position(),
+      new_value,
+      jointConfig.gripperLimits,
+    )) {
+    new_value = 0;
+  }
   if (command.gripper != new_value) {
     has_unpushed_commands_ = true;
     command.gripper = new_value;
@@ -316,17 +364,26 @@ double twig_hardware::TwigLib::get_gripper_servo_velocity()
 
 double twig_hardware::TwigLib::get_shoulder_servo_position()
 {
-  return raw_to_radians(state.shoulderPosition);
+  return apply_angular_offset(
+    full_angle_to_center_angle(raw_to_radians(state.shoulderPosition)),
+    jointConfig.shoulderOffset,
+    );
 }
 
 double twig_hardware::TwigLib::get_wrist_servo_position()
 {
-  return raw_to_radians(state.wristPosition);
+  return apply_angular_offset(
+    full_angle_to_center_angle(raw_to_radians(state.wristPosition)),
+    jointConfig.wristOffset,
+    );
 }
 
 double twig_hardware::TwigLib::get_gripper_servo_position()
 {
-  return raw_to_radians(state.gripperPosition);
+  return apply_angular_offset(
+    full_angle_to_center_angle(raw_to_radians(state.gripperPosition)),
+    jointConfig.gripperOffset,
+    );
 }
 
 // Get encoder magnitude
