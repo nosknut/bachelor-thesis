@@ -17,6 +17,16 @@
 
 const std::string NODE_NAME = "twig_hardware_node";
 
+const std::string PARAM_SHOULDER_LIMIT_MIN = "joint_config.shoulder.limits.min";
+const std::string PARAM_SHOULDER_LIMIT_MAX = "joint_config.shoulder.limits.max";
+
+const std::string PARAM_GRIPPER_LIMIT_MIN = "joint_config.gripper.limits.min";
+const std::string PARAM_GRIPPER_LIMIT_MAX = "joint_config.gripper.limits.max";
+
+const std::string PARAM_SHOULDER_OFFSET = "joint_config.shoulder.offset";
+const std::string PARAM_WRIST_OFFSET = "joint_config.wrist.offset";
+const std::string PARAM_GRIPPER_OFFSET = "joint_config.gripper.offset";
+
 const std::string PARAM_PUBLISH_RATE = "publish_rate";
 const std::string PARAM_PUSH_RATE = "push_rate";
 const std::string PARAM_COMMAND_TIMEOUT = "command_timeout";
@@ -249,6 +259,24 @@ protected:
     }
   }
 
+  double getDoubleParam(const std::string & param_name)
+  {
+    return this->get_parameter(param_name).as_double();
+  }
+
+  void update_joint_config()
+  {
+    twig.joint_config.shoulder.limits.min = getDoubleParam(PARAM_SHOULDER_LIMIT_MIN);
+    twig.joint_config.shoulder.limits.max = getDoubleParam(PARAM_SHOULDER_LIMIT_MAX);
+
+    twig.joint_config.gripper.limits.min = getDoubleParam(PARAM_GRIPPER_LIMIT_MIN);
+    twig.joint_config.gripper.limits.max = getDoubleParam(PARAM_GRIPPER_LIMIT_MAX);
+
+    twig.joint_config.shoulder.offset = getDoubleParam(PARAM_SHOULDER_OFFSET);
+    twig.joint_config.wrist.offset = getDoubleParam(PARAM_WRIST_OFFSET);
+    twig.joint_config.gripper.offset = getDoubleParam(PARAM_GRIPPER_OFFSET);
+  }
+
 public:
   TwigHardwareNode(const rclcpp::NodeOptions & options)
   : Node(NODE_NAME, options)
@@ -257,6 +285,18 @@ public:
     this->declare_parameter(PARAM_PUBLISH_RATE, 50);
     this->declare_parameter(PARAM_PUSH_RATE, 50);
     this->declare_parameter(PARAM_COMMAND_TIMEOUT, 500);
+
+    this->declare_parameter(PARAM_SHOULDER_LIMIT_MIN, -M_PI);
+    this->declare_parameter(PARAM_SHOULDER_LIMIT_MAX, M_PI);
+    
+    this->declare_parameter(PARAM_GRIPPER_LIMIT_MIN, -M_PI);
+    this->declare_parameter(PARAM_GRIPPER_LIMIT_MAX, M_PI);
+
+    this->declare_parameter(PARAM_SHOULDER_OFFSET, 0.0);
+    this->declare_parameter(PARAM_WRIST_OFFSET, 0.0);
+    this->declare_parameter(PARAM_GRIPPER_OFFSET, 0.0);
+
+    update_joint_config();
 
     // Activate Services
     // Black magic that allows running services with class instance methods is based on:

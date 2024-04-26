@@ -18,6 +18,23 @@
 
 namespace twig_hardware
 {
+
+struct Range {
+  double min = 0;
+  double max = 0;
+
+  Range(double min, double max) : min(min), max(max) {}
+};
+
+struct TwigJointConfig
+{
+  Range gripperLimits = Range(-M_PI, M_PI);
+  Range shoulderLimits = Range(-M_PI, M_PI);
+  double shoulderOffset = 0;
+  double gripperOffset = 0;
+  double wristOffset = 0;
+};
+
 // Attribute packed is used to ensure the struct has the same
 // shape across different architectures.
 // This allows it to be sent through the i2c bus.
@@ -76,6 +93,7 @@ protected:
 public:
   TwigCommand command;
   TwigState state;
+  TwigJointConfig jointConfig;
 
   TwigLib(int i2c_bus = 1, int i2c_address = 30, std::string i2c_device = "/dev/i2c-1");
   ~TwigLib();
@@ -91,6 +109,10 @@ protected:
 
   double degrees_to_radians(double degrees);
   double raw_to_radians(int16_t raw);
+
+  bool respects_position_limits(double position, double velocity, Range limits);
+  double full_angle_to_center_angle(double angle);
+  double apply_angular_offset(double angle, double offset);
 
   double raw_to_voltage(int16_t raw);
 
