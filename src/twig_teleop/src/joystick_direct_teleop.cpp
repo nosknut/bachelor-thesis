@@ -20,6 +20,8 @@ const std::string SHOULDER_TOPIC = "/shoulder/servo/velocity/cmd";
 const std::string WRIST_TOPIC = "/wrist/servo/velocity/cmd";
 const std::string GRIPPER_TOPIC = "/gripper/servo/velocity/cmd";
 
+const std::string ACKNOWLEDGE_HARDWARE_REBOOT_TOPIC = "/acknowledge_hardware_reboot";
+
 const std::string ACTIVATE_SHOULDER_SERVO_TOPIC = "/shoulder/servo/activate";
 const std::string ACTIVATE_WRIST_SERVO_TOPIC = "/wrist/servo/activate";
 const std::string ACTIVATE_GRIPPER_SERVO_TOPIC = "/gripper/servo/activate";
@@ -74,6 +76,8 @@ private:
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr wrist_pub_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr gripper_pub_;
 
+  rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr acknowledge_hardware_reboot_client_;
+
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr shoulder_servo_activate_client_;
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr wrist_servo_activate_client_;
   rclcpp::Client<std_srvs::srv::Trigger>::SharedPtr gripper_servo_activate_client_;
@@ -123,6 +127,9 @@ public:
       GRIPPER_TOPIC,
       rclcpp::SystemDefaultsQoS());
 
+    acknowledge_hardware_reboot_client_ = this->create_client<std_srvs::srv::Trigger>(
+      ACKNOWLEDGE_HARDWARE_REBOOT_TOPIC);
+
     shoulder_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(
       ACTIVATE_SHOULDER_SERVO_TOPIC);
     wrist_servo_activate_client_ = this->create_client<std_srvs::srv::Trigger>(
@@ -165,6 +172,10 @@ public:
 
     gripper_servo_deactivate_client_->wait_for_service(std::chrono::seconds(1));
     gripper_servo_deactivate_client_->async_send_request(
+      std::make_shared<std_srvs::srv::Trigger::Request>());
+
+    acknowledge_hardware_reboot_client_->wait_for_service(std::chrono::seconds(1));
+    acknowledge_hardware_reboot_client_->async_send_request(
       std::make_shared<std_srvs::srv::Trigger::Request>());
   }
 

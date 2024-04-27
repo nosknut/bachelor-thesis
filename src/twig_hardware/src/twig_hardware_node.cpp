@@ -30,6 +30,7 @@ const std::string PARAM_GRIPPER_OFFSET = "joint_config.gripper.offset";
 const std::string PARAM_PUBLISH_RATE = "publish_rate";
 const std::string PARAM_PUSH_RATE = "push_rate";
 const std::string PARAM_COMMAND_TIMEOUT = "command_timeout";
+const std::string PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT = "auto_acknowledge_hardware_reboot";
 
 namespace twig_hardware
 {
@@ -52,6 +53,10 @@ protected:
   bool read_without_subscribers_ = true;
   bool publish_without_subscribers_ = false;
 
+  // Acknowledge Hardware Reboot Service
+
+  rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr acknowledge_hardware_reboot_srv_;
+  
   // Activate Services
 
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr shoulder_servo_activate_srv_;
@@ -225,6 +230,20 @@ protected:
     bool has_subscribers = get_total_subscriber_count() > 0;
     if (has_subscribers || read_without_subscribers_) {
       if (twig.read_state(3)) {
+        if (twig.driver_rebooted()) {
+            twig.acknowledge_hardware_reboot();
+            RCLCPP_DEBUG(this->get_logger(), "Driver rebooted");
+        }
+        if (twig.hardware_rebooted()) {
+          RCLCPP_WARN(this->get_logger(), "Hardware rebooted");
+          if (getBoolParam(PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT)) {
+            twig.acknowledge_hardware_reboot();
+            RCLCPP_INFO(this->get_logger(), "Hardware reboot was automatically acknowledged and the system will continue normal operation");
+          } else {
+            RCLCPP_INFO(this->get_logger(), "Hardware reboot must be manually acknowledged. To continue normal operation, trigger the acknowledge service");
+          }
+        }
+
         if (has_subscribers || publish_without_subscribers_) {
           publish_state();
         }
@@ -264,6 +283,11 @@ protected:
     return this->get_parameter(param_name).as_double();
   }
 
+  double getBoolParam(const std::string & param_name)
+  {
+    return this->get_parameter(param_name).as_boolean();
+  }
+
   void update_joint_config()
   {
     twig.joint_config.shoulder.limits.min = getDoubleParam(PARAM_SHOULDER_LIMIT_MIN);
@@ -285,6 +309,7 @@ public:
     this->declare_parameter(PARAM_PUBLISH_RATE, 50);
     this->declare_parameter(PARAM_PUSH_RATE, 50);
     this->declare_parameter(PARAM_COMMAND_TIMEOUT, 500);
+    this->declare_parameter(PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT, false);
 
     this->declare_parameter(PARAM_SHOULDER_LIMIT_MIN, -M_PI);
     this->declare_parameter(PARAM_SHOULDER_LIMIT_MAX, M_PI);
@@ -297,6 +322,25 @@ public:
     this->declare_parameter(PARAM_GRIPPER_OFFSET, 0.0);
 
     update_joint_config();
+
+    // Acknowledge Hardware Reboot Service
+
+    acknowledge_hardware_reboot_srv_ = create_service<std_srvs::srv::Trigger>(
+      "acknowledge_hardware_reboot",
+      [this](
+        const std::shared_ptr<rmw_request_id_t> request_header,
+        const std::shared_ptr<std_srvs::srv::Trigger::Request> request,
+        std::shared_ptr<std_srvs::srv::Trigger::Response> response
+      ) -> void {
+        if (twig.hardware_rebooted()) {
+          twig.acknowledge_hardware_reboot();
+          response->success = true;
+          response->message = "Hardware reboot acknowledged";
+        } else {
+          response->success = false;
+          response->message = "Hardware reboot not detected";
+        }
+      });
 
     // Activate Services
     // Black magic that allows running services with class instance methods is based on:

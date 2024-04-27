@@ -42,6 +42,7 @@ struct TwigJointConfig
 // https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
 struct __attribute__((packed)) TwigCommand
 {
+  int16_t sessionId = 0;
   int16_t wrist = 0;
   int16_t gripper = 0;
   int16_t shoulder = 0;
@@ -57,6 +58,7 @@ struct __attribute__((packed)) TwigCommand
 // https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
 struct __attribute__((packed)) TwigState
 {
+  int16_t sessionId = 0;
   int16_t wristPosition = 0;
   int16_t gripperPosition = 0;
   int16_t shoulderPosition = 0;
@@ -123,6 +125,11 @@ public:
 // Sync
   bool write_command(int max_retries = 1, bool force = false);
   bool read_state(int max_retries = 1);
+
+// Hardware Reboot
+  bool driver_rebooted();
+  bool hardware_rebooted();
+  void acknowledge_hardware_reboot();
 
 // Activate
 

@@ -104,6 +104,25 @@ bool twig_hardware::TwigLib::read_state(int max_retries)
   }
 }
 
+// Hardware Reboot
+  
+bool twig_hardware::TwigLib::driver_rebooted()
+{
+  return command.sessionId == 0;
+}
+
+bool twig_hardware::TwigLib::hardware_rebooted()
+{
+  return !driver_rebooted() && (state.sessionId != command.sessionId);
+}
+
+void twig_hardware::TwigLib::acknowledge_hardware_reboot()
+{
+  command.sessionId = state.sessionId;
+  has_unpushed_commands_ = true;
+}
+
+
 // Utility
 
 double twig_hardware::TwigLib::raw_to_radians(int16_t raw)
