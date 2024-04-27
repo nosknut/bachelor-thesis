@@ -184,7 +184,7 @@ double twig_hardware::TwigLib::raw_to_current(int16_t raw)
 // TODO: Implement current estimation
 int16_t twig_hardware::TwigLib::current_to_raw(double current)
 {
-  return raw * 1024.0;
+  return current * 1024.0;
 }
 
 // TODO: Implement effort estimation
@@ -263,8 +263,9 @@ void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
   if (respects_position_limits(
       get_shoulder_servo_position(),
       new_value,
-      jointConfig.shoulderLimits,
-    )) {
+      jointConfig.shoulderLimits
+  ))
+  {
     new_value = 0;
   }
   if (command.shoulder != new_value) {
@@ -288,8 +289,9 @@ void twig_hardware::TwigLib::set_gripper_servo_velocity(double velocity)
   if (respects_position_limits(
       get_gripper_servo_position(),
       new_value,
-      jointConfig.gripperLimits,
-    )) {
+      jointConfig.gripperLimits
+  ))
+  {
     new_value = 0;
   }
   if (command.gripper != new_value) {
@@ -391,24 +393,24 @@ double twig_hardware::TwigLib::get_shoulder_servo_position()
 {
   return apply_angular_offset(
     full_angle_to_center_angle(raw_to_radians(state.shoulderPosition)),
-    jointConfig.shoulderOffset,
-    );
+    jointConfig.shoulderOffset
+  );
 }
 
 double twig_hardware::TwigLib::get_wrist_servo_position()
 {
   return apply_angular_offset(
     full_angle_to_center_angle(raw_to_radians(state.wristPosition)),
-    jointConfig.wristOffset,
-    );
+    jointConfig.wristOffset
+  );
 }
 
 double twig_hardware::TwigLib::get_gripper_servo_position()
 {
   return apply_angular_offset(
     full_angle_to_center_angle(raw_to_radians(state.gripperPosition)),
-    jointConfig.gripperOffset,
-    );
+    jointConfig.gripperOffset
+  );
 }
 
 // Get encoder magnitude
