@@ -33,6 +33,15 @@ const std::string PARAM_COMMAND_TIMEOUT = "command_timeout";
 const std::string PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT = "auto_acknowledge_hardware_reboot";
 
 const std::string PARAM_HW_CONFIG_CONNECTION_TIMEOUT = "hardware_config.connection_timeout";
+const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT = "hardware_config.wrist_max_current";
+const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT = "hardware_config.gripper_max_current";
+const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT = "hardware_config.shoulder_max_current";
+const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION = "hardware_config.wrist_max_current_duration";
+const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION = "hardware_config.gripper_max_current_duration";
+const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION = "hardware_config.shoulder_max_current_duration";
+const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION = "hardware_config.shoulder_max_current_cooldown_duration";
+const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION = "hardware_config.wrist_max_current_cooldown_duration";
+const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION = "hardware_config.gripper_max_current_cooldown_duration";
 const std::string PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE = "hardware_config.wrist_encoder_min_magnitude";
 const std::string PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE = "hardware_config.gripper_encoder_min_magnitude";
 const std::string PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE = "hardware_config.shoulder_encoder_min_magnitude";
@@ -301,6 +310,15 @@ protected:
   void update_hardware_config()
   {
     twig.config.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
+    twig.config.wristMaxCurrent = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT);
+    twig.config.gripperMaxCurrent = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT);
+    twig.config.shoulderMaxCurrent = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT);
+    twig.config.wristMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION);
+    twig.config.gripperMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION);
+    twig.config.shoulderMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION);
+    twig.config.shoulderMaxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION);
+    twig.config.wristMaxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION);
+    twig.config.gripperMaxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION);
     twig.config.wristEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE);
     twig.config.gripperEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE);
     twig.config.shoulderEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE);
@@ -340,6 +358,15 @@ public:
     this->declare_parameter(PARAM_GRIPPER_OFFSET, 0.0);
     
     this->declare_parameter(PARAM_HW_CONFIG_CONNECTION_TIMEOUT, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION, 0);
+    this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION, 0);
+    this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION, 0);
     this->declare_parameter(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE, 0);
     this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE, 0);
     this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE, 0);
