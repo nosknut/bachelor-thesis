@@ -310,9 +310,9 @@ protected:
   void update_hardware_config()
   {
     twig.config.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
-    twig.config.wristMaxCurrent = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT);
-    twig.config.gripperMaxCurrent = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT);
-    twig.config.shoulderMaxCurrent = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT);
+    twig.config.wristMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT));
+    twig.config.gripperMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT));
+    twig.config.shoulderMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT));
     twig.config.wristMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION);
     twig.config.gripperMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION);
     twig.config.shoulderMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION);
@@ -358,9 +358,9 @@ public:
     this->declare_parameter(PARAM_GRIPPER_OFFSET, 0.0);
     
     this->declare_parameter(PARAM_HW_CONFIG_CONNECTION_TIMEOUT, 1000);
-    this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT, 1000);
-    this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT, 1000);
-    this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT, 1.0);
+    this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT, 1.0);
+    this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT, 1.0);
     this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION, 1000);
     this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION, 1000);
     this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION, 1000);
