@@ -105,7 +105,7 @@ bool twig_hardware::TwigLib::read_state(int max_retries)
 }
 
 // Hardware Reboot
-  
+
 bool twig_hardware::TwigLib::driver_rebooted()
 {
   return command.sessionId == 0;
@@ -135,7 +135,9 @@ double twig_hardware::TwigLib::degrees_to_radians(double degrees)
   return degrees * M_PI / 180.0;
 }
 
-bool twig_hardware::TwigLib::respects_position_limits(double position, double velocity, Range limits)
+bool twig_hardware::TwigLib::respects_position_limits(
+  double position, double velocity,
+  Range limits)
 {
   if (velocity > 0 && position >= limits.max) {
     return false;

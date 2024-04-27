@@ -9,44 +9,49 @@
 class FusedServo
 {
 public:
-        const int servoPin;
-        const int relayPin;
-        Servo servo;
-        Fuse fuse;
+  const int servoPin;
+  const int relayPin;
+  Servo servo;
+  Fuse fuse;
 
-        uint16_t speed = 0;
-        bool relayState = false;
+  uint16_t speed = 0;
+  bool relayState = false;
 
-        FusedServo(int servoPin, int relayPin) : servoPin(servoPin), relayPin(relayPin) {
-        }
+  FusedServo(int servoPin, int relayPin)
+  : servoPin(servoPin), relayPin(relayPin)
+  {
+  }
 
-        void begin() {
-                pinMode(relayPin, OUTPUT);
-                digitalWrite(relayPin, HIGH);
+  void begin()
+  {
+    pinMode(relayPin, OUTPUT);
+    digitalWrite(relayPin, HIGH);
 
-                servo.attach(servoPin);
-                servo.writeMicroseconds(SERVO_STATIONARY_SIGNAL);
-        }
+    servo.attach(servoPin);
+    servo.writeMicroseconds(SERVO_STATIONARY_SIGNAL);
+  }
 
-        void update(uint16_t current, uint16_t relayCommand, uint16_t commandSpeed) {
-                fuse.update(current);
-                
-                // If the fuse is tripped, keep the servo stationary and the relay off for the cooldown time
-                if (fuse.tripped) {
-                        speed = 0;
-                        relayState = false;
-                } else {
-                        speed = commandSpeed;
-                        relayState = relayCommand;
-                }
+  void update(uint16_t current, uint16_t relayCommand, uint16_t commandSpeed)
+  {
+    fuse.update(current);
 
-                write();
-        }
+    // If the fuse is tripped, keep the servo stationary and the relay off for the cooldown time
+    if (fuse.tripped) {
+      speed = 0;
+      relayState = false;
+    } else {
+      speed = commandSpeed;
+      relayState = relayCommand;
+    }
 
-        void write() {
-                servo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + speed);
-                digitalWrite(relayPin, relayState ? LOW : HIGH);
-        }
+    write();
+  }
+
+  void write()
+  {
+    servo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + speed);
+    digitalWrite(relayPin, relayState ? LOW : HIGH);
+  }
 
 };
 #endif
