@@ -28,6 +28,7 @@ unsigned long received = 0;
 
 void resetCommand()
 {
+  twigCommand.sessionId = twigState.sessionId;
   twigCommand.shoulder = 0;
   twigCommand.wrist = 0;
   twigCommand.gripper = 0;
@@ -36,8 +37,18 @@ void resetCommand()
   twigCommand.gripperServoPowered = false;
 }
 
+bool verify_session_id()
+{
+  return twigCommand.sessionId == twigState.sessionId;
+}
+
 void writeCommand()
 {
+  if (!verify_session_id())
+  {
+    resetCommand();
+  }
+
   shoulderServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.shoulder);
   wristServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.wrist);
   gripperServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.gripper);
@@ -113,6 +124,9 @@ void setupOutputs()
 
 void setup()
 {
+  // Used to detect that the microcontroller rebooted
+  twigState.sessionId = random(1, 10000);
+
   // Initialize and kill the outputs first in case the watchdog timer resets the system.
   setupOutputs();
   resetCommand();

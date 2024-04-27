@@ -8,6 +8,7 @@
 // https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
 struct __attribute__((packed)) TwigState
 {
+  int16_t sessionId = 0;
   int16_t wristPosition = 0;
   int16_t gripperPosition = 0;
   int16_t shoulderPosition = 0;
