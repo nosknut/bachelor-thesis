@@ -2,10 +2,12 @@
 
 #include <Wire.h>
 #include <Servo.h>
+#include "Timer.h"
 #include <avr/wdt.h>
 #include "TwigState.h"
 #include "TwigCommand.h"
 #include "TwigHardwareConfig.h"
+#include "FusedServo.h"
 
 // #define DEBUG_ENCODERS
 #include "Encoder.h"
@@ -14,9 +16,9 @@ Encoder shoulderEncoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, INIT
 Encoder wristEncoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
 Encoder gripperEncoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
 
-Servo shoulderServo;
-Servo wristServo;
-Servo gripperServo;
+FusedServo shoulderServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
+FusedServo wristServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
+FusedServo gripperServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
 
 TwigCommand twigCommand;
 TwigState twigState;
@@ -49,6 +51,18 @@ void updateHardwareConfig() {
 
   connectionTimeout = config.connectionTimeout;
 
+  shoulderEncoder.minMagnitude = config.shoulderEncoderMinMagnitude;
+  wristEncoder.minMagnitude = config.wristEncoderMinMagnitude;
+  gripperEncoder.minMagnitude = config.gripperEncoderMinMagnitude;
+
+  shoulderServo.fuse.maxCurrent = config.shoulderMaxCurrent;
+  wristServo.fuse.maxCurrent = config.wristMaxCurrent;
+  gripperServo.fuse.maxCurrent = config.gripperMaxCurrent;
+
+  shoulderServo.fuse.maxCurrentDuration = config.shoulderMaxCurrentDuration;
+  wristServo.fuse.maxCurrentDuration = config.wristMaxCurrentDuration;
+  gripperServo.fuse.maxCurrentDuration = config.gripperMaxCurrentDuration;
+
   shoulderServo.fuse.maxCurrentCooldownDuration = config.shoulderMaxCurrentCooldownDuration;
   wristServo.fuse.maxCurrentCooldownDuration = config.wristMaxCurrentCooldownDuration;
   gripperServo.fuse.maxCurrentCooldownDuration = config.gripperMaxCurrentCooldownDuration;
@@ -61,13 +75,9 @@ void writeCommand()
     resetCommand();
   }
 
-  shoulderServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.shoulder);
-  wristServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.wrist);
-  gripperServo.writeMicroseconds(SERVO_STATIONARY_SIGNAL + twigCommand.gripper);
-
-  digitalWrite(SHOULDER_SERVO_RELAY_PIN, twigCommand.shoulderServoPowered ? LOW : HIGH);
-  digitalWrite(WRIST_SERVO_RELAY_PIN, twigCommand.wristServoPowered ? LOW : HIGH);
-  digitalWrite(GRIPPER_SERVO_RELAY_PIN, twigCommand.gripperServoPowered ? LOW : HIGH);
+  shoulderServo.update(twigState.shoulderCurrent, twigCommand.shoulderServoPowered, twigCommand.shoulder);
+  wristServo.update(twigState.wristCurrent, twigCommand.wristServoPowered, twigCommand.wrist);
+  gripperServo.update(twigState.gripperCurrent, twigCommand.gripperServoPowered, twigCommand.gripper);
 }
 
 void onCommand(int length)
@@ -108,9 +118,9 @@ void readState()
   }
   twigState.gripperEncoderMagnitude = gripperEncoder.values.magnitude;
 
-  twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == LOW;
-  twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == LOW;
-  twigState.gripperServoPowered = digitalRead(GRIPPER_SERVO_RELAY_PIN) == LOW;
+  twigState.wristServoPowered = wristServo.relayState;
+  twigState.shoulderServoPowered = shoulderServo.relayState;
+  twigState.gripperServoPowered = gripperServo.relayState;
 }
 
 void onStateRequest()
@@ -122,17 +132,9 @@ void onStateRequest()
 
 void setupOutputs()
 {
-  pinMode(SHOULDER_SERVO_RELAY_PIN, OUTPUT);
-  pinMode(WRIST_SERVO_RELAY_PIN, OUTPUT);
-  pinMode(GRIPPER_SERVO_RELAY_PIN, OUTPUT);
-
-  digitalWrite(SHOULDER_SERVO_RELAY_PIN, HIGH);
-  digitalWrite(WRIST_SERVO_RELAY_PIN, HIGH);
-  digitalWrite(GRIPPER_SERVO_RELAY_PIN, HIGH);
-
-  shoulderServo.attach(SHOULDER_SERVO_PIN);
-  wristServo.attach(WRIST_SERVO_PIN);
-  gripperServo.attach(GRIPPER_SERVO_PIN);
+  shoulderServo.begin();
+  wristServo.begin();
+  gripperServo.begin();
 }
 
 void setup()
@@ -140,10 +142,8 @@ void setup()
   // Used to detect that the microcontroller rebooted
   twigState.sessionId = random(1, 10000);
 
-  // Initialize and kill the outputs first in case the watchdog timer resets the system.
   setupOutputs();
   resetCommand();
-  writeCommand();
 
   Serial.begin(SERIAL_BAUD_RATE);
 

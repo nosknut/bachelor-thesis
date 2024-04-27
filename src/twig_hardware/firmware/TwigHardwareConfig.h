@@ -9,6 +9,15 @@
 struct __attribute__((packed)) TwigHardwareConfig
 {
   int16_t connectionTimeout = 0;
+  int16_t wristMaxCurrent = 0;
+  int16_t gripperMaxCurrent = 0;
+  int16_t shoulderMaxCurrent = 0;
+  int16_t wristMaxCurrentDuration = 0;
+  int16_t gripperMaxCurrentDuration = 0;
+  int16_t shoulderMaxCurrentDuration = 0;
+  int16_t shoulderMaxCurrentCooldownDuration = 0;
+  int16_t wristMaxCurrentCooldownDuration = 0;
+  int16_t gripperMaxCurrentCooldownDuration = 0;
   int16_t wristEncoderMinMagnitude = 0;
   int16_t gripperEncoderMinMagnitude = 0;
   int16_t shoulderEncoderMinMagnitude = 0;
