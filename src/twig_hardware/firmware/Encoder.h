@@ -23,7 +23,7 @@ public:
 
   // constructor:
   Encoder(int sdaPin, int sclPin, int minMagnitude, String name)
-      : sdaPin(sdaPin), sclPin(sclPin), minMagnitude(minMagnitude), name(name)
+  : sdaPin(sdaPin), sclPin(sclPin), minMagnitude(minMagnitude), name(name)
   {
   }
 
@@ -36,12 +36,9 @@ private:
   bool updateAngle()
   {
     values.magnitude = encoder.readMagnitude();
-    if (values.magnitude > minMagnitude)
-    {
+    if (values.magnitude > minMagnitude) {
       values.angle = encoder.readAngle();
-    }
-    else
-    {
+    } else {
 #ifdef DEBUG_ENCODERS
       Serial.println("ERROR: " + name + " encoder magnet is too weak");
 #endif
@@ -69,8 +66,7 @@ public:
 
   bool update()
   {
-    if (updateAngle())
-    {
+    if (updateAngle()) {
       updateVelocity();
       return true;
     }

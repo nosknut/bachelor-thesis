@@ -36,15 +36,24 @@ const std::string PARAM_HW_CONFIG_CONNECTION_TIMEOUT = "hardware_config.connecti
 const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT = "hardware_config.wrist_max_current";
 const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT = "hardware_config.gripper_max_current";
 const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT = "hardware_config.shoulder_max_current";
-const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION = "hardware_config.wrist_max_current_duration";
-const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION = "hardware_config.gripper_max_current_duration";
-const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION = "hardware_config.shoulder_max_current_duration";
-const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION = "hardware_config.shoulder_max_current_cooldown_duration";
-const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION = "hardware_config.wrist_max_current_cooldown_duration";
-const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION = "hardware_config.gripper_max_current_cooldown_duration";
-const std::string PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE = "hardware_config.wrist_encoder_min_magnitude";
-const std::string PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE = "hardware_config.gripper_encoder_min_magnitude";
-const std::string PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE = "hardware_config.shoulder_encoder_min_magnitude";
+const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION =
+  "hardware_config.wrist_max_current_duration";
+const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION =
+  "hardware_config.gripper_max_current_duration";
+const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION =
+  "hardware_config.shoulder_max_current_duration";
+const std::string PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION =
+  "hardware_config.shoulder_max_current_cooldown_duration";
+const std::string PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION =
+  "hardware_config.wrist_max_current_cooldown_duration";
+const std::string PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION =
+  "hardware_config.gripper_max_current_cooldown_duration";
+const std::string PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE =
+  "hardware_config.wrist_encoder_min_magnitude";
+const std::string PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE =
+  "hardware_config.gripper_encoder_min_magnitude";
+const std::string PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE =
+  "hardware_config.shoulder_encoder_min_magnitude";
 
 namespace twig_hardware
 {
@@ -70,7 +79,7 @@ protected:
   // Acknowledge Hardware Reboot Service
 
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr acknowledge_hardware_reboot_srv_;
-  
+
   // Activate Services
 
   rclcpp::Service<std_srvs::srv::Trigger>::SharedPtr shoulder_servo_activate_srv_;
@@ -245,16 +254,20 @@ protected:
     if (has_subscribers || read_without_subscribers_) {
       if (twig.read_state(3)) {
         if (twig.driver_rebooted()) {
-            twig.acknowledge_hardware_reboot();
-            RCLCPP_DEBUG(this->get_logger(), "Driver rebooted");
+          twig.acknowledge_hardware_reboot();
+          RCLCPP_DEBUG(this->get_logger(), "Driver rebooted");
         }
         if (twig.hardware_rebooted()) {
           RCLCPP_WARN(this->get_logger(), "Hardware rebooted");
           if (getBoolParam(PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT)) {
             twig.acknowledge_hardware_reboot();
-            RCLCPP_INFO(this->get_logger(), "Hardware reboot was automatically acknowledged and the system will continue normal operation");
+            RCLCPP_INFO(
+              this->get_logger(),
+              "Hardware reboot was automatically acknowledged and the system will continue normal operation");
           } else {
-            RCLCPP_INFO(this->get_logger(), "Hardware reboot must be manually acknowledged. To continue normal operation, trigger the acknowledge service");
+            RCLCPP_INFO(
+              this->get_logger(),
+              "Hardware reboot must be manually acknowledged. To continue normal operation, trigger the acknowledge service");
           }
         }
 
@@ -269,12 +282,12 @@ protected:
 
   void push_timer_callback()
   {
-      if (!twig.write_command(3)) {
-        RCLCPP_ERROR(this->get_logger(), "Failed to write command to hardware");
-      }
-      has_new_shoulder_command_ = false;
-      has_new_wrist_command_ = false;
-      has_new_gripper_command_ = false;
+    if (!twig.write_command(3)) {
+      RCLCPP_ERROR(this->get_logger(), "Failed to write command to hardware");
+    }
+    has_new_shoulder_command_ = false;
+    has_new_wrist_command_ = false;
+    has_new_gripper_command_ = false;
   }
 
   void command_timeout_callback()
@@ -359,14 +372,14 @@ public:
 
     this->declare_parameter(PARAM_SHOULDER_LIMIT_MIN, -M_PI);
     this->declare_parameter(PARAM_SHOULDER_LIMIT_MAX, M_PI);
-    
+
     this->declare_parameter(PARAM_GRIPPER_LIMIT_MIN, -M_PI);
     this->declare_parameter(PARAM_GRIPPER_LIMIT_MAX, M_PI);
 
     this->declare_parameter(PARAM_SHOULDER_OFFSET, 0.0);
     this->declare_parameter(PARAM_WRIST_OFFSET, 0.0);
     this->declare_parameter(PARAM_GRIPPER_OFFSET, 0.0);
-    
+
     this->declare_parameter(PARAM_HW_CONFIG_CONNECTION_TIMEOUT, 1000);
     this->declare_parameter(PARAM_HW_CONFIG_WRIST_MAX_CURRENT, 1.0);
     this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT, 1.0);

@@ -19,11 +19,13 @@
 namespace twig_hardware
 {
 
-struct Range {
+struct Range
+{
   double min = 0;
   double max = 0;
 
-  Range(double min, double max) : min(min), max(max) {}
+  Range(double min, double max)
+  : min(min), max(max) {}
 };
 
 struct TwigJointConfig
