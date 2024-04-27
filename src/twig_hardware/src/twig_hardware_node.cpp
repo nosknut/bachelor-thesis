@@ -32,6 +32,11 @@ const std::string PARAM_PUSH_RATE = "push_rate";
 const std::string PARAM_COMMAND_TIMEOUT = "command_timeout";
 const std::string PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT = "auto_acknowledge_hardware_reboot";
 
+const std::string PARAM_HW_CONFIG_CONNECTION_TIMEOUT = "hardware_config.connection_timeout";
+const std::string PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE = "hardware_config.wrist_encoder_min_magnitude";
+const std::string PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE = "hardware_config.gripper_encoder_min_magnitude";
+const std::string PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE = "hardware_config.shoulder_encoder_min_magnitude";
+
 namespace twig_hardware
 {
 
@@ -283,9 +288,22 @@ protected:
     return this->get_parameter(param_name).as_double();
   }
 
+  int getIntParam(const std::string & param_name)
+  {
+    return this->get_parameter(param_name).as_int();
+  }
+
   double getBoolParam(const std::string & param_name)
   {
     return this->get_parameter(param_name).as_boolean();
+  }
+
+  void update_hardware_config()
+  {
+    twig.config.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
+    twig.config.wristEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE);
+    twig.config.gripperEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE);
+    twig.config.shoulderEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE);
   }
 
   void update_joint_config()
@@ -320,8 +338,14 @@ public:
     this->declare_parameter(PARAM_SHOULDER_OFFSET, 0.0);
     this->declare_parameter(PARAM_WRIST_OFFSET, 0.0);
     this->declare_parameter(PARAM_GRIPPER_OFFSET, 0.0);
+    
+    this->declare_parameter(PARAM_HW_CONFIG_CONNECTION_TIMEOUT, 1000);
+    this->declare_parameter(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE, 0);
+    this->declare_parameter(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE, 0);
+    this->declare_parameter(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE, 0);
 
     update_joint_config();
+    update_hardware_config();
 
     // Acknowledge Hardware Reboot Service
 

@@ -5,13 +5,14 @@
 #include <avr/wdt.h>
 #include "TwigState.h"
 #include "TwigCommand.h"
+#include "TwigHardwareConfig.h"
 
 // #define DEBUG_ENCODERS
 #include "Encoder.h"
 
-Encoder shoulderEncoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, MIN_ENCODER_MAGNITUDE, "Shoulder");
-Encoder wristEncoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, MIN_ENCODER_MAGNITUDE, "Wrist");
-Encoder gripperEncoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, MIN_ENCODER_MAGNITUDE, "Gripper");
+Encoder shoulderEncoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Shoulder");
+Encoder wristEncoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
+Encoder gripperEncoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
 
 Servo shoulderServo;
 Servo wristServo;
@@ -20,6 +21,7 @@ Servo gripperServo;
 TwigCommand twigCommand;
 TwigState twigState;
 
+unsigned long connectionTimeout = INITIAL_CONNECTION_TIMEOUT;
 unsigned long connectionTimer = 0;
 unsigned long logTimer = 0;
 
@@ -42,6 +44,16 @@ bool verify_session_id()
   return twigCommand.sessionId == twigState.sessionId;
 }
 
+void updateHardwareConfig() {
+  TwigHardwareConfig &config = twigCommand.config;
+
+  connectionTimeout = config.connectionTimeout;
+
+  shoulderServo.fuse.maxCurrentCooldownDuration = config.shoulderMaxCurrentCooldownDuration;
+  wristServo.fuse.maxCurrentCooldownDuration = config.wristMaxCurrentCooldownDuration;
+  gripperServo.fuse.maxCurrentCooldownDuration = config.gripperMaxCurrentCooldownDuration;
+}
+
 void writeCommand()
 {
   if (!verify_session_id())
@@ -61,6 +73,7 @@ void writeCommand()
 void onCommand(int length)
 {
   Wire.readBytes((uint8_t *)&twigCommand, length);
+  updateHardwareConfig();
   connectionTimer = millis();
   received++;
 }
@@ -193,7 +206,7 @@ void updateLog()
 
 void updateConnectionTimer()
 {
-  if ((millis() - connectionTimer) > CONNECTION_TIMEOUT)
+  if ((millis() - connectionTimer) > connectionTimeout)
   {
     resetCommand();
   }

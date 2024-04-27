@@ -1,6 +1,8 @@
 #ifndef TWIG_COMMAND_h
 #define TWIG_COMMAND_h
 
+#include "TwigHardwareConfig.h"
+
 // Attribute packed is used to ensure the struct has the same
 // shape across different architectures.
 // This allows it to be sent through the i2c bus.
@@ -15,6 +17,7 @@ struct __attribute__((packed)) TwigCommand
   bool shoulderServoPowered = false;
   bool wristServoPowered = false;
   bool gripperServoPowered = false;
+  TwigHardwareConfig config;
 };
 
 #endif
