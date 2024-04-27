@@ -181,6 +181,12 @@ double twig_hardware::TwigLib::raw_to_current(int16_t raw)
   return ((double) raw) / 1024.0;
 }
 
+// TODO: Implement current estimation
+int16_t twig_hardware::TwigLib::current_to_raw(double current)
+{
+  return raw * 1024.0;
+}
+
 // TODO: Implement effort estimation
 double twig_hardware::TwigLib::current_to_effort(double current)
 {

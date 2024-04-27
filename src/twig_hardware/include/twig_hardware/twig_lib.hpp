@@ -142,6 +142,7 @@ protected:
   double raw_to_voltage(int16_t raw);
 
   double raw_to_current(int16_t raw);
+  int16_t current_to_raw(double current);
   double current_to_effort(double current);
 
 public:
