@@ -11,13 +11,13 @@ class Encoder
 {
   const int sdaPin;
   const int sclPin;
-  const int minMagnitude;
 
   SoftI2C i2cBus = SoftI2C(sdaPin, sclPin);
   AS5600 encoder = AS5600(&i2cBus);
   AngularVelocityTracker velocityTracker;
 
 public:
+  int minMagnitude;
   const String name;
   EncoderValues values;
 

@@ -6,12 +6,12 @@ const unsigned long SERIAL_BAUD_RATE = 115200;
 
 const int SERVO_STATIONARY_SIGNAL = 1500;
 
-const int MIN_ENCODER_MAGNITUDE = 10;
+const int INITIAL_MIN_ENCODER_MAGNITUDE = 10;
 
 // To protect the system in the event of a connection loss,
 // the system will stop moving if it does not detect activity
 // within the specified number of milliseconds.
-const unsigned long CONNECTION_TIMEOUT = 200;
+const unsigned long INITIAL_CONNECTION_TIMEOUT = 200;
 
 const int8_t SHOULDER_ENCODER_SDA_PIN = 4;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
