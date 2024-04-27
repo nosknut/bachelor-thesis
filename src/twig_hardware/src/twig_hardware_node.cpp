@@ -304,37 +304,47 @@ protected:
 
   double getBoolParam(const std::string & param_name)
   {
-    return this->get_parameter(param_name).as_boolean();
+    return this->get_parameter(param_name).as_bool();
   }
 
   void update_hardware_config()
   {
-    twig.config.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
-    twig.config.wristMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT));
-    twig.config.gripperMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT));
-    twig.config.shoulderMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT));
-    twig.config.wristMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION);
-    twig.config.gripperMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION);
-    twig.config.shoulderMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION);
-    twig.config.shoulderMaxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION);
-    twig.config.wristMaxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION);
-    twig.config.gripperMaxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION);
-    twig.config.wristEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE);
-    twig.config.gripperEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE);
-    twig.config.shoulderEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE);
+    TwigHardwareConfig & c = twig.command.config;
+
+    c.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
+
+    c.wristMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT));
+    c.gripperMaxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT));
+    c.shoulderMaxCurrent =
+      twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT));
+    
+    c.wristMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_WRIST_MAX_CURRENT_DURATION);
+    c.gripperMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_DURATION);
+    c.shoulderMaxCurrentDuration = getIntParam(PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_DURATION);
+    
+    c.shoulderMaxCurrentCooldownDuration = getIntParam(
+      PARAM_HW_CONFIG_SHOULDER_MAX_CURRENT_COOLDOWN_DURATION);
+    c.wristMaxCurrentCooldownDuration = getIntParam(
+      PARAM_HW_CONFIG_WRIST_MAX_CURRENT_COOLDOWN_DURATION);
+    c.gripperMaxCurrentCooldownDuration = getIntParam(
+      PARAM_HW_CONFIG_GRIPPER_MAX_CURRENT_COOLDOWN_DURATION);
+    
+    c.wristEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE);
+    c.gripperEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE);
+    c.shoulderEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE);
   }
 
   void update_joint_config()
   {
-    twig.joint_config.shoulder.limits.min = getDoubleParam(PARAM_SHOULDER_LIMIT_MIN);
-    twig.joint_config.shoulder.limits.max = getDoubleParam(PARAM_SHOULDER_LIMIT_MAX);
+    twig.jointConfig.shoulderLimits.min = getDoubleParam(PARAM_SHOULDER_LIMIT_MIN);
+    twig.jointConfig.shoulderLimits.max = getDoubleParam(PARAM_SHOULDER_LIMIT_MAX);
 
-    twig.joint_config.gripper.limits.min = getDoubleParam(PARAM_GRIPPER_LIMIT_MIN);
-    twig.joint_config.gripper.limits.max = getDoubleParam(PARAM_GRIPPER_LIMIT_MAX);
+    twig.jointConfig.gripperLimits.min = getDoubleParam(PARAM_GRIPPER_LIMIT_MIN);
+    twig.jointConfig.gripperLimits.max = getDoubleParam(PARAM_GRIPPER_LIMIT_MAX);
 
-    twig.joint_config.shoulder.offset = getDoubleParam(PARAM_SHOULDER_OFFSET);
-    twig.joint_config.wrist.offset = getDoubleParam(PARAM_WRIST_OFFSET);
-    twig.joint_config.gripper.offset = getDoubleParam(PARAM_GRIPPER_OFFSET);
+    twig.jointConfig.shoulderOffset = getDoubleParam(PARAM_SHOULDER_OFFSET);
+    twig.jointConfig.wristOffset = getDoubleParam(PARAM_WRIST_OFFSET);
+    twig.jointConfig.gripperOffset = getDoubleParam(PARAM_GRIPPER_OFFSET);
   }
 
 public:
