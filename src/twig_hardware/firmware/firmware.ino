@@ -63,26 +63,6 @@ void readState()
   twigState.wristVoltage = analogRead(WRIST_VOLTAGE_PIN);
   twigState.shoulderVoltage = analogRead(SHOULDER_VOLTAGE_PIN);
 
-  if (wristEncoder.update())
-  {
-    twigState.wristPosition = wristEncoder.values.angle;
-    twigState.wristVelocity = wristEncoder.values.velocity;
-  }
-  twigState.wristEncoderMagnitude = wristEncoder.values.magnitude;
-
-  if (shoulderEncoder.update())
-  {
-    twigState.shoulderPosition = shoulderEncoder.values.angle;
-    twigState.shoulderVelocity = shoulderEncoder.values.velocity;
-  }
-  twigState.shoulderEncoderMagnitude = shoulderEncoder.values.magnitude;
-
-  if (gripperEncoder.update())
-  {
-    twigState.gripperPosition = gripperEncoder.values.angle;
-    twigState.gripperVelocity = gripperEncoder.values.velocity;
-  }
-  twigState.gripperEncoderMagnitude = gripperEncoder.values.magnitude;
 
   twigState.wristServoPowered = digitalRead(WRIST_SERVO_RELAY_PIN) == LOW;
   twigState.shoulderServoPowered = digitalRead(SHOULDER_SERVO_RELAY_PIN) == LOW;
@@ -123,7 +103,6 @@ void setup()
   Serial.println("Starting ...");
 
   // https://www.electronicwings.com/arduino/watchdog-in-arduino
-  wdt_enable(WDTO_1S);
 
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(onCommand);
@@ -181,7 +160,6 @@ void updateConnectionTimer()
 {
   if ((millis() - connectionTimer) > CONNECTION_TIMEOUT)
   {
-    resetCommand();
   }
 }
 
@@ -191,5 +169,4 @@ void loop()
   updateLog();
   updateConnectionTimer();
   writeCommand();
-  wdt_reset();
 }
