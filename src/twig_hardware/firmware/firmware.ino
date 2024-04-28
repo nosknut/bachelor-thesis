@@ -70,11 +70,7 @@ void updateHardwareConfig() {
 
 void writeCommand()
 {
-  if (!verify_session_id())
-  {
-    resetCommand();
-  }
-
+  if (!verify_session_id()) return;
   shoulderServo.update(twigState.shoulderCurrent, twigCommand.shoulderServoPowered, twigCommand.shoulder);
   wristServo.update(twigState.wristCurrent, twigCommand.wristServoPowered, twigCommand.wrist);
   gripperServo.update(twigState.gripperCurrent, twigCommand.gripperServoPowered, twigCommand.gripper);
@@ -84,7 +80,7 @@ void onCommand(int length)
 {
   Wire.readBytes((uint8_t *)&twigCommand, length);
   updateHardwareConfig();
-  connectionTimer = millis();
+  if (verify_session_id()) connectionTimer = millis();
   received++;
 }
 
@@ -159,6 +155,10 @@ void setup()
   shoulderEncoder.begin();
   wristEncoder.begin();
   gripperEncoder.begin();
+
+  // Wait 100ms after startup to allow driver sync
+  readState();
+  delay(100);
 }
 
 String leadingSpaces(String val, int length)

@@ -25,10 +25,7 @@ public:
   void begin()
   {
     pinMode(relayPin, OUTPUT);
-    digitalWrite(relayPin, HIGH);
-
     servo.attach(servoPin);
-    servo.writeMicroseconds(SERVO_STATIONARY_SIGNAL);
   }
 
   void update(uint16_t current, uint16_t relayCommand, uint16_t commandSpeed)
