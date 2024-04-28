@@ -1,0 +1,33 @@
+/twig_hardware_node:
+  ros__parameters:
+    auto_acknowledge_hardware_reboot: false
+    command_timeout: 500
+    hardware_config:
+      connection_timeout: 1000
+      gripper_encoder_min_magnitude: 0
+      gripper_max_current: 1.0
+      gripper_max_current_cooldown_duration: 0
+      gripper_max_current_duration: 1000
+      shoulder_encoder_min_magnitude: 0
+      shoulder_max_current: 1.0
+      shoulder_max_current_cooldown_duration: 0
+      shoulder_max_current_duration: 1000
+      wrist_encoder_min_magnitude: 0
+      wrist_max_current: 1.0
+      wrist_max_current_cooldown_duration: 0
+      wrist_max_current_duration: 1000
+    joint_config:
+      gripper:
+        limits:
+          max: 3.141592653589793
+          min: -3.141592653589793
+        offset: 0.0
+      shoulder:
+        limits:
+          max: 3.141592653589793
+          min: -3.141592653589793
+        offset: 0.0
+      wrist:
+        offset: 0.0
+    publish_rate: 50
+    push_rate: 50
