@@ -108,7 +108,7 @@ bool twig_hardware::TwigLib::read_state(int max_retries)
 
 bool twig_hardware::TwigLib::driver_rebooted()
 {
-  return command.sessionId == 0;
+  return (command.sessionId == 0) || (state.sessionId == 0);
 }
 
 bool twig_hardware::TwigLib::hardware_rebooted()
