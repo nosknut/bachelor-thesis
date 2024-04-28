@@ -1,3 +1,9 @@
+# Launch test stack
+
+```
+ros2 launch twig direct.launch.py
+```
+
 # Setup
 
 ## Windows (WSL)
