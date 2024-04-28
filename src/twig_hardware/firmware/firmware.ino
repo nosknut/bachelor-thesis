@@ -8,6 +8,7 @@
 #include "TwigHardwareConfig.h"
 #include "FusedServo.h"
 #include "EncoderThread.h"
+#include "Thread.h"
 
 // #define DEBUG_ENCODERS
 #include "Encoder.h"
@@ -127,32 +128,6 @@ void setupOutputs()
   gripperServo.begin();
 }
 
-void setup()
-{
-  // Used to detect that the microcontroller rebooted
-  twigState.sessionId = random(1, 10000);
-
-  setupOutputs();
-  resetCommand();
-
-  Serial.begin(SERIAL_BAUD_RATE);
-
-  Serial.println("Starting ...");
-
-  // https://www.electronicwings.com/arduino/watchdog-in-arduino
-  wdt_enable(WDTO_1S);
-
-  Wire.begin(I2C_ADDRESS);
-  Wire.onReceive(onCommand);
-  Wire.onRequest(onStateRequest);
-
-  encoderThread.begin();
-
-  // Wait 100ms after startup to allow driver sync
-  readState();
-  delay(100);
-}
-
 String leadingSpaces(String val, int length)
 {
   int valLen = val.length();
@@ -204,11 +179,55 @@ void updateConnectionTimer()
   }
 }
 
+class MainThread : public Thread
+{
+  void run() override
+  {
+    readState();
+    updateLog();
+    updateConnectionTimer();
+    writeCommand();
+    wdt_reset();
+    delay(10);
+  }
+
+public: 
+  MainThread() : Thread("Main Thread")
+  {
+  }
+};
+
+MainThread mainThread;
+
+
+void setup()
+{
+  // Used to detect that the microcontroller rebooted
+  twigState.sessionId = random(1, 10000);
+
+  setupOutputs();
+  resetCommand();
+
+  Serial.begin(SERIAL_BAUD_RATE);
+
+  Serial.println("Starting ...");
+
+  // https://www.electronicwings.com/arduino/watchdog-in-arduino
+  wdt_enable(WDTO_1S);
+
+  Wire.begin(I2C_ADDRESS);
+  Wire.onReceive(onCommand);
+  Wire.onRequest(onStateRequest);
+
+  encoderThread.begin();
+
+  // Wait 100ms after startup to allow driver sync
+  readState();
+  delay(100);
+
+  mainThread.start();
+}
+
 void loop()
 {
-  readState();
-  updateLog();
-  updateConnectionTimer();
-  writeCommand();
-  wdt_reset();
 }
