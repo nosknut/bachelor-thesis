@@ -2,7 +2,6 @@
 
 #include <Wire.h>
 #include <Servo.h>
-#include "Timer.h"
 #include <avr/wdt.h>
 #include "TwigState.h"
 #include "TwigCommand.h"
