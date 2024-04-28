@@ -9,6 +9,7 @@ struct Thread
     TaskHandle_t taskHandle;
 
 public:
+    int priority = 1;
     const String name;
 
     Thread(const String name) : name(name)
@@ -25,7 +26,6 @@ public:
     void start()
     {
         int stackSize = 128;
-        int priority = 1;
 
         // https://stackoverflow.com/questions/45831114/c-freertos-task-invalid-use-of-non-static-member-function
         TaskFunction_t taskFunction = [](void *taskParams)

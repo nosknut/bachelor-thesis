@@ -194,6 +194,7 @@ class MainThread : public Thread
 public: 
   MainThread() : Thread("Main Thread")
   {
+    priority = 2;
   }
 };
 
