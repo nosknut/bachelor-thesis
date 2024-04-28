@@ -7,13 +7,12 @@
 #include "TwigCommand.h"
 #include "TwigHardwareConfig.h"
 #include "FusedServo.h"
+#include "EncoderThread.h"
 
 // #define DEBUG_ENCODERS
 #include "Encoder.h"
 
-Encoder shoulderEncoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Shoulder");
-Encoder wristEncoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
-Encoder gripperEncoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
+EncoderThread encoderThread;
 
 FusedServo shoulderServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
 FusedServo wristServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
@@ -50,9 +49,9 @@ void updateHardwareConfig() {
 
   connectionTimeout = config.connectionTimeout;
 
-  shoulderEncoder.minMagnitude = config.shoulderEncoderMinMagnitude;
-  wristEncoder.minMagnitude = config.wristEncoderMinMagnitude;
-  gripperEncoder.minMagnitude = config.gripperEncoderMinMagnitude;
+  encoderThread.shoulderEncoder.minMagnitude = config.shoulderEncoderMinMagnitude;
+  encoderThread.wristEncoder.minMagnitude = config.wristEncoderMinMagnitude;
+  encoderThread.gripperEncoder.minMagnitude = config.gripperEncoderMinMagnitude;
 
   shoulderServo.fuse.maxCurrent = config.shoulderMaxCurrent;
   wristServo.fuse.maxCurrent = config.wristMaxCurrent;
@@ -92,26 +91,22 @@ void readState()
   twigState.wristVoltage = analogRead(WRIST_VOLTAGE_PIN);
   twigState.shoulderVoltage = analogRead(SHOULDER_VOLTAGE_PIN);
 
-  if (wristEncoder.update())
-  {
-    twigState.wristPosition = wristEncoder.values.angle;
-    twigState.wristVelocity = wristEncoder.values.velocity;
-  }
-  twigState.wristEncoderMagnitude = wristEncoder.values.magnitude;
 
-  if (shoulderEncoder.update())
+  EncoderThreadValues encoderValues;
+  if (encoderThread.getValues(encoderValues))
   {
-    twigState.shoulderPosition = shoulderEncoder.values.angle;
-    twigState.shoulderVelocity = shoulderEncoder.values.velocity;
-  }
-  twigState.shoulderEncoderMagnitude = shoulderEncoder.values.magnitude;
+    twigState.wristPosition = encoderValues.wrist.angle;
+    twigState.wristVelocity = encoderValues.wrist.velocity;
+    twigState.wristEncoderMagnitude = encoderValues.wrist.magnitude;
 
-  if (gripperEncoder.update())
-  {
-    twigState.gripperPosition = gripperEncoder.values.angle;
-    twigState.gripperVelocity = gripperEncoder.values.velocity;
+    twigState.shoulderPosition = encoderValues.shoulder.angle;
+    twigState.shoulderVelocity = encoderValues.shoulder.velocity;
+    twigState.shoulderEncoderMagnitude = encoderValues.shoulder.magnitude;
+
+    twigState.gripperPosition = encoderValues.gripper.angle;
+    twigState.gripperVelocity = encoderValues.gripper.velocity;
+    twigState.gripperEncoderMagnitude = encoderValues.gripper.magnitude;
   }
-  twigState.gripperEncoderMagnitude = gripperEncoder.values.magnitude;
 
   twigState.wristServoPowered = wristServo.relayState;
   twigState.shoulderServoPowered = shoulderServo.relayState;
@@ -151,9 +146,7 @@ void setup()
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);
 
-  shoulderEncoder.begin();
-  wristEncoder.begin();
-  gripperEncoder.begin();
+  encoderThread.begin();
 
   // Wait 100ms after startup to allow driver sync
   readState();
