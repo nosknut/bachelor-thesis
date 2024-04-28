@@ -282,6 +282,9 @@ protected:
 
   void push_timer_callback()
   {
+    if (twig.driver_rebooted()) {
+      return;
+    }
     if (!twig.write_command(3)) {
       RCLCPP_ERROR(this->get_logger(), "Failed to write command to hardware");
     }
