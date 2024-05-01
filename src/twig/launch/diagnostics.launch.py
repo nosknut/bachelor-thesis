@@ -15,8 +15,7 @@ def launch_file(package, launch_file):
 def generate_launch_description():
     return LaunchDescription(
         [
-            launch_file("twig", "foxglove_servo_teleop.launch.py"),
-            launch_file("twig", "robot_moveit.launch.py"),
-            launch_file("twig", "rviz.launch.py"),
+            launch_file("twig_teleop", "direct_teleop.launch.py"),
+            launch_file("twig_hardware", "node.launch.py"),
         ]
     )

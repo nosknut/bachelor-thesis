@@ -16,8 +16,5 @@ def generate_launch_description():
     return LaunchDescription(
         [
             launch_file("twig_teleop", "joy.launch.py"),
-            launch_file("twig_teleop", "foxglove.launch.py"),
-            launch_file("twig_teleop", "direct_teleop.launch.py"),
-            launch_file("twig_hardware", "node.launch.py"),
         ]
     )
