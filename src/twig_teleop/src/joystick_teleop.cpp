@@ -125,12 +125,12 @@ public:
     std::string button)
   {
     auto button_id = getIntParam(button);
-    if (msg->axes.size() < button_id) {
+    if (msg->buttons.size() < button_id) {
       RCLCPP_WARN(
         this->get_logger(),
         "Expected at least %d buttons, but got %d. If Foxglove is being used to publish the joy topic, this warning can likely be ignored.",
         button_id,
-        int(msg->axes.size()));
+        int(msg->buttons.size()));
       return {};
     }
     return msg->buttons[button_id];
