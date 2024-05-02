@@ -8,22 +8,19 @@
 class AngularVelocityTracker
 {
 
-  RunningMedian angleFilter = RunningMedian(2);
-  RunningMedian speedMedianFilter = RunningMedian(3);
-  RunningMedian speedFilter = RunningMedian(3);
-
   unsigned long prevTime = micros();
   double prevAngle = 0;
 
 public:
+  double speed = 0;
+  
   // Based on code in AS5600 lib
   double update(double angle)
   {
     unsigned long now = micros();
     unsigned long deltaT = now - prevTime;
 
-    angleFilter.add(angle);
-    double deltaA = angleFilter.getMedian() - prevAngle;
+    double deltaA = angle - prevAngle;
 
     //  assumption is that there is no more than 180° rotation
     //  between two consecutive measurements.
@@ -38,13 +35,12 @@ public:
       deltaA += 4096;
     }
 
-    speedMedianFilter.add(((deltaA * 1e6) / deltaT) * AS5600_RAW_TO_DEGREES);
-    speedFilter.add(speedMedianFilter.getMedian());
+    speed = ((deltaA * 1e6) / deltaT) * AS5600_RAW_TO_DEGREES;
 
-    prevAngle = angleFilter.getMedian();
+    prevAngle = angle;
     prevTime = now;
 
-    return speedFilter.getAverage();
+    return speed;
   }
 };
 
