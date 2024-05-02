@@ -3,8 +3,10 @@
 
 #include <Arduino.h>
 #include <SoftI2C.h>
+#include "Lowpass.h"
 #include "AS5600.h"
 #include "AngularVelocityTracker.h"
+#include "FirmwareConfig.h"
 #include "EncoderValues.h"
 
 class Encoder
@@ -19,7 +21,10 @@ class Encoder
 public:
   int minMagnitude;
   const String name;
+  uint16_t rawAngle = 0;
   EncoderValues values;
+  LowPass<POSITION_LOWPASS_FILTER_ORDER> filter =
+      LowPass<POSITION_LOWPASS_FILTER_ORDER>(POSITION_LOWPASS_FILTER_CUTOFF, 1e3, true);
 
   // constructor:
   Encoder(int sdaPin, int sclPin, int minMagnitude, String name)
@@ -37,7 +42,9 @@ private:
   {
     values.magnitude = encoder.readMagnitude();
     if (values.magnitude > minMagnitude) {
-      values.angle = encoder.readAngle();
+      rawAngle = encoder.readAngle();
+      filter.update(rawAngle);
+      values.angle = filter.value;
     } else {
 #ifdef DEBUG_ENCODERS
       Serial.println("ERROR: " + name + " encoder magnet is too weak");
