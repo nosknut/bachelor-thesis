@@ -192,9 +192,8 @@ public:
     delay(10);
   }
 
-  MainThread() : Thread("Main Thread")
+  MainThread() : Thread("Main Thread", 2)
   {
-    priority = 2;
   }
 };
 
