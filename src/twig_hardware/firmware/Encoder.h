@@ -14,8 +14,6 @@ class Encoder
   const int sdaPin;
   const int sclPin;
 
-  SoftI2C i2cBus = SoftI2C(sdaPin, sclPin);
-  AS5600 encoder = AS5600(&i2cBus);
   AngularVelocityTracker velocityTracker;
 
 public:
@@ -40,6 +38,12 @@ public:
 private:
   bool updateAngle()
   {
+    // Instantiating both the bus and the encoder for each execution to save
+    // memory.
+    SoftI2C i2cBus = SoftI2C(sdaPin, sclPin);
+    i2cBus.begin();
+    AS5600 encoder = AS5600(&i2cBus);
+
     values.magnitude = encoder.readMagnitude();
     if (values.magnitude > minMagnitude) {
       rawAngle = encoder.readAngle();
@@ -49,9 +53,12 @@ private:
 #ifdef DEBUG_ENCODERS
       Serial.println("ERROR: " + name + " encoder magnet is too weak");
 #endif
+
+      i2cBus.end();
       return false;
     }
 
+    i2cBus.end();
     return true;
   }
 
@@ -63,12 +70,10 @@ private:
 public:
   void begin()
   {
-    i2cBus.begin();
   }
 
   void end()
   {
-    i2cBus.end();
   }
 
   bool update()
