@@ -9,10 +9,17 @@ struct Thread
     TaskHandle_t taskHandle;
 
 public:
-    int priority = 1;
+    const int priority;
+    const int stackSize;
     const String name;
 
-    Thread(const String name) : name(name)
+    /**
+     * Create a thread
+     * @param priority The priority of the thread. 3 is highest, 0 is lowest
+     * @param stackSize The size of the stack
+     * @param name The name of the thread
+     */
+    Thread(const String name, int priority = 1, int stackSize = 128) : name(name), priority(priority), stackSize(stackSize)
     {
     }
 
@@ -23,23 +30,20 @@ public:
 
     virtual void run() = 0;
 
+    static void taskFunction(void *taskParams)
+    {
+        Thread *thread = (Thread *)taskParams;
+        while (true)
+        {
+            thread->run();
+            yield();
+        }
+    };
+
     void start()
     {
-        int stackSize = 128;
-
-        // https://stackoverflow.com/questions/45831114/c-freertos-task-invalid-use-of-non-static-member-function
-        TaskFunction_t taskFunction = [](void *taskParams)
-        {
-            Thread *thread = (Thread *)taskParams;
-            while (true)
-            {
-                thread->run();
-                yield();
-            }
-        };
-
         // https://www.freertos.org/a00125.html
-        xTaskCreate(taskFunction, name.c_str(), stackSize, this, priority, &taskHandle);
+        xTaskCreate(Thread::taskFunction, name.c_str(), stackSize, this, priority, &taskHandle);
     }
 
     void stop()

@@ -38,7 +38,7 @@ public:
     Encoder wristEncoder = Encoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
     Encoder gripperEncoder = Encoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
     
-    EncoderThread() : Thread("Encoder Thread")
+    EncoderThread() : Thread("Encoder Thread", 2)
     {
     }
 
