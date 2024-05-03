@@ -117,7 +117,7 @@ void readState()
 void onStateRequest()
 {
   Wire.write((uint8_t *)&twigState, sizeof(TwigState));
-  connectionTimer = millis();
+  if (verify_session_id()) connectionTimer = millis();
   sent++;
 }
 
