@@ -181,6 +181,7 @@ void updateConnectionTimer()
 
 class MainThread : public Thread
 {
+public: 
   void run() override
   {
     readState();
@@ -191,7 +192,6 @@ class MainThread : public Thread
     delay(10);
   }
 
-public: 
   MainThread() : Thread("Main Thread")
   {
     priority = 2;

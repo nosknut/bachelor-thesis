@@ -11,7 +11,7 @@
 // Manages a thread for the update method
 class EncoderThread : public Thread
 {
-
+public:
     void run() override
     {
         EncoderThreadValues newValues;
@@ -32,7 +32,6 @@ class EncoderThread : public Thread
         }
     }
 
-public:
     Mutex<EncoderThreadValues> values = Mutex<EncoderThreadValues>(EncoderThreadValues());
 
     Encoder shoulderEncoder = Encoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Shoulder");
