@@ -189,7 +189,6 @@ public:
     updateConnectionTimer();
     writeCommand();
     wdt_reset();
-    delay(10);
   }
 
   MainThread() : Thread("Main Thread", 2)
@@ -219,15 +218,21 @@ void setup()
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);
 
-  encoderThread.begin();
+  // Runs the thread jobs directly in the main loop
+  // until the unstable threading is resolved
+
+  // encoderThread.begin();
+  encoderThread.run();
 
   // Wait 100ms after startup to allow driver sync
   readState();
-  delay(100);
-
-  mainThread.start();
+  // mainThread.start();
 }
 
 void loop()
 {
+  // Runs the thread jobs directly in the main loop
+  // until the unstable threading is resolved
+  mainThread.run();
+  encoderThread.run();
 }
