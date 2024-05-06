@@ -325,7 +325,7 @@ protected:
 
   void update_hardware_config()
   {
-    TwigHardwareConfig & c = twig.command.config;
+    TwigHardwareConfig c;
 
     c.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
 
@@ -348,6 +348,8 @@ protected:
     c.wristEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_WRIST_ENCODER_MIN_MAGNITUDE);
     c.gripperEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_GRIPPER_ENCODER_MIN_MAGNITUDE);
     c.shoulderEncoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_SHOULDER_ENCODER_MIN_MAGNITUDE);
+
+    twig.set_hardware_config(c);
   }
 
   void update_joint_config()
