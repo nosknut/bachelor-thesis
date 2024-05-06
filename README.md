@@ -1,7 +1,7 @@
 # Launch test stack
 
 ```
-ros2 launch twig direct.launch.py
+ros2 launch twig diagnostics.launch.py
 ```
 
 # Setup
