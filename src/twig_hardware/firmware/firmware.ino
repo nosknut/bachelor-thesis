@@ -50,21 +50,21 @@ void updateHardwareConfig() {
 
   connectionTimeout = config.connectionTimeout;
 
-  encoderThread.shoulderEncoder.minMagnitude = config.shoulderEncoderMinMagnitude;
-  encoderThread.wristEncoder.minMagnitude = config.wristEncoderMinMagnitude;
-  encoderThread.gripperEncoder.minMagnitude = config.gripperEncoderMinMagnitude;
+  encoderThread.shoulderEncoder.minMagnitude = config.encoderMinMagnitude;
+  encoderThread.wristEncoder.minMagnitude = config.encoderMinMagnitude;
+  encoderThread.gripperEncoder.minMagnitude = config.encoderMinMagnitude;
 
-  shoulderServo.fuse.maxCurrent = config.shoulderMaxCurrent;
-  wristServo.fuse.maxCurrent = config.wristMaxCurrent;
-  gripperServo.fuse.maxCurrent = config.gripperMaxCurrent;
+  shoulderServo.fuse.maxCurrent = config.maxCurrent;
+  wristServo.fuse.maxCurrent = config.maxCurrent;
+  gripperServo.fuse.maxCurrent = config.maxCurrent;
 
-  shoulderServo.fuse.maxCurrentDuration = config.shoulderMaxCurrentDuration;
-  wristServo.fuse.maxCurrentDuration = config.wristMaxCurrentDuration;
-  gripperServo.fuse.maxCurrentDuration = config.gripperMaxCurrentDuration;
+  shoulderServo.fuse.maxCurrentDuration = config.maxCurrentDuration;
+  wristServo.fuse.maxCurrentDuration = config.maxCurrentDuration;
+  gripperServo.fuse.maxCurrentDuration = config.maxCurrentDuration;
 
-  shoulderServo.fuse.maxCurrentCooldownDuration = config.shoulderMaxCurrentCooldownDuration;
-  wristServo.fuse.maxCurrentCooldownDuration = config.wristMaxCurrentCooldownDuration;
-  gripperServo.fuse.maxCurrentCooldownDuration = config.gripperMaxCurrentCooldownDuration;
+  shoulderServo.fuse.maxCurrentCooldownDuration = config.maxCurrentCooldownDuration;
+  wristServo.fuse.maxCurrentCooldownDuration = config.maxCurrentCooldownDuration;
+  gripperServo.fuse.maxCurrentCooldownDuration = config.maxCurrentCooldownDuration;
 }
 
 void writeCommand()

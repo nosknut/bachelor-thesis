@@ -4,18 +4,10 @@
     command_timeout: 500
     hardware_config:
       connection_timeout: 1000
-      gripper_encoder_min_magnitude: 0
-      gripper_max_current: 1.0
-      gripper_max_current_cooldown_duration: 0
-      gripper_max_current_duration: 1000
-      shoulder_encoder_min_magnitude: 0
-      shoulder_max_current: 1.0
-      shoulder_max_current_cooldown_duration: 0
-      shoulder_max_current_duration: 1000
-      wrist_encoder_min_magnitude: 0
-      wrist_max_current: 1.0
-      wrist_max_current_cooldown_duration: 0
-      wrist_max_current_duration: 1000
+      encoder_min_magnitude: 0
+      max_current: 1.0
+      max_current_cooldown_duration: 0
+      max_current_duration: 1000
     joint_config:
       gripper:
         limits:
