@@ -14,6 +14,9 @@ twig_hardware::TwigLib::~TwigLib()
 
 bool twig_hardware::TwigLib::i2c_open_connection()
 {
+  // TODO: Remove the line below and replace with a timeout
+  // Ensure there is no pre-existing connection
+  i2c_close_connection();
   int connection = open(i2c_device.c_str(), O_RDWR);
 
   if (connection < 0) {
