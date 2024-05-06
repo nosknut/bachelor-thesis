@@ -71,6 +71,12 @@ bool twig_hardware::TwigLib::i2c_read(std::byte * buffer, int data_size)
 
 // Sync
 
+void twig_hardware::TwigLib::set_hardware_config(twig_hardware::TwigHardwareConfig hardware_config)
+{
+  command.config = hardware_config;
+  has_unpushed_commands_ = true;
+}
+
 bool twig_hardware::TwigLib::write_command(int max_retries, bool force)
 {
   if (!has_unpushed_commands_ && !force) {

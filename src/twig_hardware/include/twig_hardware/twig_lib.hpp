@@ -150,6 +150,7 @@ public:
   int16_t current_to_raw(double current);
 
 // Sync
+  void set_hardware_config(TwigHardwareConfig hardware_config);
   bool write_command(int max_retries = 1, bool force = false);
   bool read_state(int max_retries = 1);
 
