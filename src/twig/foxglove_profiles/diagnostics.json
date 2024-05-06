@@ -1,0 +1,528 @@
+{
+  "configById": {
+    "RawMessages!1e4xvla": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/shoulder/servo/position"
+    },
+    "RawMessages!17v6k7g": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/shoulder/servo/velocity"
+    },
+    "RawMessages!46fv68c": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/voltage"
+    },
+    "Joystick Panel.Joystick!4l5nx7m": {},
+    "CallService!1iz9k8k": {
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "serviceName": "/shoulder/servo/activate"
+    },
+    "CallService!2ihfmru": {
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "serviceName": "/shoulder/servo/activate"
+    },
+    "RawMessages!33mmgy3": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/shoulder/servo/current",
+      "expansion": "all"
+    },
+    "RawMessages!2d7pmjr": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/position"
+    },
+    "RawMessages!37bb0ww": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/velocity"
+    },
+    "RawMessages!c4x1h9": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/voltage"
+    },
+    "RawMessages!14a5e0g": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/current"
+    },
+    "CallService!1jg3j9g": {
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "serviceName": "/wrist/servo/activate"
+    },
+    "CallService!3wvz2p9": {
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "serviceName": "/wrist/servo/deactivate"
+    },
+    "RawMessages!3df09tm": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/gripper/servo/position",
+      "expansion": "all"
+    },
+    "RawMessages!gphote": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/gripper/servo/velocity"
+    },
+    "RawMessages!25hfyfo": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/voltage",
+      "expansion": "all"
+    },
+    "RawMessages!3mcmwmi": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/current"
+    },
+    "CallService!1fqss5f": {
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "serviceName": "/gripper/servo/activate"
+    },
+    "CallService!35r3ijo": {
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "serviceName": "/gripper/servo/deactivate"
+    },
+    "RawMessages!2z298ru": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/gripper/servo/velocity"
+    },
+    "RawMessages!saf4h1": {
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "topicPath": "/wrist/servo/current"
+    },
+    "Gauge!40bg2h4": {
+      "path": "/shoulder/servo/velocity/cmd.data",
+      "minValue": -1,
+      "maxValue": 1,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!1n2sf7h": {
+      "path": "/wrist/servo/velocity/cmd.data",
+      "minValue": -1,
+      "maxValue": 1,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!81u0ks": {
+      "path": "/gripper/servo/velocity/cmd.data",
+      "minValue": -1,
+      "maxValue": 1,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!94vv0n": {
+      "path": "/shoulder/servo/velocity.data",
+      "minValue": -10,
+      "maxValue": 10,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!4h81ljb": {
+      "path": "/shoulder/servo/position.data",
+      "minValue": 0,
+      "maxValue": 6.3,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!6xfofu": {
+      "path": "/wrist/servo/velocity.data",
+      "minValue": -10,
+      "maxValue": 10,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!ecyzqn": {
+      "path": "/wrist/servo/position.data",
+      "minValue": 0,
+      "maxValue": 6.3,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!33pb3if": {
+      "path": "/gripper/servo/velocity.data",
+      "minValue": -10,
+      "maxValue": 10,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "Gauge!1ct56vw": {
+      "path": "/gripper/servo/position.data",
+      "minValue": 0,
+      "maxValue": 6.3,
+      "colorMap": "red-yellow-green",
+      "colorMode": "colormap",
+      "gradient": [
+        "#0000ff",
+        "#ff00ff"
+      ],
+      "reverse": true
+    },
+    "RosOut!1hrodyc": {
+      "searchTerms": [],
+      "minLogLevel": 1,
+      "nameFilter": {}
+    },
+    "Plot!f9cnr3": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/shoulder/servo/position.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/wrist/servo/position.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/gripper/servo/position.data",
+          "enabled": true
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": false,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!431hlrn": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/shoulder/servo/velocity.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/wrist/servo/velocity.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/gripper/servo/velocity.data",
+          "enabled": true
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": false,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Plot!1uorv2s": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/shoulder/servo/velocity/cmd.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/wrist/servo/velocity/cmd.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/gripper/servo/velocity/cmd.data",
+          "enabled": true
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": false,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    },
+    "Tab!36kil8w": {
+      "activeTabIdx": 0,
+      "tabs": [
+        {
+          "title": "Shoulder",
+          "layout": {
+            "first": {
+              "first": {
+                "first": "RawMessages!1e4xvla",
+                "second": {
+                  "first": "RawMessages!17v6k7g",
+                  "second": {
+                    "first": "RawMessages!46fv68c",
+                    "second": "Joystick Panel.Joystick!4l5nx7m",
+                    "direction": "column"
+                  },
+                  "direction": "column",
+                  "splitPercentage": 27.21893491124261
+                },
+                "direction": "column",
+                "splitPercentage": 25.13324565653769
+              },
+              "second": {
+                "first": "CallService!1iz9k8k",
+                "second": "CallService!2ihfmru",
+                "direction": "row"
+              },
+              "direction": "row",
+              "splitPercentage": 49.40912095175149
+            },
+            "second": "RawMessages!33mmgy3",
+            "direction": "column",
+            "splitPercentage": 100
+          }
+        },
+        {
+          "title": "Wrist",
+          "layout": {
+            "first": {
+              "first": "RawMessages!2d7pmjr",
+              "second": {
+                "first": "RawMessages!37bb0ww",
+                "second": {
+                  "first": "RawMessages!c4x1h9",
+                  "second": "RawMessages!14a5e0g",
+                  "direction": "column"
+                },
+                "direction": "column",
+                "splitPercentage": 30.933852140077818
+              },
+              "direction": "column",
+              "splitPercentage": 24.099582381578642
+            },
+            "second": {
+              "first": "CallService!1jg3j9g",
+              "second": "CallService!3wvz2p9",
+              "direction": "row",
+              "splitPercentage": 52.348993288590584
+            },
+            "direction": "row",
+            "splitPercentage": 49.49286300680596
+          }
+        },
+        {
+          "title": "Gripper",
+          "layout": {
+            "first": {
+              "first": {
+                "first": {
+                  "first": {
+                    "first": "RawMessages!3df09tm",
+                    "second": "RawMessages!gphote",
+                    "direction": "column"
+                  },
+                  "second": {
+                    "first": "RawMessages!25hfyfo",
+                    "second": "RawMessages!3mcmwmi",
+                    "direction": "column"
+                  },
+                  "direction": "column",
+                  "splitPercentage": 43.59151842366351
+                },
+                "second": {
+                  "first": "CallService!1fqss5f",
+                  "second": "CallService!35r3ijo",
+                  "direction": "row"
+                },
+                "direction": "row"
+              },
+              "second": "RawMessages!2z298ru",
+              "direction": "column",
+              "splitPercentage": 100
+            },
+            "second": "RawMessages!saf4h1",
+            "direction": "column",
+            "splitPercentage": 100
+          }
+        }
+      ]
+    },
+    "Plot!18vaoef": {
+      "paths": [
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/shoulder/servo/velocity.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/wrist/servo/velocity.data",
+          "enabled": true
+        },
+        {
+          "timestampMethod": "receiveTime",
+          "value": "/gripper/servo/velocity.data",
+          "enabled": true
+        }
+      ],
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "showLegend": true,
+      "legendDisplay": "floating",
+      "showPlotValuesInLegend": false,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "sidebarDimension": 240
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {},
+  "playbackConfig": {
+    "speed": 1
+  },
+  "layout": {
+    "direction": "row",
+    "first": {
+      "first": {
+        "first": "Gauge!40bg2h4",
+        "second": {
+          "first": "Gauge!1n2sf7h",
+          "second": "Gauge!81u0ks",
+          "direction": "column"
+        },
+        "direction": "column",
+        "splitPercentage": 41.29793510324484
+      },
+      "second": {
+        "first": {
+          "first": "Gauge!94vv0n",
+          "second": "Gauge!4h81ljb",
+          "direction": "row"
+        },
+        "second": {
+          "first": {
+            "first": "Gauge!6xfofu",
+            "second": "Gauge!ecyzqn",
+            "direction": "row"
+          },
+          "second": {
+            "first": "Gauge!33pb3if",
+            "second": "Gauge!1ct56vw",
+            "direction": "row"
+          },
+          "direction": "column"
+        },
+        "direction": "column",
+        "splitPercentage": 41.07669616519174
+      },
+      "direction": "row",
+      "splitPercentage": 33.84598239161931
+    },
+    "second": {
+      "first": "RosOut!1hrodyc",
+      "second": {
+        "first": {
+          "first": "Plot!f9cnr3",
+          "second": {
+            "first": "Plot!431hlrn",
+            "second": "Plot!1uorv2s",
+            "direction": "row",
+            "splitPercentage": 32.61508325171398
+          },
+          "direction": "row",
+          "splitPercentage": 33.65821962313191
+        },
+        "second": {
+          "first": "Tab!36kil8w",
+          "second": "Plot!18vaoef",
+          "direction": "row",
+          "splitPercentage": 100
+        },
+        "direction": "column",
+        "splitPercentage": 45.745803727731435
+      },
+      "direction": "column",
+      "splitPercentage": 30.973451327433626
+    },
+    "splitPercentage": 26.707741762657378
+  }
+}
