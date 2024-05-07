@@ -30,9 +30,10 @@ const int8_t WRIST_CURRENT_PIN = A1;
 const int8_t GRIPPER_CURRENT_PIN = A2;
 
 const int8_t SHOULDER_VOLTAGE_PIN = A3;
-const int8_t WRIST_VOLTAGE_PIN = A6;
+// TODO: Remove sensors from firmware that have no analog input
+const int8_t WRIST_VOLTAGE_PIN = A3;
 
-const int8_t SESSION_ID_RANDOM_SEED_PIN = A7;
+const int8_t SESSION_ID_RANDOM_SEED_PIN = A3;
 
 const int8_t SHOULDER_SERVO_PIN = 3;
 const int8_t WRIST_SERVO_PIN = 5;

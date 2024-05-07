@@ -11,7 +11,7 @@
 
 #include <Wire.h>
 #include <Servo.h>
-#include <avr/wdt.h>
+#include "hardware/watchdog.h"
 #include "TwigState.h"
 #include "TwigCommand.h"
 #include "TwigHardwareConfig.h"
@@ -205,7 +205,7 @@ public:
     updateLog();
     updateConnectionTimer();
     writeCommand();
-    wdt_reset();
+    watchdog_update();
   }
 
   MainThread() : Thread("Main Thread", 2)
@@ -229,8 +229,10 @@ void setup()
 
   Serial.println("Starting ...");
 
-  // https://www.electronicwings.com/arduino/watchdog-in-arduino
-  wdt_enable(WDTO_1S);
+  // https://github.com/raspberrypi/pico-examples/blob/master/watchdog/hello_watchdog/hello_watchdog.c
+  // Enable the watchdog, requiring the watchdog to be updated every 100ms or the chip will reboot
+  // second arg is pause on debug which means the watchdog will pause when stepping through code
+  watchdog_enable(1000, 1);
 
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(onCommand);
