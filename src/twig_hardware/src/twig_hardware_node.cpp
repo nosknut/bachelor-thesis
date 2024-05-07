@@ -33,7 +33,7 @@ const std::string PARAM_COMMAND_TIMEOUT = "command_timeout";
 const std::string PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT = "auto_acknowledge_hardware_reboot";
 
 const std::string PARAM_HW_CONFIG_CONNECTION_TIMEOUT = "hardware_config.connection_timeout";
-const std::string PARAM_HW_CONFIG_MAX_CURRENT = "hardware_config.wrist_max_current";
+const std::string PARAM_HW_CONFIG_MAX_CURRENT = "hardware_config.max_current";
 const std::string PARAM_HW_CONFIG_MAX_CURRENT_DURATION = "hardware_config.max_current_duration";
 const std::string PARAM_HW_CONFIG_MAX_CURRENT_COOLDOWN_DURATION = 
   "hardware_config.max_current_cooldown_duration";
