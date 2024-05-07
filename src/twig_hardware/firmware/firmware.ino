@@ -1,3 +1,12 @@
+// How to flash the firmware to Raspberry Pi Pico from Arduino IDE:
+// https://randomnerdtutorials.com/programming-raspberry-pi-pico-w-arduino-ide/#Raspberry-Pi-Pico-Boards-Manager
+// Additional URL:
+// https://github.com/earlephilhower/arduino-pico/releases/download/global/package_rp2040_index.json
+// Board manager:
+// Raspberry Pi Pico/RP2040 by Earle F. Philhower, III Version 3.8.0 INSTALLED
+// Serial port not showing up:
+// https://forum.arduino.cc/t/raspberry-pi-pico-does-not-show-its-port-in-ide/850432/10
+
 #include "FirmwareConfig.h"
 
 #include <Wire.h>
