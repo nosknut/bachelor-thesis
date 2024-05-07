@@ -16,10 +16,10 @@ const int POSITION_LOWPASS_FILTER_CUTOFF = 2;
 // within the specified number of milliseconds.
 const unsigned long INITIAL_CONNECTION_TIMEOUT = 200;
 
-const int8_t SHOULDER_ENCODER_SDA_PIN = 4;
+const int8_t SHOULDER_ENCODER_SDA_PIN = 7;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
 
-const int8_t WRIST_ENCODER_SDA_PIN = 7;
+const int8_t WRIST_ENCODER_SDA_PIN = 4;
 const int8_t WRIST_ENCODER_SCL_PIN = 2;
 
 const int8_t GRIPPER_ENCODER_SDA_PIN = 8;
