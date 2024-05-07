@@ -32,6 +32,8 @@ const int8_t GRIPPER_CURRENT_PIN = A2;
 const int8_t SHOULDER_VOLTAGE_PIN = A3;
 const int8_t WRIST_VOLTAGE_PIN = A6;
 
+const int8_t SESSION_ID_RANDOM_SEED_PIN = A7;
+
 const int8_t SHOULDER_SERVO_PIN = 3;
 const int8_t WRIST_SERVO_PIN = 5;
 const int8_t GRIPPER_SERVO_PIN = 6;
