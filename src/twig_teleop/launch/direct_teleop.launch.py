@@ -23,7 +23,7 @@ def generate_launch_description():
         DeclareLaunchArgument('deactivate_wrist_servo_service', default_value='/wrist/servo/deactivate'),
         DeclareLaunchArgument('deactivate_gripper_servo_service', default_value='/gripper/servo/deactivate'),
         
-        DeclareLaunchArgument('config_filepath', default_value=[
+        DeclareLaunchArgument('twig_teleop_direct_config_filepath', default_value=[
             TextSubstitution(text=os.path.join(
                     get_package_share_directory('twig_teleop'),
                     'config',
@@ -42,7 +42,7 @@ def generate_launch_description():
                     name='twig_teleop_direct',
                     package='twig_teleop',
                     plugin='twig_teleop::JoystickDirectTeleop',
-                    parameters=[LaunchConfiguration('config_filepath')],
+                    parameters=[LaunchConfiguration('twig_teleop_direct_config_filepath')],
                     remappings={
                         ('/twig_joy', LaunchConfiguration('joy_topic')),
                         

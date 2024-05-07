@@ -13,7 +13,7 @@ def generate_launch_description():
         DeclareLaunchArgument('out_jog_topic', default_value='/servo_node/delta_joint_cmds'),
         DeclareLaunchArgument('out_twist_topic', default_value='/servo_node/delta_twist_cmds'),
         DeclareLaunchArgument('start_servo_service', default_value='/servo_node/start_servo'),
-        DeclareLaunchArgument('config_filepath', default_value=[
+        DeclareLaunchArgument('twig_teleop_config_filepath', default_value=[
             TextSubstitution(text=os.path.join(
                     get_package_share_directory('twig_teleop'),
                     'config',
@@ -32,7 +32,7 @@ def generate_launch_description():
                     name='twig_teleop',
                     package='twig_teleop',
                     plugin='twig_teleop::JoystickTeleop',
-                    parameters=[LaunchConfiguration('config_filepath')],
+                    parameters=[LaunchConfiguration('twig_teleop_config_filepath')],
                     remappings={
                         ('/twig_joy', LaunchConfiguration('joy_topic')),
                         ('/cmd_jog', LaunchConfiguration('out_jog_topic')),

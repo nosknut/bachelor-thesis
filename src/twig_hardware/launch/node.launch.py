@@ -12,7 +12,7 @@ def generate_launch_description():
     return LaunchDescription(
         [
             # Arguments
-            DeclareLaunchArgument('config_filepath', default_value=[
+            DeclareLaunchArgument('twig_hardware_config_filepath', default_value=[
                 TextSubstitution(text=os.path.join(
                         get_package_share_directory('twig_hardware'),
                         'config',
@@ -31,7 +31,7 @@ def generate_launch_description():
                         name="twig_hardware_node",
                         package="twig_hardware",
                         plugin="twig_hardware::TwigHardwareNode",
-                        parameters=[LaunchConfiguration('config_filepath')],
+                        parameters=[LaunchConfiguration('twig_hardware_config_filepath')],
                     ),
                 ],
             )
