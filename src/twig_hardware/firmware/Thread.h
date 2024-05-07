@@ -19,7 +19,7 @@ public:
      * @param stackSize The size of the stack
      * @param name The name of the thread
      */
-    Thread(const String name, int priority = 1, int stackSize = 128) : name(name), priority(priority), stackSize(stackSize)
+    Thread(const String name, int priority = 1, int stackSize = 256) : name(name), priority(priority), stackSize(stackSize)
     {
     }
 
