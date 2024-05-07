@@ -1,7 +1,7 @@
 #ifndef THREAD_h
 #define THREAD_h
 
-#include "Arduino_FreeRTOS.h"
+#include "FreeRTOS.h"
 
 // https://github.com/feilipu/Arduino_FreeRTOS_Library/blob/master/examples/AnalogRead_DigitalRead/AnalogRead_DigitalRead.ino
 struct Thread

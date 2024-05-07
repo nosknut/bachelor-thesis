@@ -2,7 +2,7 @@
 #define MUTEX_h
 
 
-#include <Arduino_FreeRTOS.h>
+#include <FreeRTOS.h>
 #include <semphr.h>
 
 // https://github.com/feilipu/Arduino_FreeRTOS_Library/blob/master/examples/Mutex/Mutex.ino
