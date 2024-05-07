@@ -210,6 +210,7 @@ MainThread mainThread;
 void setup()
 {
   // Used to detect that the microcontroller rebooted
+  randomSeed(analogRead(SESSION_ID_RANDOM_SEED_PIN));
   twigState.sessionId = random(1, 10000);
 
   setupOutputs();
