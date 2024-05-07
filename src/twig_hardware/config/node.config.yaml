@@ -1,10 +1,10 @@
 /twig_hardware_node:
   ros__parameters:
-    auto_acknowledge_hardware_reboot: false
+    auto_acknowledge_hardware_reboot: true
     command_timeout: 500
     hardware_config:
       connection_timeout: 1000
-      encoder_min_magnitude: 0
+      encoder_min_magnitude: 20
       max_current: 1.0
       max_current_cooldown_duration: 0
       max_current_duration: 1000
