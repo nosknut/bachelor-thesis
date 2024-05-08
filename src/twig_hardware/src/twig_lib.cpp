@@ -274,7 +274,7 @@ void twig_hardware::TwigLib::deactivate_all_servos()
 
 void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
 {
-  auto new_value = velocity * 600;
+  auto new_value = velocity * -200;
   if (!respects_position_limits(
       get_shoulder_servo_position(),
       new_value,
@@ -291,7 +291,7 @@ void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
 
 void twig_hardware::TwigLib::set_wrist_servo_velocity(double velocity)
 {
-  auto new_value = velocity * 600;
+  auto new_value = velocity * -200;
   if (command.wrist != new_value) {
     has_unpushed_commands_ = true;
     command.wrist = new_value;
@@ -300,7 +300,7 @@ void twig_hardware::TwigLib::set_wrist_servo_velocity(double velocity)
 
 void twig_hardware::TwigLib::set_gripper_servo_velocity(double velocity)
 {
-  auto new_value = velocity * 600;
+  auto new_value = velocity * -200;
   if (!respects_position_limits(
       get_gripper_servo_position(),
       new_value,
