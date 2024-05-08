@@ -58,6 +58,7 @@ struct __attribute__((packed)) TwigHardwareConfig
 // https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
 struct __attribute__((packed)) TwigCommand
 {
+  int16_t integrityCheck = 85;
   int16_t sessionId = 0;
   int16_t wrist = 0;
   int16_t gripper = 0;
@@ -75,6 +76,7 @@ struct __attribute__((packed)) TwigCommand
 // https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
 struct __attribute__((packed)) TwigState
 {
+  int16_t integrityCheck = 85;
   int16_t sessionId = 0;
   int16_t wristPosition = 0;
   int16_t gripperPosition = 0;

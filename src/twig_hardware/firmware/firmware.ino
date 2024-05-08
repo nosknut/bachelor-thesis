@@ -86,7 +86,13 @@ void writeCommand()
 
 void onCommand(int length)
 {
-  Wire.readBytes((uint8_t *)&twigCommand, length);
+  TwigCommand payload;
+  Wire.readBytes((uint8_t *)&payload, length);
+  if (payload.integrityCheck != 85) {
+    Serial.println("Command integrity check failed");
+    return;
+  }
+  twigCommand = payload;
   updateHardwareConfig();
   if (verify_session_id()) connectionTimer = millis();
   received++;
