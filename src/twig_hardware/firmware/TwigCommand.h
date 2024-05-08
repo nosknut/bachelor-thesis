@@ -10,6 +10,7 @@
 // https://www.geeksforgeeks.org/how-to-avoid-structure-padding-in-c/
 struct __attribute__((packed)) TwigCommand
 {
+  int16_t integrityCheck = 85;
   int16_t sessionId = 0;
   int16_t wrist = 0;
   int16_t gripper = 0;
