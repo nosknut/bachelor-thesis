@@ -240,6 +240,9 @@ void setup()
   // second arg is pause on debug which means the watchdog will pause when stepping through code
   watchdog_enable(1000, 1);
 
+  Wire.setSCL(RASPBERRY_PI_SCL_PIN);
+  Wire.setSDA(RASPBERRY_PI_SDA_PIN);
+  
   Wire.begin(I2C_ADDRESS);
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);

@@ -16,6 +16,9 @@ const int POSITION_LOWPASS_FILTER_CUTOFF = 2;
 // within the specified number of milliseconds.
 const unsigned long INITIAL_CONNECTION_TIMEOUT = 200;
 
+const int8_t RASPBERRY_PI_SDA_PIN = 20;
+const int8_t RASPBERRY_PI_SCL_PIN = 21;
+
 const int8_t SHOULDER_ENCODER_SDA_PIN = 8;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
 
