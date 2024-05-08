@@ -25,8 +25,8 @@
 EncoderThread encoderThread;
 
 FusedServo shoulderServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
-FusedServo wristServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
-FusedServo gripperServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
+FusedServo wristServo(WRIST_SERVO_PIN, WRIST_SERVO_RELAY_PIN);
+FusedServo gripperServo(GRIPPER_SERVO_PIN, GRIPPER_SERVO_RELAY_PIN);
 
 TwigCommand twigCommand;
 TwigState twigState;
