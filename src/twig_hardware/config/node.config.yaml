@@ -16,8 +16,8 @@
         offset: 0.0
       shoulder:
         limits:
-          max: 0.785
-          min: -0.785
+          max: 6.0
+          min: -6.0
         offset: 2.1
       wrist:
         offset: 1.0
