@@ -275,7 +275,7 @@ void twig_hardware::TwigLib::deactivate_all_servos()
 void twig_hardware::TwigLib::set_shoulder_servo_velocity(double velocity)
 {
   auto new_value = velocity * 600;
-  if (respects_position_limits(
+  if (!respects_position_limits(
       get_shoulder_servo_position(),
       new_value,
       jointConfig.shoulderLimits
@@ -301,7 +301,7 @@ void twig_hardware::TwigLib::set_wrist_servo_velocity(double velocity)
 void twig_hardware::TwigLib::set_gripper_servo_velocity(double velocity)
 {
   auto new_value = velocity * 600;
-  if (respects_position_limits(
+  if (!respects_position_limits(
       get_gripper_servo_position(),
       new_value,
       jointConfig.gripperLimits
