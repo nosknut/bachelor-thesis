@@ -195,6 +195,7 @@ void updateConnectionTimer()
   if ((millis() - connectionTimer) > connectionTimeout)
   {
     resetCommand();
+    Serial.println("Connection timeout");
   }
 }
 
