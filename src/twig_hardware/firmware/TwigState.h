@@ -26,7 +26,6 @@ struct __attribute__((packed)) TwigState
   bool shoulderServoPowered = false;
   bool wristServoPowered = false;
   bool gripperServoPowered = false;
-  uint checksum = 0;
 };
 
 #endif

@@ -241,21 +241,19 @@ protected:
           twig.acknowledge_hardware_reboot();
           RCLCPP_DEBUG(this->get_logger(), "Driver rebooted");
         }
-        RCLCPP_WARN(this->get_logger(), "Command Session Id: %d", (int) twig.command.sessionId);
-        RCLCPP_WARN(this->get_logger(), "State Session Id: %d", (int) twig.state.sessionId);
-        // if (twig.hardware_rebooted()) {
-        //   RCLCPP_WARN(this->get_logger(), "Hardware rebooted");
-        //   if (getBoolParam(PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT)) {
-        //     // twig.acknowledge_hardware_reboot();
-        //     RCLCPP_INFO(
-        //       this->get_logger(),
-        //       "Hardware reboot was automatically acknowledged and the system will continue normal operation");
-        //   } else {
-        //     RCLCPP_INFO(
-        //       this->get_logger(),
-        //       "Hardware reboot must be manually acknowledged. To continue normal operation, trigger the acknowledge service");
-        //   }
-        // }
+        if (twig.hardware_rebooted()) {
+          RCLCPP_WARN(this->get_logger(), "Hardware rebooted");
+          if (getBoolParam(PARAM_AUTO_ACKNOWLEDGE_HARDWARE_REBOOT)) {
+            twig.acknowledge_hardware_reboot();
+            RCLCPP_INFO(
+              this->get_logger(),
+              "Hardware reboot was automatically acknowledged and the system will continue normal operation");
+          } else {
+            RCLCPP_INFO(
+              this->get_logger(),
+              "Hardware reboot must be manually acknowledged. To continue normal operation, trigger the acknowledge service");
+          }
+        }
 
         if (has_subscribers || publish_without_subscribers_) {
           publish_state();

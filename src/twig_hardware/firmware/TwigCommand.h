@@ -18,7 +18,6 @@ struct __attribute__((packed)) TwigCommand
   bool wristServoPowered = false;
   bool gripperServoPowered = false;
   TwigHardwareConfig config;
-  uint checksum = 0;
 };
 
 #endif
