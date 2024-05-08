@@ -98,38 +98,28 @@ void onCommand(int length)
   received++;
 }
 
-uint16_t downsize10Bit(uint16_t input)
-{
-  return map(input, 0, 1023, 0, 255);
-}
-
-uint16_t downsize12Bit(uint16_t input)
-{
-  return map(input, 0, 4095, 0, 255);
-}
-
 void readState()
 {
-  twigState.wristCurrent = downsize10Bit(analogRead(WRIST_CURRENT_PIN));
-  twigState.gripperCurrent = downsize10Bit(analogRead(GRIPPER_CURRENT_PIN));
-  twigState.shoulderCurrent = downsize10Bit(analogRead(SHOULDER_CURRENT_PIN));
-  twigState.wristVoltage = downsize10Bit(analogRead(WRIST_VOLTAGE_PIN));
-  twigState.shoulderVoltage = downsize10Bit(analogRead(SHOULDER_VOLTAGE_PIN));
+  twigState.wristCurrent = analogRead(WRIST_CURRENT_PIN);
+  twigState.gripperCurrent = analogRead(GRIPPER_CURRENT_PIN);
+  twigState.shoulderCurrent = analogRead(SHOULDER_CURRENT_PIN);
+  twigState.wristVoltage = analogRead(WRIST_VOLTAGE_PIN);
+  twigState.shoulderVoltage = analogRead(SHOULDER_VOLTAGE_PIN);
 
   EncoderThreadValues encoderValues;
   if (encoderThread.getValues(encoderValues))
   {
     twigState.wristPosition = encoderValues.wrist.angle;
     twigState.wristVelocity = encoderValues.wrist.velocity;
-    twigState.wristEncoderMagnitude = downsize12Bit(encoderValues.wrist.magnitude);
+    twigState.wristEncoderMagnitude = encoderValues.wrist.magnitude;
 
     twigState.shoulderPosition = encoderValues.shoulder.angle;
     twigState.shoulderVelocity = encoderValues.shoulder.velocity;
-    twigState.shoulderEncoderMagnitude = downsize12Bit(encoderValues.shoulder.magnitude);
+    twigState.shoulderEncoderMagnitude = encoderValues.shoulder.magnitude;
 
     twigState.gripperPosition = encoderValues.gripper.angle;
     twigState.gripperVelocity = encoderValues.gripper.velocity;
-    twigState.gripperEncoderMagnitude = downsize12Bit(encoderValues.gripper.magnitude);
+    twigState.gripperEncoderMagnitude = encoderValues.gripper.magnitude;
   }
 
   twigState.wristServoPowered = wristServo.relayState;
