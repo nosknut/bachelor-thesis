@@ -11,8 +11,8 @@
     joint_config:
       gripper:
         limits:
-          max: 3.141592653589793
-          min: -3.141592653589793
+          max: 6.141592653589793
+          min: -6.141592653589793
         offset: 0.0
       shoulder:
         limits:
