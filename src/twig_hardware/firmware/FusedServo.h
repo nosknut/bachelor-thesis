@@ -14,7 +14,7 @@ public:
   Servo servo;
   Fuse fuse;
 
-  uint16_t speed = 0;
+  int16_t speed = 0;
   bool relayState = false;
 
   FusedServo(int servoPin, int relayPin)
@@ -28,7 +28,7 @@ public:
     servo.attach(servoPin);
   }
 
-  void update(uint16_t current, uint16_t relayCommand, uint16_t commandSpeed)
+  void update(uint16_t current, bool relayCommand, int16_t commandSpeed)
   {
     fuse.update(current);
 
