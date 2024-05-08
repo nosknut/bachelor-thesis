@@ -4,7 +4,7 @@
     command_timeout: 500
     hardware_config:
       connection_timeout: 1000
-      encoder_min_magnitude: 20
+      encoder_min_magnitude: 10
       max_current: 1.0
       max_current_cooldown_duration: 0
       max_current_duration: 1000
