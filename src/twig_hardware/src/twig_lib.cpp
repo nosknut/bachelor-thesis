@@ -187,13 +187,13 @@ double twig_hardware::TwigLib::apply_angular_offset(double angle, double offset)
 // TODO: Implement voltage estimation
 double twig_hardware::TwigLib::raw_to_voltage(int16_t raw)
 {
-  return ((double) raw) / 255.0;
+  return ((double) raw) / 1023.0;
 }
 
 // TODO: Implement current estimation
 double twig_hardware::TwigLib::raw_to_current(int16_t raw)
 {
-  return ((double) raw) / 255.0;
+  return ((double) raw) / 1023.0;
 }
 
 // TODO: Implement current estimation
