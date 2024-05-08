@@ -10,6 +10,6 @@
         deactivate_servos: 8
         deadmanswitch: 7
       deadband: 0.2
-    shoulder_max_speed: 0.33
-    wrist_max_speed: 0.33
-    gripper_max_speed: -0.33
+    shoulder_max_speed: 1.0
+    wrist_max_speed: 1.0
+    gripper_max_speed: 1.0
