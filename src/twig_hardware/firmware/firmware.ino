@@ -84,23 +84,9 @@ void writeCommand()
   gripperServo.update(twigState.gripperCurrent, twigCommand.gripperServoPowered, twigCommand.gripper);
 }
 
-// https://community.st.com/t5/stm32-mcus-products/calculating-checksum-of-struct/td-p/309361
-uint checksumFor(int size, uint8_t *ptr)
-{
-  uint sum = 0;
-  while(size--) sum += *ptr++; // sum bytes over buffer
-  return sum;
-}
-
 void onCommand(int length)
 {
-  TwigCommand payload;
-  Wire.readBytes((uint8_t *)&payload, length);
-  if (payload.checksum != checksumFor(sizeof(TwigCommand), (uint8_t *)&payload)) {
-    Serial.println("Checksum error");
-    return;
-  }
-  twigCommand = payload;
+  Wire.readBytes((uint8_t *)&twigCommand, length);
   updateHardwareConfig();
   if (verify_session_id()) connectionTimer = millis();
   received++;
@@ -147,8 +133,6 @@ void readState()
 
 void onStateRequest()
 {
-  twigState.checksum = checksumFor(sizeof(TwigState), (uint8_t *)&twigState);
-  Serial.println(twigState.checksum);
   Wire.write((uint8_t *)&twigState, sizeof(TwigState));
   if (verify_session_id()) connectionTimer = millis();
   sent++;
