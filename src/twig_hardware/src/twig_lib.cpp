@@ -80,6 +80,14 @@ void twig_hardware::TwigLib::set_hardware_config(twig_hardware::TwigHardwareConf
   has_unpushed_commands_ = true;
 }
 
+// https://community.st.com/t5/stm32-mcus-products/calculating-checksum-of-struct/td-p/309361
+uint checksumFor(int size, uint8_t *ptr)
+{
+  uint sum = 0;
+  while(size--) sum += *ptr++; // sum bytes over buffer
+  return sum;
+}
+
 bool twig_hardware::TwigLib::write_command(int max_retries, bool force)
 {
   if (!has_unpushed_commands_ && !force) {
@@ -88,6 +96,7 @@ bool twig_hardware::TwigLib::write_command(int max_retries, bool force)
 
   int fails = 0;
   while (true) {
+    command.checksum = checksumFor(sizeof(TwigCommand), (uint8_t *)&command);
     if (i2c_send(reinterpret_cast<std::byte *>(&command), sizeof(command))) {
       has_unpushed_commands_ = false;
       return true;
@@ -103,7 +112,11 @@ bool twig_hardware::TwigLib::read_state(int max_retries)
 {
   int fails = 0;
   while (true) {
-    if (i2c_read(reinterpret_cast<std::byte *>(&state), sizeof(twig_hardware::TwigState))) {
+    TwigState payload;
+    if (i2c_read(reinterpret_cast<std::byte *>(&payload), sizeof(twig_hardware::TwigState))) {  
+      if (payload.checksum == checksumFor(sizeof(TwigState), (uint8_t *)&payload)) {
+      }
+      state = payload;
       return true;
     }
     fails++;

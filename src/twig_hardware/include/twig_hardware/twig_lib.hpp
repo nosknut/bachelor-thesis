@@ -66,6 +66,7 @@ struct __attribute__((packed)) TwigCommand
   bool wristServoPowered = false;
   bool gripperServoPowered = false;
   TwigHardwareConfig config;
+  uint checksum = 0;
 };
 
 // Attribute packed is used to ensure the struct has the same
@@ -93,6 +94,7 @@ struct __attribute__((packed)) TwigState
   bool shoulderServoPowered = false;
   bool wristServoPowered = false;
   bool gripperServoPowered = false;
+  uint checksum = 0;
 };
 
 class TwigLib
