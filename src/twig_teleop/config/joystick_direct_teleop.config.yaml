@@ -2,9 +2,9 @@
   ros__parameters:
     joy:
       axis:
-        gripper: 0
+        gripper: 3
         shoulder: 1
-        wrist: 3
+        wrist: 0
       button:
         activate_servos: 9
         deactivate_servos: 8
