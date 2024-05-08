@@ -25,7 +25,7 @@ const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
 const int8_t WRIST_ENCODER_SDA_PIN = 4;
 const int8_t WRIST_ENCODER_SCL_PIN = 2;
 
-const int8_t GRIPPER_ENCODER_SDA_PIN = 9;
+const int8_t GRIPPER_ENCODER_SDA_PIN = 6;
 const int8_t GRIPPER_ENCODER_SCL_PIN = 2;
 
 const int8_t SHOULDER_CURRENT_PIN = A0;
