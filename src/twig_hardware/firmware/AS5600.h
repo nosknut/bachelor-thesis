@@ -16,7 +16,7 @@
 #include <Wire.h>
 #define I2C_CLASS TwoWire
 #else
-#include <SoftI2C.h>
+#include "SoftI2C.h"
 #define I2C_CLASS SoftI2C
 #endif
 #endif
