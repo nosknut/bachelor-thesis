@@ -57,7 +57,6 @@ public:
         shoulderEncoder.begin();
         wristEncoder.begin();
         gripperEncoder.begin();
-        start();
     }
 
     void end()

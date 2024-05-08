@@ -247,8 +247,9 @@ void setup()
   // Runs the thread jobs directly in the main loop
   // until the unstable threading is resolved
 
-  // encoderThread.begin();
-  // encoderThread.run();
+  encoderThread.begin();
+  // encoderThread.start();
+  encoderThread.run();
 
   // Wait 100ms after startup to allow driver sync
   readState();
@@ -260,5 +261,5 @@ void loop()
   // Runs the thread jobs directly in the main loop
   // until the unstable threading is resolved
   mainThread.run();
-  // encoderThread.run();
+  encoderThread.run();
 }
