@@ -16,31 +16,32 @@ const int POSITION_LOWPASS_FILTER_CUTOFF = 2;
 // within the specified number of milliseconds.
 const unsigned long INITIAL_CONNECTION_TIMEOUT = 200;
 
-const int8_t SHOULDER_ENCODER_SDA_PIN = 7;
+const int8_t SHOULDER_ENCODER_SDA_PIN = 8;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
 
 const int8_t WRIST_ENCODER_SDA_PIN = 4;
 const int8_t WRIST_ENCODER_SCL_PIN = 2;
 
-const int8_t GRIPPER_ENCODER_SDA_PIN = 8;
+const int8_t GRIPPER_ENCODER_SDA_PIN = 9;
 const int8_t GRIPPER_ENCODER_SCL_PIN = 2;
 
 const int8_t SHOULDER_CURRENT_PIN = A0;
 const int8_t WRIST_CURRENT_PIN = A1;
 const int8_t GRIPPER_CURRENT_PIN = A2;
 
-const int8_t SHOULDER_VOLTAGE_PIN = A3;
 // TODO: Remove sensors from firmware that have no analog input
-const int8_t WRIST_VOLTAGE_PIN = A3;
+const int8_t SHOULDER_VOLTAGE_PIN = A2;
+// TODO: Remove sensors from firmware that have no analog input
+const int8_t WRIST_VOLTAGE_PIN = A2;
 
-const int8_t SESSION_ID_RANDOM_SEED_PIN = A3;
+const int8_t SESSION_ID_RANDOM_SEED_PIN = A2;
 
 const int8_t SHOULDER_SERVO_PIN = 3;
-const int8_t WRIST_SERVO_PIN = 5;
-const int8_t GRIPPER_SERVO_PIN = 6;
+const int8_t WRIST_SERVO_PIN = 6;
+const int8_t GRIPPER_SERVO_PIN = 7;
 
-const int8_t SHOULDER_SERVO_RELAY_PIN = 9;
-const int8_t WRIST_SERVO_RELAY_PIN = 10;
-const int8_t GRIPPER_SERVO_RELAY_PIN = 11;
+const int8_t SHOULDER_SERVO_RELAY_PIN = 10;
+const int8_t WRIST_SERVO_RELAY_PIN = 11;
+const int8_t GRIPPER_SERVO_RELAY_PIN = 12;
 
 #endif
