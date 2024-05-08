@@ -170,6 +170,12 @@ void printLog()
   Serial.print(", ");
   Serial.print(leadingSpaces(String(twigCommand.gripper), 7));
   Serial.print(", ");
+  Serial.print(leadingSpaces(String(twigState.shoulderEncoderMagnitude), 7));
+  Serial.print(", ");
+  Serial.print(leadingSpaces(String(twigState.wristEncoderMagnitude), 7));
+  Serial.print(", ");
+  Serial.print(leadingSpaces(String(twigState.gripperEncoderMagnitude), 7));
+  Serial.print(", ");
   Serial.print(twigCommand.shoulderServoPowered);
   Serial.print(", ");
   Serial.print(twigCommand.wristServoPowered);
