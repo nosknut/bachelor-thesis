@@ -6,8 +6,8 @@
         shoulder: 1
         wrist: 3
       button:
-        activate_servos: 8
-        deactivate_servos: 9
+        activate_servos: 9
+        deactivate_servos: 8
         deadmanswitch: 7
       deadband: 0.2
     shoulder_max_speed: 0.33
