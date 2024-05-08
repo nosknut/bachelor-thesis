@@ -40,10 +40,10 @@ const int8_t WRIST_VOLTAGE_PIN = A2;
 const int8_t SESSION_ID_RANDOM_SEED_PIN = A2;
 
 const int8_t SHOULDER_SERVO_PIN = 3;
-const int8_t WRIST_SERVO_PIN = 6;
+const int8_t WRIST_SERVO_PIN = 12;
 const int8_t GRIPPER_SERVO_PIN = 8;
 
-const int8_t SHOULDER_SERVO_RELAY_PIN = 12;
+const int8_t SHOULDER_SERVO_RELAY_PIN = 9;
 const int8_t WRIST_SERVO_RELAY_PIN = 11;
 const int8_t GRIPPER_SERVO_RELAY_PIN = 10;
 
