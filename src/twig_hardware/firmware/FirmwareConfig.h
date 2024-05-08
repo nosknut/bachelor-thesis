@@ -19,7 +19,7 @@ const unsigned long INITIAL_CONNECTION_TIMEOUT = 200;
 const int8_t RASPBERRY_PI_SDA_PIN = 20;
 const int8_t RASPBERRY_PI_SCL_PIN = 21;
 
-const int8_t SHOULDER_ENCODER_SDA_PIN = 8;
+const int8_t SHOULDER_ENCODER_SDA_PIN = 7;
 const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
 
 const int8_t WRIST_ENCODER_SDA_PIN = 4;
@@ -41,7 +41,7 @@ const int8_t SESSION_ID_RANDOM_SEED_PIN = A2;
 
 const int8_t SHOULDER_SERVO_PIN = 3;
 const int8_t WRIST_SERVO_PIN = 6;
-const int8_t GRIPPER_SERVO_PIN = 7;
+const int8_t GRIPPER_SERVO_PIN = 8;
 
 const int8_t SHOULDER_SERVO_RELAY_PIN = 10;
 const int8_t WRIST_SERVO_RELAY_PIN = 11;
