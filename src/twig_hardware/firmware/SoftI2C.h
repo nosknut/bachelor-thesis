@@ -44,7 +44,6 @@
         #define SOFT_I2C_DELAY 4 // usec delay
 #endif
 #define DELAY SOFT_I2C_DELAY
-#define DELAY 4 // usec delay
 #define I2C_MAXWAIT 5000
 
 class SoftI2C : public Stream

@@ -2,7 +2,7 @@
 #define ENCODER_h
 
 #include <Arduino.h>
-#include <SoftI2C.h>
+#include "SoftI2C.h"
 #include "Lowpass.h"
 #include "AS5600.h"
 #include "AngularVelocityTracker.h"
