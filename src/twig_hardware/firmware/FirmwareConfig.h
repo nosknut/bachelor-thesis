@@ -43,8 +43,8 @@ const int8_t SHOULDER_SERVO_PIN = 3;
 const int8_t WRIST_SERVO_PIN = 6;
 const int8_t GRIPPER_SERVO_PIN = 8;
 
-const int8_t SHOULDER_SERVO_RELAY_PIN = 10;
+const int8_t SHOULDER_SERVO_RELAY_PIN = 12;
 const int8_t WRIST_SERVO_RELAY_PIN = 11;
-const int8_t GRIPPER_SERVO_RELAY_PIN = 12;
+const int8_t GRIPPER_SERVO_RELAY_PIN = 10;
 
 #endif
