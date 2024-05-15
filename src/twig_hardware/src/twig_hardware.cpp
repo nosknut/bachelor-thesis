@@ -104,6 +104,13 @@ hardware_interface::CallbackReturn TwigHardware::on_init(
     }
   }
 
+  
+  // Configure the pull and push rates
+  // https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/different_update_rates_userdoc.html#by-measuring-elapsed-time
+  pull_rate_ = stod(info_.hardware_parameters["pull_rate"]);
+  push_rate_ = stod(info_.hardware_parameters["push_rate"]);
+
+
   return hardware_interface::CallbackReturn::SUCCESS;
 }
 
@@ -183,6 +190,11 @@ hardware_interface::CallbackReturn TwigHardware::on_activate(
   const rclcpp_lifecycle::State & /*previous_state*/)
 { \
   twig.activate_all_servos();
+  
+  // Configure the first read and write pass to respect the push and pull rates
+  // https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/different_update_rates_userdoc.html#by-measuring-elapsed-time
+  first_read_pass_ = true;
+  first_write_pass_ = true;
 
   if (twig.write_command()) {
     return hardware_interface::CallbackReturn::SUCCESS;
@@ -206,8 +218,18 @@ hardware_interface::CallbackReturn TwigHardware::on_deactivate(
 }
 
 hardware_interface::return_type TwigHardware::read(
-  const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
+  const rclcpp::Time & time, const rclcpp::Duration & period)
 {
+  // Skip reads to respect the pull rate
+  // https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/different_update_rates_userdoc.html#by-measuring-elapsed-time
+  if (!first_read_pass_ && ((time - last_read_time_ ) < rclcpp::Duration::from_seconds(1.0 / pull_rate_)))
+  {
+    return hardware_interface::return_type::OK;
+  }
+
+  first_read_pass_ = false;
+  last_read_time_ = time;
+  
   if (twig.read_state(3)) {
     if (twig.driver_rebooted()) {
       twig.acknowledge_hardware_reboot();
@@ -240,8 +262,18 @@ hardware_interface::return_type TwigHardware::read(
 }
 
 hardware_interface::return_type TwigHardware::write(
-  const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+  const rclcpp::Time & time, const rclcpp::Duration & /*period*/)
 {
+  // Skip writes to respect the pull rate
+  // https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/different_update_rates_userdoc.html#by-measuring-elapsed-time
+  if (!first_write_pass_ && ((time - last_write_time_ ) < rclcpp::Duration::from_seconds(1.0 / push_rate_)))
+  {
+    return hardware_interface::return_type::OK;
+  }
+
+  first_write_pass_ = false;
+  last_write_time_ = time;
+
   twig.set_shoulder_servo_velocity(hw_commands_[0]);
   twig.set_wrist_servo_velocity(hw_commands_[1]);
   twig.set_gripper_servo_velocity(hw_commands_[2]);

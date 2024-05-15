@@ -74,6 +74,15 @@ private:
   // Buffers read and modified by ros2_control
   std::vector<double> hw_commands_;
   std::vector<double> hw_states_;
+
+  bool first_read_pass_ = true;
+  bool first_write_pass_ = true;
+
+  rclcpp::Time last_read_time_;
+  rclcpp::Time last_write_time_;
+
+  double pull_rate_;
+  double push_rate_;
 };
 
 }  // namespace twig_hardware
