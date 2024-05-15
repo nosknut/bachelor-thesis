@@ -16,13 +16,13 @@
 #include "TwigCommand.h"
 #include "TwigHardwareConfig.h"
 #include "FusedServo.h"
-#include "EncoderThread.h"
-#include "Thread.h"
 
 // #define DEBUG_ENCODERS
 #include "Encoder.h"
 
-EncoderThread encoderThread;
+Encoder shoulderEncoder = Encoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Shoulder");
+Encoder wristEncoder = Encoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
+Encoder gripperEncoder = Encoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
 
 FusedServo shoulderServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
 FusedServo wristServo(WRIST_SERVO_PIN, WRIST_SERVO_RELAY_PIN);
@@ -59,9 +59,9 @@ void updateHardwareConfig() {
 
   connectionTimeout = config.connectionTimeout;
 
-  encoderThread.shoulderEncoder.minMagnitude = config.encoderMinMagnitude;
-  encoderThread.wristEncoder.minMagnitude = config.encoderMinMagnitude;
-  encoderThread.gripperEncoder.minMagnitude = config.encoderMinMagnitude;
+  shoulderEncoder.minMagnitude = config.encoderMinMagnitude;
+  wristEncoder.minMagnitude = config.encoderMinMagnitude;
+  gripperEncoder.minMagnitude = config.encoderMinMagnitude;
 
   shoulderServo.fuse.maxCurrent = config.maxCurrent;
   wristServo.fuse.maxCurrent = config.maxCurrent;
@@ -106,21 +106,21 @@ void readState()
   twigState.wristVoltage = analogRead(WRIST_VOLTAGE_PIN);
   twigState.shoulderVoltage = analogRead(SHOULDER_VOLTAGE_PIN);
 
-  EncoderThreadValues encoderValues;
-  if (encoderThread.getValues(encoderValues))
-  {
-    twigState.wristPosition = encoderValues.wrist.angle;
-    twigState.wristVelocity = encoderValues.wrist.velocity;
-    twigState.wristEncoderMagnitude = encoderValues.wrist.magnitude;
+  wristEncoder.update();
+  shoulderEncoder.update();
+  gripperEncoder.update();
 
-    twigState.shoulderPosition = encoderValues.shoulder.angle;
-    twigState.shoulderVelocity = encoderValues.shoulder.velocity;
-    twigState.shoulderEncoderMagnitude = encoderValues.shoulder.magnitude;
+  twigState.wristPosition = wristEncoder.values.angle;
+  twigState.wristVelocity = wristEncoder.values.velocity;
+  twigState.wristEncoderMagnitude = wristEncoder.values.magnitude;
 
-    twigState.gripperPosition = encoderValues.gripper.angle;
-    twigState.gripperVelocity = encoderValues.gripper.velocity;
-    twigState.gripperEncoderMagnitude = encoderValues.gripper.magnitude;
-  }
+  twigState.shoulderPosition = shoulderEncoder.values.angle;
+  twigState.shoulderVelocity = shoulderEncoder.values.velocity;
+  twigState.shoulderEncoderMagnitude = shoulderEncoder.values.magnitude;
+
+  twigState.gripperPosition = gripperEncoder.values.angle;
+  twigState.gripperVelocity = gripperEncoder.values.velocity;
+  twigState.gripperEncoderMagnitude = gripperEncoder.values.magnitude;
 
   twigState.wristServoPowered = wristServo.relayState;
   twigState.shoulderServoPowered = shoulderServo.relayState;
@@ -199,26 +199,6 @@ void updateConnectionTimer()
   }
 }
 
-class MainThread : public Thread
-{
-public: 
-  void run() override
-  {
-    readState();
-    updateLog();
-    updateConnectionTimer();
-    writeCommand();
-    watchdog_update();
-  }
-
-  MainThread() : Thread("Main Thread", 2)
-  {
-  }
-};
-
-MainThread mainThread;
-
-
 void setup()
 {
   // Used to detect that the microcontroller rebooted
@@ -244,22 +224,20 @@ void setup()
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);
 
-  // Runs the thread jobs directly in the main loop
-  // until the unstable threading is resolved
+  shoulderEncoder.begin();
+  wristEncoder.begin();
+  gripperEncoder.begin();
 
-  encoderThread.begin();
-  // encoderThread.start();
-  encoderThread.run();
-
-  // Wait 100ms after startup to allow driver sync
+  // Read the states and give the remote system some time to connect
   readState();
-  // mainThread.start();
+  delay(100);
 }
 
 void loop()
 {
-  // Runs the thread jobs directly in the main loop
-  // until the unstable threading is resolved
-  mainThread.run();
-  encoderThread.run();
+    readState();
+    updateLog();
+    updateConnectionTimer();
+    writeCommand();
+    watchdog_update();
 }
