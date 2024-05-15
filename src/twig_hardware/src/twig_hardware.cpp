@@ -118,9 +118,38 @@ hardware_interface::CallbackReturn TwigHardware::on_configure(
     hw_commands_[i] = 0;
   }
 
-  RCLCPP_INFO(rclcpp::get_logger("TwigHardware"), "Successfully configured!");
+  // Docs for hardware params:
+  // https://control.ros.org/master/doc/ros2_control/hardware_interface/doc/different_update_rates_userdoc.html
+  
+  // Load all twig driver hardware configurations from hardware params
+  TwigHardwareConfig c;
+  c.connectionTimeout = stoi(info_.hardware_parameters["hardware_config.connection_timeout"]);
+  
+  c.maxCurrent = stod(info_.hardware_parameters["hardware_config.max_current"]);
+  c.maxCurrentDuration = stoi(info_.hardware_parameters["hardware_config.max_current_duration"]);
+  c.maxCurrentCooldownDuration = stoi(info_.hardware_parameters["hardware_config.max_current_cooldown_duration"]);
+  c.encoderMinMagnitude = stoi(info_.hardware_parameters["hardware_config.encoder_min_magnitude"]);
+  twig.set_hardware_config(c);
 
-  return hardware_interface::CallbackReturn::SUCCESS;
+  // Load all twig driver joint configurations from hardware params
+  twig.jointConfig.shoulderLimits.min = stod(info_.hardware_parameters["joint_config.shoulder.limits.min"]);
+  twig.jointConfig.shoulderLimits.max = stod(info_.hardware_parameters["joint_config.shoulder.limits.max"]);
+
+  twig.jointConfig.gripperLimits.min = stod(info_.hardware_parameters["joint_config.gripper.limits.min"]);
+  twig.jointConfig.gripperLimits.max = stod(info_.hardware_parameters["joint_config.gripper.limits.max"]);
+
+  twig.jointConfig.shoulderOffset = stod(info_.hardware_parameters["joint_config.shoulder.offset"]);
+  twig.jointConfig.wristOffset = stod(info_.hardware_parameters["joint_config.wrist.offset"]);
+  twig.jointConfig.gripperOffset = stod(info_.hardware_parameters["joint_config.gripper.offset"]);
+
+  // Push the configurations to hardware
+  if (twig.write_command()) {
+    RCLCPP_INFO(rclcpp::get_logger("TwigHardware"), "Successfully configured!");
+    return hardware_interface::CallbackReturn::SUCCESS;
+  }
+
+  RCLCPP_ERROR(rclcpp::get_logger("TwigHardware"), "Failed to configure hardware!");
+  return hardware_interface::CallbackReturn::ERROR;
 }
 
 std::vector<hardware_interface::StateInterface>

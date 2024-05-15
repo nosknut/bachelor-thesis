@@ -1,11 +1,47 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
 
-  <xacro:macro name="twig_hardware" params="name main_loop_update_rate desired_hw_update_rate">
+  <xacro:macro name="twig_hardware" params="
+name
+hardware_config.connection_timeout
+hardware_config.max_current
+hardware_config.max_current_duration
+hardware_config.max_current_cooldown_duration
+hardware_config.encoder_min_magnitude
+joint_config.shoulder.limits.min
+joint_config.shoulder.limits.max
+joint_config.gripper.limits.min
+joint_config.gripper.limits.max
+joint_config.shoulder.offset
+joint_config.wrist.offset
+joint_config.gripper.offset
+
+pull_rate
+push_rate
+">
 
     <ros2_control name="${name}" type="system">
       <hardware>
         <plugin>twig_hardware/TwigSystemHardware</plugin>
+        <param name="hardware_config.connection_timeout">${hardware_config.connection_timeout}</param>
+
+        <param name="hardware_config.max_current">${hardware_config.max_current}</param>
+        <param name="hardware_config.max_current_duration">${hardware_config.max_current_duration}</param>
+        <param name="hardware_config.max_current_cooldown_duration">${hardware_config.max_current_cooldown_duration}</param>
+        <param name="hardware_config.encoder_min_magnitude">${hardware_config.encoder_min_magnitude}</param>
+
+        <param name="joint_config.shoulder.limits.min">${joint_config.shoulder.limits.min}</param>
+        <param name="joint_config.shoulder.limits.max">${joint_config.shoulder.limits.max}</param>
+
+        <param name="joint_config.gripper.limits.min">${joint_config.gripper.limits.min}</param>
+        <param name="joint_config.gripper.limits.max">${joint_config.gripper.limits.max}</param>
+
+        <param name="joint_config.shoulder.offset">${joint_config.shoulder.offset}</param>
+        <param name="joint_config.wrist.offset">${joint_config.wrist.offset}</param>
+        <param name="joint_config.gripper.offset">${joint_config.gripper.offset}</param>
+
+        <param name="pull_rate">${pull_rate}</param>
+        <param name="push_rate">${push_rate}</param>
       </hardware>
       <joint name="twig_shoulder_joint">
         <command_interface name="velocity"/>
