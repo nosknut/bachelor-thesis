@@ -179,7 +179,18 @@ hardware_interface::CallbackReturn TwigHardware::on_deactivate(
 hardware_interface::return_type TwigHardware::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
 {
-  if (twig.read_state()) {
+    if (twig.driver_rebooted()) {
+      twig.acknowledge_hardware_reboot();
+      RCLCPP_DEBUG(rclcpp::get_logger("TwigHardware"), "Driver rebooted");
+    }
+    if (twig.hardware_rebooted()) {
+      RCLCPP_WARN(rclcpp::get_logger("TwigHardware"), "Hardware rebooted");
+      twig.acknowledge_hardware_reboot();
+      RCLCPP_INFO(
+        rclcpp::get_logger("TwigHardware"),
+        "Hardware reboot was automatically acknowledged and the system will continue normal operation");
+    }
+
     hw_states_[0] = twig.get_shoulder_servo_position();
     hw_states_[1] = twig.get_shoulder_servo_velocity();
     hw_states_[2] = twig.get_shoulder_servo_effort();
