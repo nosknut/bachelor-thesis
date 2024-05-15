@@ -94,11 +94,6 @@ protected:
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr wrist_servo_current_pub_;
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr gripper_servo_current_pub_;
 
-  // Voltage Publishers
-
-  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr shoulder_servo_voltage_pub_;
-  rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr wrist_servo_voltage_pub_;
-
   // Velocity Publishers
 
   rclcpp::Publisher<std_msgs::msg::Float32>::SharedPtr shoulder_servo_velocity_pub_;
@@ -165,10 +160,6 @@ protected:
     publish_float(wrist_servo_current_pub_, twig.get_wrist_servo_current());
     publish_float(gripper_servo_current_pub_, twig.get_gripper_servo_current());
 
-    // Voltage Publishers
-    publish_float(shoulder_servo_voltage_pub_, twig.get_shoulder_servo_voltage());
-    publish_float(wrist_servo_voltage_pub_, twig.get_wrist_servo_voltage());
-
     // Velocity Publishers
     publish_float(shoulder_servo_velocity_pub_, twig.get_shoulder_servo_velocity());
     publish_float(wrist_servo_velocity_pub_, twig.get_wrist_servo_velocity());
@@ -203,10 +194,6 @@ protected:
     count += shoulder_servo_current_pub_->get_subscription_count();
     count += wrist_servo_current_pub_->get_subscription_count();
     count += gripper_servo_current_pub_->get_subscription_count();
-
-    // Voltage Publishers
-    count += shoulder_servo_voltage_pub_->get_subscription_count();
-    count += wrist_servo_voltage_pub_->get_subscription_count();
 
     // Velocity Publishers
     count += shoulder_servo_velocity_pub_->get_subscription_count();
@@ -538,10 +525,6 @@ public:
     shoulder_servo_current_pub_ = create_float_publisher("shoulder/servo/current");
     wrist_servo_current_pub_ = create_float_publisher("wrist/servo/current");
     gripper_servo_current_pub_ = create_float_publisher("gripper/servo/current");
-
-    // Voltage Publishers
-    shoulder_servo_voltage_pub_ = create_float_publisher("shoulder/servo/voltage");
-    wrist_servo_voltage_pub_ = create_float_publisher("wrist/servo/voltage");
 
     // Velocity Publishers
     shoulder_servo_velocity_pub_ = create_float_publisher("shoulder/servo/velocity");

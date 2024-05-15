@@ -14,13 +14,6 @@
       "showFullMessageForDiff": false,
       "topicPath": "/shoulder/servo/velocity"
     },
-    "RawMessages!46fv68c": {
-      "diffEnabled": false,
-      "diffMethod": "custom",
-      "diffTopicPath": "",
-      "showFullMessageForDiff": false,
-      "topicPath": "/wrist/servo/voltage"
-    },
     "Joystick Panel.Joystick!4l5nx7m": {},
     "CallService!1iz9k8k": {
       "requestPayload": "{}",
@@ -54,13 +47,6 @@
       "showFullMessageForDiff": false,
       "topicPath": "/wrist/servo/velocity"
     },
-    "RawMessages!c4x1h9": {
-      "diffEnabled": false,
-      "diffMethod": "custom",
-      "diffTopicPath": "",
-      "showFullMessageForDiff": false,
-      "topicPath": "/wrist/servo/voltage"
-    },
     "RawMessages!14a5e0g": {
       "diffEnabled": false,
       "diffMethod": "custom",
@@ -92,14 +78,6 @@
       "diffTopicPath": "",
       "showFullMessageForDiff": false,
       "topicPath": "/gripper/servo/velocity"
-    },
-    "RawMessages!25hfyfo": {
-      "diffEnabled": false,
-      "diffMethod": "custom",
-      "diffTopicPath": "",
-      "showFullMessageForDiff": false,
-      "topicPath": "/wrist/servo/voltage",
-      "expansion": "all"
     },
     "RawMessages!3mcmwmi": {
       "diffEnabled": false,

@@ -22,8 +22,6 @@ struct __attribute__((packed)) TwigState
   uint16_t wristCurrent = 0;
   uint16_t gripperCurrent = 0;
   uint16_t shoulderCurrent = 0;
-  uint16_t wristVoltage = 0;
-  uint16_t shoulderVoltage = 0;
   bool shoulderServoPowered = false;
   bool wristServoPowered = false;
   bool gripperServoPowered = false;

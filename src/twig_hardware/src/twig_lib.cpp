@@ -184,12 +184,6 @@ double twig_hardware::TwigLib::apply_angular_offset(double angle, double offset)
   return new_angle;
 }
 
-// TODO: Implement voltage estimation
-double twig_hardware::TwigLib::raw_to_voltage(int16_t raw)
-{
-  return ((double) raw) / 1023.0;
-}
-
 // TODO: Implement current estimation
 double twig_hardware::TwigLib::raw_to_current(int16_t raw)
 {
@@ -371,18 +365,6 @@ double twig_hardware::TwigLib::get_wrist_servo_current()
 double twig_hardware::TwigLib::get_gripper_servo_current()
 {
   return raw_to_current(state.gripperCurrent);
-}
-
-// Get voltage
-
-double twig_hardware::TwigLib::get_shoulder_servo_voltage()
-{
-  return raw_to_voltage(state.shoulderVoltage);
-}
-
-double twig_hardware::TwigLib::get_wrist_servo_voltage()
-{
-  return raw_to_voltage(state.wristVoltage);
 }
 
 // Get velocity

@@ -90,8 +90,6 @@ struct __attribute__((packed)) TwigState
   uint16_t wristCurrent = 0;
   uint16_t gripperCurrent = 0;
   uint16_t shoulderCurrent = 0;
-  uint16_t wristVoltage = 0;
-  uint16_t shoulderVoltage = 0;
   bool shoulderServoPowered = false;
   bool wristServoPowered = false;
   bool gripperServoPowered = false;
@@ -134,8 +132,6 @@ protected:
   bool respects_position_limits(double position, double velocity, Range limits);
   double full_angle_to_center_angle(double angle);
   double apply_angular_offset(double angle, double offset);
-
-  double raw_to_voltage(int16_t raw);
 
   double raw_to_current(int16_t raw);
   double current_to_effort(double current);
@@ -191,11 +187,6 @@ public:
   double get_shoulder_servo_current();
   double get_wrist_servo_current();
   double get_gripper_servo_current();
-
-// Get voltage
-
-  double get_shoulder_servo_voltage();
-  double get_wrist_servo_voltage();
 
 // Get velocity
 

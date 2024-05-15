@@ -103,8 +103,6 @@ void readState()
   twigState.wristCurrent = analogRead(WRIST_CURRENT_PIN);
   twigState.gripperCurrent = analogRead(GRIPPER_CURRENT_PIN);
   twigState.shoulderCurrent = analogRead(SHOULDER_CURRENT_PIN);
-  twigState.wristVoltage = analogRead(WRIST_VOLTAGE_PIN);
-  twigState.shoulderVoltage = analogRead(SHOULDER_VOLTAGE_PIN);
 
   wristEncoder.update();
   shoulderEncoder.update();
