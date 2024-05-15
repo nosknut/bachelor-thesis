@@ -179,6 +179,7 @@ hardware_interface::CallbackReturn TwigHardware::on_deactivate(
 hardware_interface::return_type TwigHardware::read(
   const rclcpp::Time & /*time*/, const rclcpp::Duration & period)
 {
+  if (twig.read_state(3)) {
     if (twig.driver_rebooted()) {
       twig.acknowledge_hardware_reboot();
       RCLCPP_DEBUG(rclcpp::get_logger("TwigHardware"), "Driver rebooted");
@@ -216,7 +217,7 @@ hardware_interface::return_type TwigHardware::write(
   twig.set_wrist_servo_velocity(hw_commands_[1]);
   twig.set_gripper_servo_velocity(hw_commands_[2]);
 
-  if (twig.write_command()) {
+  if (twig.write_command(3)) {
     return hardware_interface::return_type::OK;
   }
   RCLCPP_ERROR(rclcpp::get_logger("TwigHardware"), "Failed to write commands to hardware!");
