@@ -1,0 +1,65 @@
+# This file replaces the equivalent config in twig_moveit_config when using real hardware
+# https://control.ros.org/humble/doc/ros2_controllers/joint_trajectory_controller/doc/parameters.html#an-example-parameter-file
+controller_manager:
+  ros__parameters:
+    update_rate: 100 # Hz
+
+    twig_arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+twig_arm_controller:
+  ros__parameters:
+    cmd_timeout: 0.5
+    state_publish_rate: 50.0
+    action_monitor_rate: 20.0
+    allow_integration_in_goal_trajectories: false
+    allow_nonzero_velocity_at_trajectory_end: true
+    allow_partial_joints_goal: true
+
+    joints:
+      - twig_shoulder_joint
+      - twig_wrist_joint
+      - twig_left_finger_joint
+    command_interfaces:
+      - position
+    state_interfaces:
+      - position
+      - velocity
+    constraints:
+      twig_shoulder_joint:
+        goal: 0.1
+        trajectory: 0.1
+      twig_wrist_joint:
+        goal: 0.1
+        trajectory: 0.1
+      twig_left_finger_joint:
+        goal: 0.1
+        trajectory: 0.1
+      goal_time: 0.5
+      stopped_velocity_tolerance: 0.1
+    interpolation_method: splines
+    # Enabling open_loop_control bypasses the
+    # PID controller. This may be useful if an encoder fails.
+    open_loop_control: false
+    gains:
+      twig_shoulder_joint:
+        ff_velocity_scale: 10.0
+        i_clamp: 3.0
+        p: 0.0
+        i: 0.0
+        d: 0.0
+      twig_wrist_joint:
+        ff_velocity_scale: 1.0
+        i_clamp: 7.0
+        p: 0.0
+        i: 0.0
+        d: 0.0
+      twig_left_finger_joint:
+        ff_velocity_scale: 1.0
+        i_clamp: 7.0
+        p: 0.0
+        i: 0.0
+        d: 0.0
