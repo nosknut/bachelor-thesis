@@ -11,7 +11,7 @@ def generate_launch_description():
     ).to_moveit_configs()
 
     control_config = os.path.join(
-        get_package_share_directory("twig_moveit_config"),
+        get_package_share_directory("twig_hardware"),
         "config",
         "ros2_controllers.yaml",
     )
