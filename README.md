@@ -136,3 +136,16 @@ Tasks: Run Task
   ROS2: Build Packages
   ROS2: Run Package
 ```
+
+## Citations
+
+When citing software, docs and configuration:
+
+```bibtex
+@online{
+    author = "Knut Ola Nøsen",
+    title = "Subsea 3DOF Robotic Manipulator",
+    url = "https://github.com/nosknut/bachelor-thesis/tree/submitted-with-report",
+    urldate = "2024-05-20"
+}
+```
