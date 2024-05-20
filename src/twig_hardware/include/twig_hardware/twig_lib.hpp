@@ -45,7 +45,9 @@ struct TwigJointConfig
 struct __attribute__((packed)) TwigHardwareConfig
 {
   int16_t connectionTimeout = 0;
-  int16_t maxCurrent = 0;
+  uint16_t maxShoulderCurrent = 0;
+  uint16_t maxWristCurrent = 0;
+  uint16_t maxGripperCurrent = 0;
   int16_t maxCurrentDuration = 0;
   int16_t maxCurrentCooldownDuration = 0;
   int16_t encoderMinMagnitude = 0;
@@ -109,6 +111,18 @@ protected:
 
   bool has_unpushed_commands_ = false;
 
+  
+  // Values from the microcontroller datasheet
+  double microcontroller_ref_voltage = 5.0;
+
+  // Values from the PSM datasheet
+  double psm_sensitivity = 37.8788;
+  double psm_offset = 0.33;
+
+  // Values from the ACS datasheet
+  double acs_sensitivity = 0.4;
+  double acs_offset = 1.5;
+
 public:
   TwigCommand command;
   TwigState state;
@@ -133,11 +147,13 @@ protected:
   double full_angle_to_center_angle(double angle);
   double apply_angular_offset(double angle, double offset);
 
-  double raw_to_current(int16_t raw);
+  double raw_to_current_psm(uint16_t raw);
+  double raw_to_current_acs(uint16_t raw);
   double current_to_effort(double current);
 
 public:
-  int16_t current_to_raw(double current);
+  uint16_t current_to_raw_psm(double current);
+  uint16_t current_to_raw_acs(double current);
 
 // Sync
   void set_hardware_config(TwigHardwareConfig hardware_config);

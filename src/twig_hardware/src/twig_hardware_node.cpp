@@ -300,7 +300,9 @@ protected:
 
     c.connectionTimeout = getIntParam(PARAM_HW_CONFIG_CONNECTION_TIMEOUT);
 
-    c.maxCurrent = twig.current_to_raw(getDoubleParam(PARAM_HW_CONFIG_MAX_CURRENT));
+    c.maxShoulderCurrent = twig.current_to_raw_psm(getDoubleParam(PARAM_HW_CONFIG_MAX_CURRENT));
+    c.maxWristCurrent = twig.current_to_raw_psm(getDoubleParam(PARAM_HW_CONFIG_MAX_CURRENT));
+    c.maxGripperCurrent = twig.current_to_raw_acs(getDoubleParam(PARAM_HW_CONFIG_MAX_CURRENT));
     c.maxCurrentDuration = getIntParam(PARAM_HW_CONFIG_MAX_CURRENT_DURATION);
     c.maxCurrentCooldownDuration = getIntParam(PARAM_HW_CONFIG_MAX_CURRENT_COOLDOWN_DURATION);
     c.encoderMinMagnitude = getIntParam(PARAM_HW_CONFIG_ENCODER_MIN_MAGNITUDE);

@@ -63,9 +63,9 @@ void updateHardwareConfig() {
   wristEncoder.minMagnitude = config.encoderMinMagnitude;
   gripperEncoder.minMagnitude = config.encoderMinMagnitude;
 
-  shoulderServo.fuse.maxCurrent = config.maxCurrent;
-  wristServo.fuse.maxCurrent = config.maxCurrent;
-  gripperServo.fuse.maxCurrent = config.maxCurrent;
+  shoulderServo.fuse.maxCurrent = config.maxShoulderCurrent;
+  wristServo.fuse.maxCurrent = config.maxWristCurrent;
+  gripperServo.fuse.maxCurrent = config.maxGripperCurrent;
 
   shoulderServo.fuse.maxCurrentDuration = config.maxCurrentDuration;
   wristServo.fuse.maxCurrentDuration = config.maxCurrentDuration;

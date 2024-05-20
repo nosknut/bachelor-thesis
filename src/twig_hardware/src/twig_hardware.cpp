@@ -132,7 +132,9 @@ hardware_interface::CallbackReturn TwigHardware::on_configure(
   TwigHardwareConfig c;
   c.connectionTimeout = stoi(info_.hardware_parameters["hardware_config.connection_timeout"]);
   
-  c.maxCurrent = stod(info_.hardware_parameters["hardware_config.max_current"]);
+  c.maxShoulderCurrent = twig.current_to_raw_psm(stod(info_.hardware_parameters["hardware_config.max_current"]));
+  c.maxWristCurrent = twig.current_to_raw_psm(stod(info_.hardware_parameters["hardware_config.max_current"]));
+  c.maxGripperCurrent = twig.current_to_raw_acs(stod(info_.hardware_parameters["hardware_config.max_current"]));
   c.maxCurrentDuration = stoi(info_.hardware_parameters["hardware_config.max_current_duration"]);
   c.maxCurrentCooldownDuration = stoi(info_.hardware_parameters["hardware_config.max_current_cooldown_duration"]);
   c.encoderMinMagnitude = stoi(info_.hardware_parameters["hardware_config.encoder_min_magnitude"]);

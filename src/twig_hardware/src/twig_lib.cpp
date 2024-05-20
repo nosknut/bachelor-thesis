@@ -184,16 +184,42 @@ double twig_hardware::TwigLib::apply_angular_offset(double angle, double offset)
   return new_angle;
 }
 
-// TODO: Implement current estimation
-double twig_hardware::TwigLib::raw_to_current(int16_t raw)
+// Current conversion when using the PSM current sensor
+double twig_hardware::TwigLib::raw_to_current_psm(uint16_t raw)
 {
-  return ((double) raw) / 1023.0;
+  double input_voltage = raw * (microcontroller_ref_voltage / 1024.0);
+  double corrected_input_voltage = input_voltage - psm_offset;
+  double current = corrected_input_voltage * psm_sensitivity;
+
+  return current;
+}
+
+// Current conversion when using the ACS70331 current sensor
+double twig_hardware::TwigLib::raw_to_current_acs(uint16_t raw)
+{
+  double input_voltage = raw * (microcontroller_ref_voltage / 1024.0);
+  double corrected_input_voltage = input_voltage - acs_offset;
+
+  // Compared to the PSM the ACS sensor has a different formula for current calculation
+  double current = corrected_input_voltage / acs_sensitivity;
+
+  return current;
 }
 
 // TODO: Implement current estimation
-int16_t twig_hardware::TwigLib::current_to_raw(double current)
+uint16_t twig_hardware::TwigLib::current_to_raw_psm(double current)
 {
-  return current * 1024.0;
+  double corrected_input_voltage = current / psm_sensitivity;
+  double input_voltage = corrected_input_voltage + psm_offset;
+  return input_voltage * (1024.0 / microcontroller_ref_voltage);
+}
+
+// TODO: Implement current estimation
+uint16_t twig_hardware::TwigLib::current_to_raw_acs(double current)
+{
+  double corrected_input_voltage = current * acs_sensitivity;
+  double input_voltage = corrected_input_voltage + acs_offset;
+  return input_voltage * (1024.0 / microcontroller_ref_voltage);
 }
 
 // TODO: Implement effort estimation
@@ -354,17 +380,17 @@ double twig_hardware::TwigLib::get_gripper_servo_activation_status()
 
 double twig_hardware::TwigLib::get_shoulder_servo_current()
 {
-  return raw_to_current(state.shoulderCurrent);
+  return raw_to_current_psm(state.shoulderCurrent);
 }
 
 double twig_hardware::TwigLib::get_wrist_servo_current()
 {
-  return raw_to_current(state.wristCurrent);
+  return raw_to_current_psm(state.wristCurrent);
 }
 
 double twig_hardware::TwigLib::get_gripper_servo_current()
 {
-  return raw_to_current(state.gripperCurrent);
+  return raw_to_current_acs(state.gripperCurrent);
 }
 
 // Get velocity
