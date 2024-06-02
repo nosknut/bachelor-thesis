@@ -231,6 +231,9 @@ void loop()
     watchdog_update();
 }
 
+// The encoders might crash if they get destroyed, which can freeze the firmware.
+// To allow normal operations without the encoders, they are exclusively read and updated
+// in a separate core.
 void setup1()
 {
   Wire1.setSCL(MULTIPLEXER_SCL_PIN);
@@ -240,9 +243,13 @@ void setup1()
   Wire1.begin();
 }
 
+// The encoders might crash if they get destroyed, which can freeze the firmware.
+// To allow normal operations without the encoders, they are exclusively read and updated
+// in a separate core.
 void loop1()
 {
   wristEncoder.update();
   shoulderEncoder.update();
-  gripperEncoder.update();
+  // TODO: Fix the gripper encoder and re-enable it in firmware
+  // gripperEncoder.update();
 }
