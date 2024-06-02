@@ -16,13 +16,15 @@
 #include "TwigCommand.h"
 #include "TwigHardwareConfig.h"
 #include "FusedServo.h"
+#include "I2cMultiplexer.h"
 
 // #define DEBUG_ENCODERS
 #include "Encoder.h"
 
-Encoder shoulderEncoder = Encoder(SHOULDER_ENCODER_SDA_PIN, SHOULDER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Shoulder");
-Encoder wristEncoder = Encoder(WRIST_ENCODER_SDA_PIN, WRIST_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
-Encoder gripperEncoder = Encoder(GRIPPER_ENCODER_SDA_PIN, GRIPPER_ENCODER_SCL_PIN, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
+I2cMultiplexer i2cMultiplexer = I2cMultiplexer(Wire1, MULTIPLEXER_ADDRESS);
+Encoder shoulderEncoder = Encoder(i2cMultiplexer, SHOULDER_ENCODER_CHANNEL, INITIAL_MIN_ENCODER_MAGNITUDE, "Shoulder");
+Encoder wristEncoder = Encoder(i2cMultiplexer, WRIST_ENCODER_CHANNEL, INITIAL_MIN_ENCODER_MAGNITUDE, "Wrist");
+Encoder gripperEncoder = Encoder(i2cMultiplexer, GRIPPER_ENCODER_CHANNEL, INITIAL_MIN_ENCODER_MAGNITUDE, "Gripper");
 
 FusedServo shoulderServo(SHOULDER_SERVO_PIN, SHOULDER_SERVO_RELAY_PIN);
 FusedServo wristServo(WRIST_SERVO_PIN, WRIST_SERVO_RELAY_PIN);
@@ -103,10 +105,6 @@ void readState()
   twigState.wristCurrent = analogRead(WRIST_CURRENT_PIN);
   twigState.gripperCurrent = analogRead(GRIPPER_CURRENT_PIN);
   twigState.shoulderCurrent = analogRead(SHOULDER_CURRENT_PIN);
-
-  wristEncoder.update();
-  shoulderEncoder.update();
-  gripperEncoder.update();
 
   twigState.wristPosition = wristEncoder.values.angle;
   twigState.wristVelocity = wristEncoder.values.velocity;
@@ -222,13 +220,6 @@ void setup()
   Wire.onReceive(onCommand);
   Wire.onRequest(onStateRequest);
 
-  shoulderEncoder.begin();
-  wristEncoder.begin();
-  gripperEncoder.begin();
-
-  // Read the states and give the remote system some time to connect
-  readState();
-  delay(100);
 }
 
 void loop()
@@ -238,4 +229,20 @@ void loop()
     updateConnectionTimer();
     writeCommand();
     watchdog_update();
+}
+
+void setup1()
+{
+  Wire1.setSCL(MULTIPLEXER_SCL_PIN);
+  Wire1.setSDA(MULTIPLEXER_SDA_PIN);
+  Wire1.setClock(MULTIPLEXER_FREQUENCY);
+  Wire1.setTimeout(MULTIPLEXER_TIMEOUT);
+  Wire1.begin();
+}
+
+void loop1()
+{
+  wristEncoder.update();
+  shoulderEncoder.update();
+  gripperEncoder.update();
 }

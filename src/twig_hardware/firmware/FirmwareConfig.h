@@ -19,14 +19,16 @@ const unsigned long INITIAL_CONNECTION_TIMEOUT = 200;
 const int8_t RASPBERRY_PI_SDA_PIN = 20;
 const int8_t RASPBERRY_PI_SCL_PIN = 21;
 
-const int8_t SHOULDER_ENCODER_SDA_PIN = 7;
-const int8_t SHOULDER_ENCODER_SCL_PIN = 2;
+// https://www.elfadistrelec.no/no/i2c-multiplexer-adafruit-2717/p/30091194
+const uint32_t MULTIPLEXER_FREQUENCY = 100e3;
+const uint32_t MULTIPLEXER_TIMEOUT = 500;
+const int8_t MULTIPLEXER_ADDRESS = 0x70;
+const int8_t MULTIPLEXER_SCL_PIN = 19;
+const int8_t MULTIPLEXER_SDA_PIN = 18;
 
-const int8_t WRIST_ENCODER_SDA_PIN = 4;
-const int8_t WRIST_ENCODER_SCL_PIN = 2;
-
-const int8_t GRIPPER_ENCODER_SDA_PIN = 6;
-const int8_t GRIPPER_ENCODER_SCL_PIN = 2;
+const int8_t SHOULDER_ENCODER_CHANNEL = 3;
+const int8_t WRIST_ENCODER_CHANNEL = 2;
+const int8_t GRIPPER_ENCODER_CHANNEL = 4;
 
 const int8_t SHOULDER_CURRENT_PIN = A0;
 const int8_t WRIST_CURRENT_PIN = A1;

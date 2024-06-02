@@ -2,7 +2,6 @@
 #define ANGULAR_SPEED_TRACKER_h
 
 #include <Arduino.h>
-#include "AS5600.h"
 #include "RunningMedian.h"
 
 class AngularVelocityTracker

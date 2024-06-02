@@ -11,6 +11,7 @@
 #include <Arduino.h>
 #include "Wire.h"
 
+#define USE_HWI2C
 #ifndef I2C_CLASS
 #ifdef USE_HWI2C
 #include <Wire.h>

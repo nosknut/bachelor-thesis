@@ -2,18 +2,15 @@
 #define ENCODER_h
 
 #include <Arduino.h>
-#include "SoftI2C.h"
 #include "Lowpass.h"
 #include "AS5600.h"
 #include "AngularVelocityTracker.h"
 #include "FirmwareConfig.h"
 #include "EncoderValues.h"
+#include "I2cMultiplexer.h"
 
 class Encoder
 {
-  const int sdaPin;
-  const int sclPin;
-
   AngularVelocityTracker velocityTracker;
 
 public:
@@ -21,25 +18,31 @@ public:
   const String name;
   uint16_t rawAngle = 0;
   EncoderValues values;
-  SoftI2C i2cBus = SoftI2C(sdaPin, sclPin);
-  AS5600 encoder = AS5600(&i2cBus);
+  int multiplexerChannel;
+  I2cMultiplexer &i2cMultiplexer;
+  AS5600 encoder;
   LowPass<POSITION_LOWPASS_FILTER_ORDER> filter =
       LowPass<POSITION_LOWPASS_FILTER_ORDER>(POSITION_LOWPASS_FILTER_CUTOFF, 1e3, true);
 
   // constructor:
-  Encoder(int sdaPin, int sclPin, int minMagnitude, String name)
-  : sdaPin(sdaPin), sclPin(sclPin), minMagnitude(minMagnitude), name(name)
+  Encoder(I2cMultiplexer &i2cMultiplexer, int multiplexerChannel, int minMagnitude, String name)
+      : i2cMultiplexer(i2cMultiplexer), multiplexerChannel(multiplexerChannel),
+        minMagnitude(minMagnitude), name(name), encoder(AS5600(&i2cMultiplexer.bus))
   {
-  }
-
-  ~Encoder()
-  {
-    end();
   }
 
 private:
   bool updateAngle()
   {
+    if (!i2cMultiplexer.selectChannel(multiplexerChannel))
+      return false;
+    if (!i2cMultiplexer.deviceExists(encoder.getAddress())) {
+#ifdef DEBUG_ENCODERS
+      Serial.println("ERROR: " + name + " encoder not found");
+#endif
+      return false;
+    }
+    
     values.magnitude = encoder.readMagnitude();
     if (values.magnitude > minMagnitude) {
       rawAngle = encoder.readAngle();
@@ -62,15 +65,6 @@ private:
   }
 
 public:
-  void begin()
-  {
-    i2cBus.begin();
-  }
-
-  void end()
-  {
-    i2cBus.end();
-  }
 
   bool update()
   {
