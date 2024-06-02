@@ -9,7 +9,7 @@ const int SERVO_STATIONARY_SIGNAL = 1500;
 const int INITIAL_MIN_ENCODER_MAGNITUDE = 10;
 
 const int POSITION_LOWPASS_FILTER_ORDER = 2;
-const int POSITION_LOWPASS_FILTER_CUTOFF = 2;
+const float POSITION_LOWPASS_FILTER_CUTOFF = 2.0;
 
 // To protect the system in the event of a connection loss,
 // the system will stop moving if it does not detect activity
